@@ -1,0 +1,148 @@
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 62.5%;
+}
+
+body {
+  /* display: flex; */
+  font-family: "Inter", sans-serif;
+
+  /* align-items: center;
+  justify-content: center; */
+  /* height: 100vh; */
+  padding: 5.6rem 12.2rem;
+}
+
+.login-signup {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr;
+  column-gap: 1.2rem;
+  box-shadow: 0 0 1.2rem rgba(0, 0, 0, 0.123);
+
+  /* max-width: 120rem; */
+}
+
+.login-background {
+  width: 100%;
+  background: linear-gradient(
+      to right bottom,
+      rgba(0, 0, 0, 0.39),
+      rgba(51, 187, 211, 0.233)
+    ),
+    url("../img/login.jpeg");
+  background-size: cover;
+}
+
+.grid-container {
+  display: grid;
+  grid-template-columns: 1fr;
+  row-gap: 1.2rem;
+}
+
+.grid-container *:focus {
+  outline: none;
+  box-shadow: 0 0 0.8rem 1.4rem rgba(215, 236, 250, 0.336);
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  align-items: center;
+  justify-items: center;
+  row-gap: 3.6rem;
+  padding: 3.6rem 2.8rem;
+}
+
+.form-label {
+  display: block;
+  font-size: 1.6rem;
+  font-weight: 500;
+  margin-bottom: 0.8rem;
+}
+
+.form-input {
+  width: 100%;
+  padding: 1rem 1.2rem;
+  border-radius: 0.6rem;
+  border: 0.1rem solid;
+}
+
+.form-input::placeholder {
+  font-size: 1.6rem;
+  color: #aaa;
+}
+
+.form-button {
+  display: inline-block;
+  padding: 1.3rem 2.4rem;
+  font-size: 1.6rem;
+  font-weight: 700;
+
+  border-radius: 1.2rem;
+  border: none;
+  background-color: #5a28f0;
+  color: #fff;
+}
+
+.form-button:hover {
+  background-color: #748ffc;
+
+  cursor: pointer;
+}
+
+.input-holder {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+
+  width: 75%;
+}
+
+.forgot-password {
+  display: flex;
+  padding: 1.2rem 2.8rem;
+  justify-content: space-around;
+}
+
+.forgot-password-text {
+  font-size: 1.4rem;
+  font-weight: 500;
+  line-height: 1.2;
+}
+
+.reset:link,
+.reset:visited {
+  font-size: 1.2rem;
+  font-weight: 500;
+  text-decoration: none;
+  color: #7048e8;
+}
+
+.reset:hover,
+.reset:active {
+  color: #8d6ded;
+  cursor: pointer;
+}
+
+.create-account:link,
+.create-account:visited {
+  display: inline-block;
+  font-size: 1.6rem;
+  font-weight: 500;
+  text-decoration: none;
+  color: #7048e8;
+  justify-self: center;
+  margin-bottom: 2.8rem;
+}
+
+.create-account:hover,
+.create-account:active {
+  color: #8d6ded;
+  cursor: pointer;
+}

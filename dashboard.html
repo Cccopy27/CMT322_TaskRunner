@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Roboto:wght@400;500;700&family=Rubik:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <link rel="stylesheet" href="css/dashboard.css" />
+  </head>
+  <body>
+    <div class="dashboard-grid">
+      <nav class="dashboard-sidebar">
+        <div class="dashboard-title-container">
+          <h1 class="dashboard-title">
+            Task<span class="dashboard-heading-span">Runner</span>
+          </h1>
+        </div>
+        <ul class="list-container">
+          <li class="list-section" data-link="1">
+            <a class="list-section-link" href="#"
+              ><ion-icon
+                class="dashboard-sidebar-icon"
+                name="qr-code"
+              ></ion-icon
+              >Overview</a
+            >
+          </li>
+          <li class="list-section" data-link="2">
+            <a class="list-section-link" href="#"
+              ><ion-icon class="dashboard-sidebar-icon" name="person"></ion-icon
+              >Profile</a
+            >
+          </li>
+          <li class="list-section" data-link="3">
+            <a class="list-section-link" href="#"
+              ><ion-icon class="dashboard-sidebar-icon" name="search"></ion-icon
+              >Browse tasks</a
+            >
+          </li>
+          <li class="list-section" data-link="4">
+            <a class="list-section-link" href="#"
+              ><ion-icon class="dashboard-sidebar-icon" name="create"></ion-icon
+              >Post task</a
+            >
+          </li>
+        </ul>
+      </nav>
+      <div class="main-content">
+        <!-- main section -->
+        <section class="main-section" data-section="1">
+          <div class="main-heading">
+            <a class="main-heading-link" href="#"
+              >recent <span class="link-highlight link-active">task</span></a
+            >
+            <a class="main-heading-link" href="#"
+              >my <span class="link-highlight">task</span></a
+            >
+          </div>
+          <div class="task-information">
+            <div class="slider-button-container">
+              <button class="slider-button slider-button-left">
+                <ion-icon class="slider-icon" name="chevron-back"></ion-icon>
+              </button>
+            </div>
+
+            <div class="task-card-content">
+              <!--  -->
+              <div class="slide-task-holder">
+                <div class="section-task-card">
+                  <img class="search-task-img" src="img/painting.jpg" alt="" />
+                  <!-- <div class="padding-div">
+                    <p class="search-task-paragraph">
+                      Lorem ipsum dolor sit amet consectetur adipisicing elit.
+                      Officiis quo doloribus odio iste?
+                    </p>
+                  </div> -->
+
+                  <div class="padding-div">
+                    <div class="option-button-div">
+                      <a href="#" class="btn--view-detail">view details</a>
+                      <button class="btn btn--apply">Complete</button>
+                    </div>
+                  </div>
+                </div>
+                <div class="section-task-card">
+                  <img class="search-task-img" src="img/painting.jpg" alt="" />
+                  <!-- <div class="padding-div">
+                    <p class="search-task-paragraph">
+                      Lorem ipsum dolor sit amet consectetur adipisicing elit.
+                      Officiis quo doloribus odio iste?
+                    </p>
+                  </div> -->
+
+                  <div class="padding-div">
+                    <div class="option-button-div">
+                      <a href="#" class="btn--view-detail">view details</a>
+                      <button class="btn btn--apply">Complete</button>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="section-task-card">
+                  <img class="search-task-img" src="img/painting.jpg" alt="" />
+                  <div class="padding-div">
+                    <div class="option-button-div">
+                      <a href="#" class="btn--view-detail">view details</a>
+                      <button class="btn btn--apply">Complete</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <!--  -->
+
+              <div class="slide-task-holder">
+                <div class="search-section-card">
+                  <img class="search-task-img" src="img/painting.jpg" alt="" />
+                  <!-- <div class="padding-div">
+                    <p class="search-task-paragraph">
+                      Lorem ipsum dolor sit amet consectetur adipisicing elit.
+                      Officiis quo doloribus odio iste?
+                    </p>
+                  </div> -->
+
+                  <div class="padding-div">
+                    <div class="option-button-div">
+                      <a href="#" class="btn--view-detail">view details</a>
+                      <button class="btn btn--apply">Complete</button>
+                    </div>
+                  </div>
+                </div>
+                <div class="search-section-card">
+                  <img class="search-task-img" src="img/painting.jpg" alt="" />
+                  <!-- <div class="padding-div">
+                    <p class="search-task-paragraph">
+                      Lorem ipsum dolor sit amet consectetur adipisicing elit.
+                      Officiis quo doloribus odio iste?
+                    </p>
+                  </div> -->
+
+                  <div class="padding-div">
+                    <div class="option-button-div">
+                      <a href="#" class="btn--view-detail">view details</a>
+                      <button class="btn btn--apply">Complete</button>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="search-section-card">
+                  <img class="search-task-img" src="img/painting.jpg" alt="" />
+                  <div class="padding-div">
+                    <div class="option-button-div">
+                      <a href="#" class="btn--view-detail">view details</a>
+                      <button class="btn btn--apply">Complete</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!--  -->
+
+              <!-- <div class="max-task-holder">
+                <div class="slider-card">
+                  <div class="card-mytask">
+                    <img
+                      class="my-task-img"
+                      src="img/package.jpg"
+                      alt="delivery"
+                    />
+                    <h3 class="my-task-heading">Home packaging</h3>
+                    <button class="task-button">Finish</button>
+                  </div>
+                </div>
+                <div class="slider-card grid-content-2">
+                  <div class="card-mytask">
+                    <img
+                      class="my-task-img"
+                      src="img/package.jpg"
+                      alt="delivery"
+                    />
+                    <h3 class="my-task-heading">Home packaging</h3>
+                    <button class="task-button">Finish</button>
+                  </div>
+                </div>
+                <div class="slider-card">
+                  <div class="card-mytask">
+                    <img
+                      class="my-task-img"
+                      src="img/package.jpg"
+                      alt="delivery"
+                    />
+                    <h3 class="my-task-heading">Home packaging</h3>
+                    <button class="task-button">Finish</button>
+                  </div>
+                </div>
+              </div> -->
+
+              <!--  -->
+            </div>
+
+            <div class="slider-button-container">
+              <button class="slider-button slider-button-right">
+                <ion-icon class="slider-icon" name="chevron-forward"></ion-icon>
+              </button>
+            </div>
+          </div>
+          <div class="statistic">
+            <div class="earning-flex">
+              <div class="earn-grid">
+                <div class="icon-earn-container icon-container-background-1">
+                  <ion-icon class="icon-statistics" name="bar-chart"></ion-icon>
+                </div>
+                <p class="grand-total">Total earn</p>
+                <p class="total-info">MYR 160</p>
+              </div>
+              <div class="earn-grid">
+                <div class="icon-earn-container">
+                  <ion-icon class="icon-statistics" name="reader"></ion-icon>
+                </div>
+                <p class="grand-total">Total task</p>
+                <p class="total-info">6</p>
+              </div>
+            </div>
+            <div class="transaction-history">
+              <div class="history-checkpoint">
+                <div class="transaction-detail">
+                  <img class="customer-img" src="img/alan walker.jpg" alt="" />
+                  <p class="transaction-date">17/8/2021</p>
+                  <p class="transaction-fee">MYR<span> 80</span></p>
+                </div>
+                <div class="transaction-detail">
+                  <img class="customer-img" src="img/yurijo.jpg" alt="" />
+                  <p class="transaction-date">25/11/2021</p>
+                  <p class="transaction-fee">MYR<span> 80</span></p>
+                </div>
+                <div class="transaction-detail">
+                  <img class="customer-img" src="img/kimminju.png" alt="" />
+                  <p class="transaction-date">26/11/2021</p>
+                  <p class="transaction-fee">MYR<span> 40</span></p>
+                </div>
+                <div class="transaction-detail">
+                  <img class="customer-img" src="img/kimminju.png" alt="" />
+                  <p class="transaction-date">26/11/2021</p>
+                  <p class="transaction-fee">MYR<span> 40</span></p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- main section -->
+
+        <!-- window -->
+
+        <div class="window-task-information display-hidden">
+          <div class="window-grid-container">
+            <img class="window-img" src="img/painting.jpg" alt="" />
+            <p class="task-description">
+              Lorem ipsum dolor sit amet consectetur adipisicing elit.
+              Cupiditate eveniet molestiae architecto dolores ea vel sit
+              perspiciatis
+            </p>
+            <div class="customer-info">
+              <ion-icon
+                class="customer-info-icon"
+                name="person-outline"
+              ></ion-icon>
+              <p class="customer-info--text">Mr. Loh</p>
+            </div>
+            <div class="customer-info">
+              <ion-icon
+                class="customer-info-icon"
+                name="location-outline"
+              ></ion-icon>
+              <p class="customer-info--text">Bayan Lepas,Penang</p>
+            </div>
+            <div class="customer-info">
+              <ion-icon
+                class="customer-info-icon"
+                name="call-outline"
+              ></ion-icon>
+              <p class="customer-info--text">0115261200</p>
+            </div>
+            <div class="customer-info">
+              <ion-icon
+                class="customer-info-icon"
+                name="wallet-outline"
+              ></ion-icon>
+              <p class="customer-info--text">MYR 60</p>
+            </div>
+            <div class="padding-div">
+              <div class="option-button-div">
+                <a href="#" class="btn--view-detail">view details</a>
+                <button class="btn btn--apply">apply</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- window -->
+
+        <!-- profile -->
+
+        <section class="profile display-hidden" data-section="2">
+          <div>
+            <form class="profile-form">
+              <h2 class="form-heading">
+                Task<span class="form-span">Runner</span>
+              </h2>
+              <div class="form-input-divider input-span">
+                <label for="username" class="input-label">username</label>
+                <input
+                  id="username"
+                  class="profile-input"
+                  type="text"
+                  required
+                />
+              </div>
+              <div class="form-input-divider">
+                <label for="email" class="input-label">email</label>
+                <input id="email" class="profile-input" type="email" required />
+              </div>
+              <div class="form-input-divider">
+                <label for="contact" class="input-label">contact</label>
+                <input
+                  id="contact"
+                  class="profile-input"
+                  type="text"
+                  required
+                />
+              </div>
+              <div class="form-input-divider input-span">
+                <label for="address" class="input-label">address</label>
+                <input
+                  id="address"
+                  class="profile-input"
+                  type="text"
+                  required
+                />
+              </div>
+              <div class="form-input-divider input-span-submit">
+                <input class="profile-input-submit" type="submit" />
+              </div>
+            </form>
+          </div>
+        </section>
+
+        <!-- profile -->
+
+        <!-- browse task section -->
+
+        <section class="browse-task--section display-hidden" data-section="3">
+          <div class="search-task--section">
+            <div class="section-task-card">
+              <img class="search-task-img" src="img/painting.jpg" alt="" />
+              <div class="padding-div">
+                <p class="search-task-paragraph">
+                  Lorem ipsum dolor sit amet consectetur adipisicing elit.
+                  Officiis quo doloribus odio iste?
+                </p>
+              </div>
+
+              <div class="padding-div">
+                <div class="option-button-div">
+                  <a href="#" class="btn--view-detail">view details</a>
+                  <button class="btn btn--apply">apply</button>
+                </div>
+              </div>
+            </div>
+
+            <div class="section-task-card">
+              <img class="search-task-img" src="img/painting.jpg" alt="" />
+              <div class="padding-div">
+                <p class="search-task-paragraph">
+                  Lorem ipsum dolor sit amet consectetur adipisicing elit.
+                  Officiis quo doloribus odio iste?
+                </p>
+              </div>
+
+              <div class="padding-div">
+                <div class="option-button-div">
+                  <a href="#" class="btn--view-detail">view details</a>
+                  <button class="btn btn--apply">apply</button>
+                </div>
+              </div>
+            </div>
+            <div class="section-task-card">
+              <img class="search-task-img" src="img/painting.jpg" alt="" />
+              <div class="padding-div">
+                <p class="search-task-paragraph">
+                  Lorem ipsum dolor sit amet consectetur adipisicing elit.
+                  Officiis quo doloribus odio iste?
+                </p>
+              </div>
+
+              <div class="padding-div">
+                <div class="option-button-div">
+                  <a href="#" class="btn--view-detail">view details</a>
+                  <button class="btn btn--apply">apply</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+        <!-- browse task section -->
+      </div>
+      <div class="chat-bar">
+        <div></div>
+        <div class="chat-user">
+          <div class="chat-icon">
+            <img class="customer-img" src="img/yurijo.jpg" alt="" />
+          </div>
+          <div class="chat-icon">
+            <img class="customer-img" src="img/kimminju.png" alt="" />
+          </div>
+          <div class="chat-icon">
+            <img class="customer-img" src="img/man-1.jpg" alt="" />
+          </div>
+          <div class="chat-icon">
+            <img class="customer-img" src="img/woman.jpg" alt="" />
+          </div>
+        </div>
+      </div>
+    </div>
+    <script
+      type="module"
+      src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"
+    ></script>
+    <script
+      nomodule
+      src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"
+    ></script>
+    <script src="./main.js"></script>
+  </body>
+</html>
