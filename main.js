@@ -102,18 +102,18 @@ const getData = async(locURL,locKey,locQue) => {
 
 loc_btn.addEventListener("click", e =>{
   e.preventDefault();
-  // const locKey = `?access_key=${key}`;
-  // const locQue = `&query=${loc_text.value}`;
-  // const result = getData(locationURL,locKey,locQue);
-  // console.log(result);
+  const locKey = `?access_key=${key}`;
+  const locQue = `&query=${loc_text.value}`;
+  const result = getData(locationURL,locKey,locQue);
+  console.log(result);
   //check browser support geolocation or not
-  if(navigator.geolocation){
-    // get user location
-    navigator.geolocation.getCurrentPosition((success, error));
-  }
-  else{
-    console.log("geolocation not found");
-  }
+  // if(navigator.geolocation){
+  //   // get user location
+  //   navigator.geolocation.getCurrentPosition((success, error));
+  // }
+  // else{
+  //   console.log("geolocation not found");
+  // }
 
 
 });
