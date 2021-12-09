@@ -419,20 +419,94 @@
               </h2>
 
               <!-- task title -->
-              <div class="form-input-divider">
+              <div class="form-input-divider input-span">
                 <label for="task-title" class="input-label">Tittle:</label>
                 <input
                   id="task-title"
+                  class="post-task-input"
                   type="text"
                   required
                 />
               </div>
 
               <!-- task description -->
-              <div class="form-input-divider">
+              <div class="form-input-divider input-span">
                 <label for="task-des" class="input-label">Description:</label>
                 <input
                   id="task-des"
+                  class="post-task-input"
+
+                  type="text"
+                  required
+                />
+              </div>
+
+              <!-- task starting date and time -->
+              <div class="form-input-divider">
+                <!-- date -->
+                <span  class="input-label">Starting time</span><br/>
+                <div class="date-time-div">
+                  <label for="task-start-date" class="input-label post-date-input-label">Date:</label>
+                  <span class="post-date-time-span">
+                    <input
+                    id="task-start-date"
+                    class="post-task-input post-date-input"
+                    type="date"
+                    required
+                  />
+                  </span>
+                </div>
+                
+                <!-- time  -->
+                <div class="date-time div">
+                  <label for="task-start-time" class="input-label post-date-input-label">Time:</label>
+                  <span class="post-date-time-span">
+                    <input
+                    id="task-start-time"
+                    class="post-task-input post-date-input" 
+                    type="time"
+                    required
+                  />
+                  </span>
+                </div>
+              </div>
+
+              <!-- task end date and time -->
+              <div class="form-input-divider">
+                <!-- date -->
+                <span  class="input-label">End time</span><br/>
+                  <div class="date-time-div">
+                    <label for="task-end-date" class="input-label post-date-input-label" >Date:</label>
+                    <span class="post-date-time-span">
+                      <input
+                      id="task-end-date"
+                      class="post-task-input post-date-input"
+                      type="date"
+                      required
+                      />
+                    </span>
+                  </div>
+                  
+                  <!-- time  -->
+                  <div class="date-time div">
+                    <label for="task-end-time" class="input-label post-date-input-label">Time:</label>
+                    <span class="post-date-time-span">
+                      <input
+                      id="task-end-time"
+                      class="post-task-input post-date-input"
+                      type="time"
+                      required
+                      />
+                    </span>
+                  </div>
+              </div>
+
+              <!-- task duration -->
+              <div class="form-input-divider">
+                <label for="task-duration" class="input-label">Duration:</label>
+                <input
+                  id="task-duration"
+                  class="post-task-input"
                   type="text"
                   required
                 />
@@ -443,66 +517,18 @@
                 <label for="task-location" class="input-label">Location:</label>
                 <input
                   id="task-location"
+                  class="post-task-input"
                   type="text"
                   required
                 />
               </div>
 
-             <!-- task starting date and time -->
-             <div class="form-input-divider">
-               <!-- date -->
-              <span  class="input-label">Starting time</span><br/>
-              <label for="task-start-date" class="input-label">Date:</label>
-              <input
-                id="task-start-date"
-                type="date"
-                required
-              />
-              <!-- time  -->
-              <label for="task-start-time" class="input-label">Time:</label>
-              <input
-                id="task-start-time"
-                type="time"
-                required
-              />
-            </div>
-
-            <!-- task end date and time -->
-            <div class="form-input-divider">
-              <!-- date -->
-              <span  class="input-label">End time</span><br/>
-             <label for="task-end-date" class="input-label">Date:</label>
-             <input
-               id="task-end-date"
-               type="date"
-               required
-             />
-             <!-- time  -->
-             <label for="task-end-time" class="input-label">Time:</label>
-             <input
-               id="task-end-time"
-               type="time"
-               required
-             />
-           </div>
-
-            
-
-              <!-- task duration -->
+              <!-- task price -->
               <div class="form-input-divider">
-                <label for="task-duration" class="input-label">Duration:</label>
-                <input
-                  id="task-duration"
-                  type="text"
-                  required
-                />
-              </div>
-
-               <!-- task price -->
-               <div class="form-input-divider">
                 <label for="task-price" class="input-label">Price(per person):</label>
                 <input
                   id="task-price"
+                  class="post-task-input post-price-input"
                   type="number"
                   required
                 />
@@ -513,46 +539,25 @@
                 <label for="task-tasker-needed" class="input-label">Number of Tasker:</label>
                 <input
                   id="task-tasker-needed"
+                  class="post-task-input"
                   type="number"
                   required
                 />
               </div>
 
-               <!-- task photo -->
-               <div class="form-input-divider">
+              <!-- task photo -->
+              <div class="form-input-divider">
                 <label for="task-photo" class="input-label">Photo:</label>
                 <input
                   id="task-tasker-needed"
+                  class="post-task-input"
                   type="file"
                   required
                 />
-              </div>
-
-               
-              <!-- <div class="form-input-divider">
-                <label for="email" class="input-label">email</label>
-                <input id="email" class="profile-input" type="email" required />
-              </div>
-              <div class="form-input-divider">
-                <label for="contact" class="input-label">contact</label>
-                <input
-                  id="contact"
-                  class="profile-input"
-                  type="text"
-                  required
-                />
-              </div> -->
-              <!-- <div class="form-input-divider input-span">
-                <label for="address" class="input-label">address</label>
-                <input
-                  id="address"
-                  class="profile-input"
-                  type="text"
-                  required
-                />
-              </div> -->
-              <div class="form-input-divider input-span-submit">
-                <input class="profile-input-submit" type="submit" />
+              </div> 
+              <br/>
+              <div class="form-input-divider input-span">
+                <input class="post-input-submit" type="submit" />
               </div>
             </form>
           </div>

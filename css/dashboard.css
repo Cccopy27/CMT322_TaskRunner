@@ -650,3 +650,59 @@ body {
   cursor: pointer;
   outline: none;
 }
+
+/* post task form  */
+.post-task-form {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  max-width: 80rem;
+  margin: 0 auto;
+  padding: 2.6rem 3.2rem;
+  justify-items: stretch;
+  column-gap: 2.4rem;
+  row-gap: 1.6rem;
+  background-color: #fff;
+  box-shadow: 0 0.8rem 1.2rem rgba(0, 0, 0, 0.075);
+}
+
+.post-task-input {
+  width: 100%;
+  padding: 0.5rem 1.4rem;
+  border-radius: 0.8rem;
+  border: 0.1rem solid rgba(0, 0, 0, 0.178);
+  outline: none;
+}
+
+.post-input-submit {
+  width: 100%;
+  background-color: #51eb82;
+  border: none;
+  padding: 1.2rem 2.4rem;
+  cursor: pointer;
+  outline: none;
+}
+
+.post-date-input-label{
+  float: left;
+  margin-right: 0.5em;
+}
+
+.post-date-time-span{
+  display: block;
+  overflow: hidden;
+}
+
+
+.post-date-input{
+  width: 70%;
+}
+
+.post-task-input:focus,
+.post-task-input-submit:focus {
+  box-shadow: 0 0 1.2rem 0.8rem rgba(98, 222, 238, 0.13);
+}
+
+.date-time-div{
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
