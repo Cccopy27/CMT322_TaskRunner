@@ -651,7 +651,13 @@ body {
   outline: none;
 }
 
-/* post task form  */
+/* post task  */
+
+/* .post-task{
+  max-width: 85rem;
+  margin:0;
+} */
+
 .post-task-form {
   display: grid;
   grid-template-columns: 1fr 1fr;
