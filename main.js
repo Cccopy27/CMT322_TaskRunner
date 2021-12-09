@@ -78,3 +78,44 @@ const browse_section = document.querySelector(".browse-task--section");
 modal_window.addEventListener("click", function (e) {
   if (!e.target.classList.contains("btn--view-detail")) return;
 });
+
+// get user location using geolocation
+const loc_btn = document.querySelector(".form-location-btn");
+const loc_text = document.getElementById("task-location");
+const key = "56348ee0ae736660b862244f4a0535fc";
+const locationURL = "http://api.positionstack.com/v1/forward";
+
+const success = (pos) => {
+  console.log(pos);
+}
+
+const error = (err) => {
+  console.log(err);
+}
+
+const getData = async(locURL,locKey,locQue) => {
+  const response = await fetch(locURL+locKey+locQue);
+  const data = await response.json();
+  return data.data[0];
+}
+
+
+loc_btn.addEventListener("click", e =>{
+  e.preventDefault();
+  // const locKey = `?access_key=${key}`;
+  // const locQue = `&query=${loc_text.value}`;
+  // const result = getData(locationURL,locKey,locQue);
+  // console.log(result);
+  //check browser support geolocation or not
+  if(navigator.geolocation){
+    // get user location
+    navigator.geolocation.getCurrentPosition((success, error));
+  }
+  else{
+    console.log("geolocation not found");
+  }
+
+
+});
+
+

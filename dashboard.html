@@ -432,13 +432,10 @@
               <!-- task description -->
               <div class="form-input-divider input-span">
                 <label for="task-des" class="input-label">Description:</label>
-                <input
-                  id="task-des"
-                  class="post-task-input"
-
-                  type="text"
-                  required
-                />
+                <textarea
+                id="task-des"
+                class="post-task-input post-task-des-input"
+                required></textarea>  
               </div>
 
               <!-- task starting date and time -->
@@ -515,10 +512,12 @@
               <!-- task location -->
               <div class="form-input-divider">
                 <label for="task-location" class="input-label">Location:</label>
+                <button class="form-location-btn">My Location</button>
                 <input
                   id="task-location"
                   class="post-task-input"
                   type="text"
+                  value=""
                   required
                 />
               </div>
@@ -552,6 +551,7 @@
                   id="task-tasker-needed"
                   class="post-task-input"
                   type="file"
+                  multiple accept="image/*"
                   required
                 />
               </div> 
