@@ -18,7 +18,11 @@ body {
   padding: 5.6rem 12.2rem;
 }
 
-.login-signup {
+.section {
+  transition: display 300ms, transform 300ms;
+}
+
+.login-section {
   display: grid;
   grid-template-columns: 1fr 1fr;
   grid-template-rows: 1fr;
@@ -50,7 +54,8 @@ body {
   box-shadow: 0 0 0.8rem 1.4rem rgba(215, 236, 250, 0.336);
 }
 
-.form-grid {
+.login-form,
+.sign-up--form {
   display: grid;
   grid-template-columns: 1fr;
   align-items: center;
@@ -59,14 +64,16 @@ body {
   padding: 3.6rem 2.8rem;
 }
 
-.form-label {
+.form-label,
+.sign-up--label {
   display: block;
   font-size: 1.6rem;
   font-weight: 500;
   margin-bottom: 0.8rem;
 }
 
-.form-input {
+.form-input,
+.sign-up--input {
   width: 100%;
   padding: 1rem 1.2rem;
   border-radius: 0.6rem;
@@ -96,7 +103,8 @@ body {
   cursor: pointer;
 }
 
-.input-holder {
+.input-holder,
+.sign-up--input-field {
   display: flex;
   flex-direction: column;
   gap: 0.8rem;
@@ -145,4 +153,113 @@ body {
 .create-account:active {
   color: #8d6ded;
   cursor: pointer;
+}
+
+.section-sign-up {
+  max-width: 50rem;
+  padding-top: 1.4rem;
+  margin: 0 auto;
+  box-shadow: 0 0.8rem 1.2rem rgba(0, 0, 0, 0.11);
+}
+
+.sign-up-heading {
+  font-size: 2.2rem;
+  font-weight: 700;
+  color: #333;
+  text-align: center;
+}
+
+.heading-span {
+  color: #51eb82;
+}
+
+.sign-up--form .create-account-button:focus {
+  outline: none;
+  box-shadow: 0 0 0.8rem rgba(116, 143, 252, 0.747);
+}
+
+.sign-up-input-pattern {
+  border-radius: 0;
+  border-color: rgba(85, 85, 85, 0.568);
+  outline: none;
+  border: none;
+  border-bottom: 0.1rem solid;
+  transition: box-shadow 300ms, transform 300ms;
+}
+
+.sign-up-input-pattern:focus {
+  box-shadow: 0 0.8rem 0.6rem rgba(0, 0, 0, 0.096);
+  transform: scale(1.1);
+}
+
+.radio-label {
+  font-size: 1.6rem;
+  font-weight: 600;
+  color: #333;
+}
+
+.radio--option {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+}
+
+.sign-up--radio-field {
+  display: grid;
+  width: 100%;
+  grid-template-columns: 1fr 1fr;
+  justify-items: center;
+  row-gap: 1.3rem;
+}
+
+.radio-title {
+  font-size: 1.6rem;
+  font-weight: 500;
+  grid-column: 1/3;
+}
+
+.create-account-button {
+  display: inline-block;
+  padding: 1.4rem 1.6rem;
+  background-color: #7048e8;
+  border: none;
+  color: #fff;
+  font-size: 1.4rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.create-account-button:hover {
+  background-color: #748ffc;
+}
+
+.sign-in--navigation {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  justify-content: center;
+
+  gap: 1.6rem;
+}
+
+.sign-in--question {
+  font-size: 1.3rem;
+  font-weight: 500;
+}
+
+.sign-in--option:link,
+.sign-in--option:visited {
+  text-decoration: none;
+  font-size: 1.2rem;
+  font-weight: 500;
+}
+
+.sign-in--option:hover,
+.sign-in--option:active {
+  color: #5a28a1;
+}
+
+.section-hidden {
+  display: none;
+  transform: translate(0, 2.2rem);
 }
