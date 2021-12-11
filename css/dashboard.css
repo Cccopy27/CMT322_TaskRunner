@@ -111,6 +111,7 @@ body {
 /* main section */
 
 .main-content {
+  overflow: auto;
   display: block;
   position: relative;
   transition: display 3000ms ease-in-out;
