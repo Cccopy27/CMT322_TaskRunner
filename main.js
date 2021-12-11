@@ -78,3 +78,57 @@ const browse_section = document.querySelector(".browse-task--section");
 modal_window.addEventListener("click", function (e) {
   if (!e.target.classList.contains("btn--view-detail")) return;
 });
+
+// get user location using geolocation
+const loc_btn_get = document.querySelector(".form-location-get-btn");
+const loc_btn_input = document.querySelector(".form-location-input-btn");
+
+const loc_text = document.getElementById("task-location");
+const key = "56348ee0ae736660b862244f4a0535fc";
+const locationURLfor = "http://api.positionstack.com/v1/forward";
+const locationURLrev = "http://api.positionstack.com/v1/reverse";
+
+const getData = async(locURL,locKey,locQue) => {
+  const response = await fetch(locURL+locKey+locQue);
+  const data = await response.json();
+  return data.data[0];
+}
+
+// button get user self location
+loc_btn_input.addEventListener("click", e => {
+  e.preventDefault();
+  // get user input location
+  const locKey = `?access_key=${key}`;
+  const locQue = `&query=${loc_text.value}`;
+  const result = getData(locationURLfor,locKey,locQue);
+  console.log(result);
+})
+
+// button get user input location
+loc_btn_get.addEventListener("click", e =>{
+  e.preventDefault();
+  //check browser support geolocation or not
+  if(navigator.geolocation){
+    // get user location
+    navigator.geolocation.getCurrentPosition(success, error, {
+      enableHighAccuracy: true
+    });
+  }
+  else{
+    console.log("geolocation not found");
+  }
+});
+
+// success get data through geo api
+const success = (pos) => {
+  const locKey = `?access_key=${key}`;
+  const locQue = `&query=${pos.coords.latitude},${pos.coords.longitude} `;
+  const result = getData(locationURLrev,locKey,locQue);
+  console.log(result);
+}
+
+const error = (err) => {
+  console.log(`somethig wrong: ${err}`);
+}
+
+
