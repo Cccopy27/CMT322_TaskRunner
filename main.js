@@ -91,20 +91,22 @@ const locationURLrev = "http://api.positionstack.com/v1/reverse";
 const getData = async(locURL,locKey,locQue) => {
   const response = await fetch(locURL+locKey+locQue);
   const data = await response.json();
+  console.log(data.data[0]);
   return data.data[0];
 }
 
-// button get user self location
-loc_btn_input.addEventListener("click", e => {
+// button get user input location
+loc_btn_input.addEventListener("click",async( e) => {
   e.preventDefault();
   // get user input location
   const locKey = `?access_key=${key}`;
   const locQue = `&query=${loc_text.value}`;
-  const result = getData(locationURLfor,locKey,locQue);
-  console.log(result);
+  const {label} = await getData(locationURLfor,locKey,locQue);
+  loc_text.value = label;
+
 })
 
-// button get user input location
+// button get user self location
 loc_btn_get.addEventListener("click", e =>{
   e.preventDefault();
   //check browser support geolocation or not
@@ -120,11 +122,11 @@ loc_btn_get.addEventListener("click", e =>{
 });
 
 // success get data through geo api
-const success = (pos) => {
+const success = async (pos) => {
   const locKey = `?access_key=${key}`;
   const locQue = `&query=${pos.coords.latitude},${pos.coords.longitude} `;
-  const result = getData(locationURLrev,locKey,locQue);
-  console.log(result);
+  const {label} = await getData(locationURLrev,locKey,locQue);
+  loc_text.value = label;
 }
 
 const error = (err) => {
