@@ -18,7 +18,11 @@ body {
   padding: 5.6rem 12.2rem;
 }
 
-.login-signup {
+.section {
+  transition: display 300ms, transform 300ms;
+}
+
+.login-section {
   display: grid;
   grid-template-columns: 1fr 1fr;
   grid-template-rows: 1fr;
@@ -40,7 +44,7 @@ body {
 }
 
 .grid-container {
-  display: none;
+  display: grid;
   grid-template-columns: 1fr;
   row-gap: 1.2rem;
 }
@@ -153,8 +157,25 @@ body {
 
 .section-sign-up {
   max-width: 50rem;
+  padding-top: 1.4rem;
   margin: 0 auto;
-  box-shadow: 0 0.8rem 1.2rem rgba(0, 0, 0, 0.089);
+  box-shadow: 0 0.8rem 1.2rem rgba(0, 0, 0, 0.11);
+}
+
+.sign-up-heading {
+  font-size: 2.2rem;
+  font-weight: 700;
+  color: #333;
+  text-align: center;
+}
+
+.heading-span {
+  color: #51eb82;
+}
+
+.sign-up--form .create-account-button:focus {
+  outline: none;
+  box-shadow: 0 0 0.8rem rgba(116, 143, 252, 0.747);
 }
 
 .sign-up-input-pattern {
@@ -236,4 +257,9 @@ body {
 .sign-in--option:hover,
 .sign-in--option:active {
   color: #5a28a1;
+}
+
+.section-hidden {
+  display: none;
+  transform: translate(0, 2.2rem);
 }
