@@ -1,0 +1,24 @@
+{
+  "name": "cmt322_taskrunner",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "webpack"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Cccopy27/CMT322_TaskRunner.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Cccopy27/CMT322_TaskRunner/issues"
+  },
+  "homepage": "https://github.com/Cccopy27/CMT322_TaskRunner#readme",
+  "devDependencies": {
+    "webpack": "^5.65.0",
+    "webpack-cli": "^4.9.1"
+  }
+}
