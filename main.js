@@ -82,55 +82,123 @@ modal_window.addEventListener("click", function (e) {
 // get user location using geolocation
 const loc_btn_get = document.querySelector(".form-location-get-btn");
 const loc_btn_input = document.querySelector(".form-location-input-btn");
+const map_location = document.querySelector("#map");
+const display_map_button = document.querySelector(".map-btn");
+const map_container = document.querySelector(".map-container");
+let location_l;
+const save_btn = document.querySelector(".save-btn");
+const close_btn = document.querySelector(".close-btn");
 
 const loc_text = document.getElementById("task-location");
 const key = "56348ee0ae736660b862244f4a0535fc";
 const locationURLfor = "http://api.positionstack.com/v1/forward";
 const locationURLrev = "http://api.positionstack.com/v1/reverse";
 
-const getData = async(locURL,locKey,locQue) => {
-  const response = await fetch(locURL+locKey+locQue);
+const getLocation = function () {
+  return new Promise((resolve, reject) =>
+    navigator.geolocation.getCurrentPosition(resolve, reject, {
+      enableHighAccuracy: true,
+    })
+  );
+};
+
+const getData = async (locURL, locKey, locQue) => {
+  const response = await fetch(locURL + locKey + locQue);
   const data = await response.json();
   console.log(data.data[0]);
   return data.data[0];
-}
+};
 
 // button get user input location
-loc_btn_input.addEventListener("click",async( e) => {
+loc_btn_input.addEventListener("click", async (e) => {
   e.preventDefault();
   // get user input location
   const locKey = `?access_key=${key}`;
   const locQue = `&query=${loc_text.value}`;
-  const {label} = await getData(locationURLfor,locKey,locQue);
+  const { label } = await getData(locationURLfor, locKey, locQue);
   loc_text.value = label;
-
-})
+});
 
 // button get user self location
-loc_btn_get.addEventListener("click", e =>{
+loc_btn_get.addEventListener("click", (e) => {
   e.preventDefault();
   //check browser support geolocation or not
-  if(navigator.geolocation){
-    // get user location
-    navigator.geolocation.getCurrentPosition(success, error, {
-      enableHighAccuracy: true
-    });
-  }
-  else{
-    console.log("geolocation not found");
-  }
+
+  getLocation()
+    .then((data) => {
+      const locKey = `?access_key=${key}`;
+      const locQue = `&query=${data.coords.latitude},${data.coords.longitude} `;
+      return getData(locationURLrev, locKey, locQue);
+    })
+    .then((data) => {
+      loc_text.value = data.label;
+    })
+    .catch((error) => alert(`${error}`));
+  // if (navigator.geolocation) {
+  //   // get user location
+  //   navigator.geolocation.getCurrentPosition(success, error, {
+  //     enableHighAccuracy: true,
+  //   });
+  // } else {
+  //   console.log("geolocation not found");
+  // }
 });
 
 // success get data through geo api
-const success = async (pos) => {
+// const success = async (pos) => {
+//   const locKey = `?access_key=${key}`;
+//   const locQue = `&query=${pos.coords.latitude},${pos.coords.longitude} `;
+//   const { label } = await getData(locationURLrev, locKey, locQue);
+//   loc_text.value = label;
+// };
+
+// const error = (err) => {
+//   console.log(`somethig wrong: ${err}`);
+// };
+
+const display_map = function (data) {
+  map_container.classList.remove("display-hidden");
+
+  location_l = [data.coords.latitude, data.coords.longitude];
+
+  const map = L.map("map").setView(location_l, 13);
+
+  L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+    attribution:
+      '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+  }).addTo(map);
+
+  let marker_d = L.marker(location_l)
+    .addTo(map)
+    .bindPopup("A pretty CSS3 popup.<br> Easily customizable.")
+    .openPopup();
+
+  map.on("click", function (mapEvent) {
+    marker_d.remove();
+
+    let { lat, lng } = mapEvent.latlng;
+    location_l = [lat, lng];
+
+    marker_d = L.marker(location_l)
+      .addTo(map)
+      .bindPopup("A pretty CSS3 popup.<br> Easily customizable.")
+      .openPopup();
+
+    console.log(mapEvent);
+  });
+};
+
+save_btn.addEventListener("click", async function () {
   const locKey = `?access_key=${key}`;
-  const locQue = `&query=${pos.coords.latitude},${pos.coords.longitude} `;
-  const {label} = await getData(locationURLrev,locKey,locQue);
-  loc_text.value = label;
-}
+  const locQue = `&query=${location_l[0]},${location_l[1]} `;
+  const loc = await getData(locationURLrev, locKey, locQue);
+  console.log(loc);
+  loc_text.value = loc.label;
+  map_container.classList.add("display-hidden");
+});
 
-const error = (err) => {
-  console.log(`somethig wrong: ${err}`);
-}
+display_map_button.addEventListener("click", function (e) {
+  e.preventDefault();
 
-
+  getLocation().then((data) => display_map(data));
+});

@@ -27,7 +27,6 @@ body {
   display: grid;
   grid-template-columns: 1fr;
   grid-template-rows: 1fr 1.4fr 1.6fr;
-  
 }
 
 .dashboard-title-container {
@@ -121,11 +120,6 @@ body {
   grid-template-columns: 1fr;
   grid-template-rows: 0.3fr 1.6fr 1.4fr;
   row-gap: 1.2rem;
-}
-
-.display-hidden {
-  display: none;
-  transform: translate(0, -50%);
 }
 
 .main-heading {
@@ -655,27 +649,49 @@ body {
 
 /* post task  */
 
-
-.post-task{
+.post-task {
   max-width: 100%;
   max-height: 0;
+  position: relative;
 }
- 
+
 .post-task-form {
   display: grid;
   grid-template-columns: 1fr 1fr;
   max-width: 80rem;
   margin: 0 auto;
-  padding: 2.6rem 3.2rem; 
+  padding: 2.6rem 3.2rem;
   justify-items: stretch;
   column-gap: 2.4rem;
   row-gap: 1.6rem;
   background-color: #fff;
   box-shadow: 0 0.8rem 1.2rem rgba(0, 0, 0, 0.075);
+  position: absolute;
+  top: 0;
 }
 
-.post-task-des-input{
-   min-height: 100px; 
+.map-container {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  position: absolute;
+  align-items: center;
+  top: 0;
+  z-index: 5;
+}
+
+#map {
+  width: 60rem;
+  height: 50rem;
+}
+
+.map-btn {
+  flex-shrink: 1;
+  display: inline-block;
+}
+
+.post-task-des-input {
+  min-height: 100px;
 }
 
 .post-task-input {
@@ -687,7 +703,7 @@ body {
 }
 
 .post-input-submit {
-   width: 100%; 
+  width: 100%;
   background-color: #51eb82;
   border: none;
   padding: 1.2rem 2.4rem;
@@ -695,19 +711,18 @@ body {
   outline: none;
 }
 
-.post-date-input-label{
+.post-date-input-label {
   float: left;
   margin-right: 0.5em;
 }
 
-.post-date-time-span{
+.post-date-time-span {
   display: block;
   overflow: hidden;
 }
 
-
-.post-date-input{
-   width: 100%; 
+.post-date-input {
+  width: 100%;
 }
 
 .post-task-input:focus,
@@ -715,7 +730,12 @@ body {
   box-shadow: 0 0 1.2rem 0.8rem rgba(98, 222, 238, 0.13);
 }
 
-.date-time-div{
+.date-time-div {
   margin-top: 10px;
   margin-bottom: 10px;
-} 
+}
+
+.display-hidden {
+  display: none;
+  transform: translate(0, -50%);
+}
