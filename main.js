@@ -88,6 +88,7 @@ const map_container = document.querySelector(".map-container");
 let location_l;
 const save_btn = document.querySelector(".save-btn");
 const close_btn = document.querySelector(".close-btn");
+const overlay = document.querySelector(".overlay");
 
 const loc_text = document.getElementById("task-location");
 const key = "56348ee0ae736660b862244f4a0535fc";
@@ -188,17 +189,27 @@ const display_map = function (data) {
   });
 };
 
+const remove_overlay = function () {
+  map_container.classList.add("display-hidden");
+  overlay.style.display = "none";
+};
+
+close_btn.addEventListener("click", remove_overlay);
+
 save_btn.addEventListener("click", async function () {
   const locKey = `?access_key=${key}`;
   const locQue = `&query=${location_l[0]},${location_l[1]} `;
   const loc = await getData(locationURLrev, locKey, locQue);
   console.log(loc);
   loc_text.value = loc.label;
-  map_container.classList.add("display-hidden");
+  remove_overlay();
 });
 
 display_map_button.addEventListener("click", function (e) {
   e.preventDefault();
+  console.log(overlay);
+
+  overlay.style.display = "block";
 
   getLocation().then((data) => display_map(data));
 });

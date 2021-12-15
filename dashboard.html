@@ -28,9 +28,10 @@
       integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
       crossorigin=""
     ></script>
-    <script defer src="./main.js"></script>
+    <script defer src="./dist/dashboard.bundle.js"></script>
   </head>
   <body>
+    <div class="overlay"></div>
     <div class="dashboard-grid">
       <nav class="dashboard-sidebar">
         <div class="dashboard-title-container">
@@ -135,7 +136,7 @@
               <!--  -->
 
               <div class="slide-task-holder">
-                <div class="search-section-card">
+                <div class="section-task-card">
                   <img class="search-task-img" src="img/painting.jpg" alt="" />
                   <!-- <div class="padding-div">
                     <p class="search-task-paragraph">
@@ -151,7 +152,7 @@
                     </div>
                   </div>
                 </div>
-                <div class="search-section-card">
+                <div class="section-task-card">
                   <img class="search-task-img" src="img/painting.jpg" alt="" />
                   <!-- <div class="padding-div">
                     <p class="search-task-paragraph">
@@ -168,7 +169,7 @@
                   </div>
                 </div>
 
-                <div class="search-section-card">
+                <div class="section-task-card">
                   <img class="search-task-img" src="img/painting.jpg" alt="" />
                   <div class="padding-div">
                     <div class="option-button-div">
@@ -431,9 +432,9 @@
           <div class="search-task--section">
             <div class="map-container display-hidden">
               <div id="map"></div>
-              <div>
-                <button class="save-btn">Save</button>
-                <button class="close-btn">Close</button>
+              <div class="map--btn-container">
+                <button class="map--btn save-btn">Save location</button>
+                <button class="map--btn close-btn">Close map</button>
               </div>
             </div>
 
