@@ -852,3 +852,12 @@ body {
   display: none;
   transform: translate(0, -50%);
 }
+
+.form-input-image-preview{
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.form-input-image-preview img{
+  width: 100px;
+}
