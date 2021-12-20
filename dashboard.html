@@ -450,6 +450,7 @@
                   id="task-title"
                   class="post-task-input"
                   type="text"
+                  placeholder="Enter your task title..."
                   required
                 />
               </div>
@@ -460,6 +461,7 @@
                 <textarea
                   id="task-des"
                   class="post-task-input post-task-des-input"
+                  placeholder="Enter your task description..."
                   required
                 ></textarea>
               </div>
@@ -547,37 +549,51 @@
                   id="task-duration"
                   class="post-task-input"
                   type="text"
+                  placeholder="Eg. 1 hour"
                   required
                 />
               </div>
 
               <!-- task location -->
               <div class="form-input-divider">
-                <label for="task-location" class="input-label">Location:</label>
-                <button class="form-location-get-btn">Get My Location</button>
-                <button class="form-location-input-btn">Input Location</button>
-                <button class="form-location-input-btn map-btn">
-                  display map
-                </button>
-
-                <input
-                  id="task-location"
-                  class="post-task-input"
-                  type="text"
-                  value=""
-                  required
-                />
+                <div class="location-container">
+                  <div class="location-label-container">
+                    <label for="task-location" class="input-label">Location:</label>
+                    <div class="input-location-tooltip">How to use?
+                      <span class="input-location-tooltiptext">Track My Location: Click to track current user self location <br/>
+                      Correct Input Location: Click to correct the location/ address in the text box (you have to insert the location/ address first in the text box)<br/>
+                      Display Map: Click to open a map to select the location
+                      </span>
+                    </div>
+                    
+                    <textarea
+                      id="task-location"
+                      class="post-task-input post-task-input-location"
+                      value=""
+                      required
+                      placeholder="Enter your location here..."
+                    ></textarea>
+                  </div>
+                  <div class="location-btn-container">
+                    <button class="form-location-get-btn">Track My Location</button>
+                    <button class="form-location-input-btn">Correct Input Location</button>
+                    <button class="form-location-input-btn map-btn">
+                      Display Map
+                    </button>
+                  </div> 
+                </div>
               </div>
 
               <!-- task price -->
               <div class="form-input-divider">
                 <label for="task-price" class="input-label"
-                  >Price(per person):</label
+                  >Price (RM per person):</label
                 >
                 <input
                   id="task-price"
                   class="post-task-input post-price-input"
                   type="number"
+                  placeholder="Eg. RM 40"
                   required
                 />
               </div>
@@ -591,6 +607,7 @@
                   id="task-tasker-needed"
                   class="post-task-input"
                   type="number"
+                  placeholder="Eg. 1"
                   required
                 />
               </div>
