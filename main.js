@@ -113,7 +113,7 @@ const getData = async (locURL, locKey, locQue) => {
 // button get user input location
 loc_btn_input.addEventListener("click", async (e) => {
   e.preventDefault();
-  // get user input location
+  // forward geocoding
   const locKey = `?access_key=${key}`;
   const locQue = `&query=${loc_text.value}`;
   const { label } = await getData(locationURLfor, locKey, locQue);
@@ -123,8 +123,8 @@ loc_btn_input.addEventListener("click", async (e) => {
 // button get user self location
 loc_btn_get.addEventListener("click", (e) => {
   e.preventDefault();
-  //check browser support geolocation or not
 
+  // geolocation + reverse geocoding
   getLocation()
     .then((data) => {
       const locKey = `?access_key=${key}`;
@@ -135,27 +135,7 @@ loc_btn_get.addEventListener("click", (e) => {
       loc_text.value = data.label;
     })
     .catch((error) => alert(`${error}`));
-  // if (navigator.geolocation) {
-  //   // get user location
-  //   navigator.geolocation.getCurrentPosition(success, error, {
-  //     enableHighAccuracy: true,
-  //   });
-  // } else {
-  //   console.log("geolocation not found");
-  // }
 });
-
-// success get data through geo api
-// const success = async (pos) => {
-//   const locKey = `?access_key=${key}`;
-//   const locQue = `&query=${pos.coords.latitude},${pos.coords.longitude} `;
-//   const { label } = await getData(locationURLrev, locKey, locQue);
-//   loc_text.value = label;
-// };
-
-// const error = (err) => {
-//   console.log(`somethig wrong: ${err}`);
-// };
 
 const display_map = function (data) {
   map_container.classList.remove("display-hidden");

@@ -680,6 +680,68 @@ body {
   top: 0;
 }
 
+.location-container{
+  display: flex;
+  flex-direction: row;
+
+}
+
+.location-btn-container{
+  margin-left: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: flex-end;
+}
+
+.input-location-tooltip{
+  position: relative;
+  display: inline-block;
+  font-size: 1.3em;
+  background-color: #fffc3a;
+  padding: 2px 5px;
+  margin-left: 20px;
+}
+
+.input-location-tooltip:hover{
+  cursor: help;
+}
+
+.input-location-tooltiptext{
+  border: 1px solid black;
+  padding: 5px 5px;
+  color: black;
+  background-color:#fffc3a;
+  margin-top: 10px;
+  width: 300px;
+  display: block;
+  position: absolute;
+  z-index: 1;
+  visibility: hidden;
+}
+
+.input-location-tooltip:hover .input-location-tooltiptext{
+  visibility: visible;
+
+}
+.location-btn-container button{
+  padding: 5px 2px;
+  height: 26px;
+  font-size: 13px;
+  background-color: #9dd8ff;
+  border: none;
+  margin-top: 5px;
+  cursor: pointer;
+  outline: none;
+  min-width: 150px;
+}
+
+.location-btn-container button:hover{
+  color: white;
+  border: 1px solid #08545e;
+
+}
+
 .map-container {
   display: flex;
   flex-direction: column;
@@ -739,6 +801,10 @@ body {
 
 .post-task-des-input {
   min-height: 100px;
+}
+
+.post-task-input-location{
+  min-height: 80px;
 }
 
 .post-task-input {
