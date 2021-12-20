@@ -193,3 +193,23 @@ display_map_button.addEventListener("click", function (e) {
 
   getLocation().then((data) => display_map(data));
 });
+
+// handle image preview
+const image_preview = document.querySelector(".form-input-image-preview");
+const image_input = document.querySelector(".post-task-input-photo");
+
+image_input.addEventListener("change", e=>{
+  const file = image_input.files;
+  console.log(file.length);
+  for(let i = 0; i < file.length; i++){
+    const image = document.createElement("img");
+    image.setAttribute("src",`${URL.createObjectURL(file[i])}`);
+    image_preview.appendChild(image);
+
+  }
+  
+  // if(file){
+  //   image_preview.src = URL.createObjectURL(file);
+  // }
+})
+
