@@ -708,10 +708,10 @@ body {
 }
 
 .input-location-tooltiptext{
-  border: 1px solid black;
-  padding: 5px 5px;
+  border: 0.1px dotted black;
+  padding: 10px 10px;
   color: black;
-  background-color:#fffc3a;
+  background-color:#fdfcbd;
   margin-top: 10px;
   width: 300px;
   display: block;
