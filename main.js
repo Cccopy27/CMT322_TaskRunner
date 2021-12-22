@@ -236,6 +236,7 @@ image_input.addEventListener("change", e=>{
 import {db, storage} from "./firebase/config";
 import {collection, addDoc, Timestamp, updateDoc, arrayUnion, doc} from "firebase/firestore";
 import {ref, uploadBytes, getDownloadURL } from "firebase/storage";
+
 const post_input = document.querySelector(".post-task-form");
 const post_input_title = document.getElementById("task-title");
 const post_input_des = document.getElementById("task-des");
@@ -245,11 +246,49 @@ const post_input_end_date = document.getElementById("task-end-date");
 const post_input_end_time = document.getElementById("task-end-time");
 const post_input_location = document.getElementById("task-location");
 const post_input_price = document.getElementById("task-price");
+const post_input_price_unit = document.querySelector(".task-price-unit-opt");
 const post_input_tasker_number = document.getElementById("task-tasker-needed");
 const post_input_photo = document.getElementById("task-photo");
 const post_input_cat = document.querySelector(".post-task-cat-input");
+const post_input_duration = document.querySelector(".post-task-input-duration");
+const post_input_duration_unit = document.querySelector(".task-duration-unit-opt");
+const submit_btn = document.querySelector(".post-input-submit");
+const inputs = document.querySelectorAll("input[list]");
+const post_input_cat_list = document.querySelector(".post-task-cat-list");
+
+// all task categories list here
+const task_categories_list = [
+  "Food Delivery","Home Repairs","General Cleaning","Help Moving","Heavy Lifting","Personal Assistant","Yard Work Services","Wait in Line","Office Administration","Research","Installation","Painting","Plumbing","Baby Proofing","Electrical Help","Carpentry & Construction","Mounting","Wallpapering Service","Repair Services","Unpacking Services","Packing Services","Junk Removal","Haircuts","House Cleaning","Goods Delivery","Car Wash Services","Walk the animal", "Welding"
+];
+
+// sort array
+task_categories_list.sort();
+
+// append each task into datalist
+task_categories_list.forEach(task=>{
+  const taskList= document.createElement("option");
+  taskList.value = task;
+  post_input_cat_list.appendChild(taskList)
+})
+
+post_input_cat.addEventListener("change", e=>{
+  let optionFound = false;
+  for(let i = 0; i < task_categories_list.length; i++){
+    if(post_input_cat.value === task_categories_list[i]){
+      optionFound = true;
+      break;
+    }
+  }
+  if(optionFound){
+    post_input_cat.setCustomValidity("");
+  }else{
+    post_input_cat.setCustomValidity("Please select a valid category")
+  }
+})
+
 
 post_input.addEventListener("submit",async e=>{
+  let error = false;
   e.preventDefault();
   const post_photo = post_input_photo.files;
   const postObj ={
@@ -261,7 +300,10 @@ post_input.addEventListener("submit",async e=>{
     post_end_date : post_input_end_date.value,
     post_end_time : post_input_end_time.value,
     post_location : post_input_location.value,
-    post_price : post_input_price.value,
+    post_price_amount : post_input_price.value,
+    post_price_unit : post_input_price_unit.value,
+    post_duration_amount: post_input_duration.value,
+    post_duration_unit: post_input_duration_unit.value,
     post_tasker_no : post_input_tasker_number.value,
     post_photo_url : "",
     post_location_long: location_long,
@@ -273,34 +315,65 @@ post_input.addEventListener("submit",async e=>{
     status: "incomplete",
     tasker_id:[],
   };
+  console.log(postObj);
+
+  // loading 
+  submit_btn.value = "Uploading task...Please wait";
+  submit_btn.disabled = true;
 
   //add to database
-  const addedDoc = await addDoc(collection(db,"task"),postObj);
-
+  // const addedDoc = await addDoc(collection(db,"task"),postObj);
+  console.log("added document");
   // convert filelist to array to user array method
   const image_arr = Array.from(post_photo);
 
   // upload photo to storage firebase to get its photo URL
-  image_arr.forEach(img=>{
-    // the image will store in question/question.id/image.name
-    const uploadPath = `task/${addedDoc.id}/${img.name}`;
-    const storageRef = ref(storage, uploadPath);
+  // image_arr.forEach(img=>{
+  //   // the image will store in question/question.id/image.name
+  //   const uploadPath = `task/${addedDoc.id}/${img.name}`;
+  //   const storageRef = ref(storage, uploadPath);
 
-    uploadBytes(storageRef, img)
-    .then((storageImg) =>{
-        // get image URL from storage
-        getDownloadURL(storageRef)
-        .then((imgURL)=>{
-            // update doc imgURL
-            updateDoc(doc(db,"task",addedDoc.id),{
-              post_photo_url: arrayUnion(imgURL)
-            })
-        })
-        console.log("added question successful");
-    })
-    .catch(err => {
-        console.log(err);
-    })            
-});
+  //   uploadBytes(storageRef, img)
+  //   .then((storageImg) =>{
+  //       // get image URL from storage
+  //       getDownloadURL(storageRef)
+  //       .then((imgURL)=>{
+  //           // update doc imgURL
+  //           updateDoc(doc(db,"task",addedDoc.id),{
+  //             post_photo_url: arrayUnion(imgURL)
+  //           })
+  //       })
+  //       console.log("added image successful");
+  //   })
+  //   .catch(err => {
+  //       console.log(err);
+  //       error = true;
+  //   })
+    
+    
+  // });
+  console.log("finished");
+
+    submit_btn.value = "Post Task";
+    submit_btn.disabled = false;
+    if(error){
+      //fail to upload data
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: 'Something went wrong!',
+      })
+    }
+    else{
+      //success upload data
+      Swal.fire({
+        icon: 'success',
+        title: 'Successful!',
+        text: 'Post task successfully',
+      })
+
+      //reset form
+      post_input.reset();
+    }
 })
 

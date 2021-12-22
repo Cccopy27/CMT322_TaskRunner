@@ -28,6 +28,9 @@
       integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
       crossorigin=""
     ></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.3.0/dist/sweetalert2.all.min.js"></script>
+
     <script defer src="./dist/dashboard.bundle.js"></script>
   </head>
   <body>
@@ -458,10 +461,8 @@
               <!-- task categories  -->
               <div class="form-input-divider input-span">
                 <label for="post-task-cat-input" class="input-label">Task Categories: </label>
-                <input list="post-task-cat" class="post-task-cat-input input-label">
-                <datalist id="post-task-cat" class="post-task-cat-list">
-                  <option value="Random">
-                  <option value="Car">
+                <input list="post-task-cat" class="post-task-cat-input " required>
+                <datalist id="post-task-cat" class="post-task-cat-list ">
                 </datalist>
               </div>
 
@@ -517,7 +518,7 @@
               <!-- task end date and time -->
               <div class="form-input-divider">
                 <!-- date -->
-                <span class="input-label">End time</span><br />
+                <span class="input-label">End time (Optional)</span><br />
                 <div class="date-time-div">
                   <label
                     for="task-end-date"
@@ -529,7 +530,7 @@
                       id="task-end-date"
                       class="post-task-input post-date-input"
                       type="date"
-                      required
+                      
                     />
                   </span>
                 </div>
@@ -546,7 +547,6 @@
                       id="task-end-time"
                       class="post-task-input post-date-input"
                       type="time"
-                      required
                     />
                   </span>
                 </div>
@@ -555,13 +555,26 @@
               <!-- task duration -->
               <div class="form-input-divider">
                 <label for="task-duration" class="input-label">Duration:</label>
-                <input
+                <div class="input-task-duration-container">
+                  <input
                   id="task-duration"
-                  class="post-task-input"
-                  type="text"
-                  placeholder="Eg. 1 hour"
+                  class="post-task-input post-task-input-duration"
+                  type="number"
+                  placeholder="Eg. 25"
                   required
-                />
+                  />
+                  <select class="task-duration-unit-opt">
+                    <option value="seconds">seconds</option>
+                    <option value="minutes">minutes</option>
+                    <option value="hours">hours</option>
+                    <option value="days">days</option>
+                    <option value="weeks">weeks</option>
+                    <option value="months">months</option>
+                    <option value="years">years</option>
+
+                  </select>
+                </div>
+                
               </div>
 
               <!-- task location -->
@@ -597,15 +610,28 @@
               <!-- task price -->
               <div class="form-input-divider">
                 <label for="task-price" class="input-label"
-                  >Price (RM per person):</label
+                  >Price (per person):</label
                 >
-                <input
-                  id="task-price"
-                  class="post-task-input post-price-input"
-                  type="number"
-                  placeholder="Eg. RM 40"
-                  required
-                />
+                <div class="task-price-container">
+                  <select class="task-price-unit-opt">
+                    <option value="MYR">MYR</option>
+                    <option value="USD">USD</option>
+                    <option value="EUR">EUR</option>
+                    <option value="JPY">JPY</option>
+                    <option value="INR">INR</option>
+                    <option value="CNY">CNY</option>
+                    <option value="SGD">SGD</option>
+  
+                  </select>
+                  <input
+                    id="task-price"
+                    class="post-task-input post-price-input"
+                    type="number"
+                    placeholder="Eg. 40"
+                    required
+                  />
+                </div>
+                
               </div>
 
               <!-- task tasker needed -->
@@ -634,13 +660,15 @@
                 />
               </div>
 
+              <!-- image preview  -->
               <div class="form-input-image-preview-container">
                 <div class="form-input-image-preview"/>
                 </div>
               </div>
               <br />
+              <!-- button  -->
               <div class="form-input-divider input-span">
-                <input class="post-input-submit" type="submit" />
+                <input class="post-input-submit" type="submit" value="Post Task"/>
               </div>
             </form>
           </div>
