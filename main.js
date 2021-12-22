@@ -236,6 +236,7 @@ image_input.addEventListener("change", e=>{
 import {db, storage} from "./firebase/config";
 import {collection, addDoc, Timestamp, updateDoc, arrayUnion, doc} from "firebase/firestore";
 import {ref, uploadBytes, getDownloadURL } from "firebase/storage";
+
 const post_input = document.querySelector(".post-task-form");
 const post_input_title = document.getElementById("task-title");
 const post_input_des = document.getElementById("task-des");
@@ -253,7 +254,9 @@ const post_input_duration = document.querySelector(".post-task-input-duration");
 const post_input_duration_unit = document.querySelector(".task-duration-unit-opt");
 const submit_btn = document.querySelector(".post-input-submit");
 
+
 post_input.addEventListener("submit",async e=>{
+  let error = false;
   e.preventDefault();
   const post_photo = post_input_photo.files;
   const postObj ={
@@ -288,10 +291,13 @@ post_input.addEventListener("submit",async e=>{
 
   //add to database
   const addedDoc = await addDoc(collection(db,"task"),postObj);
-
+  console.log("added document");
   // convert filelist to array to user array method
   const image_arr = Array.from(post_photo);
 
+  if(image_arr.length != 0){
+    
+  }
   // upload photo to storage firebase to get its photo URL
   image_arr.forEach(img=>{
     // the image will store in question/question.id/image.name
@@ -312,11 +318,30 @@ post_input.addEventListener("submit",async e=>{
     })
     .catch(err => {
         console.log(err);
+        error = true;
     })
     
-    //success upload data
+    
+  });
+  console.log("finished");
+
     submit_btn.value = "Post Task";
     submit_btn.disabled = false;
-});
+    if(error){
+      //fail to upload data
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: 'Something went wrong!',
+      })
+    }
+    else{
+      //success upload data
+      Swal.fire({
+        icon: 'success',
+        title: 'Successful!',
+        text: 'Post task successfully',
+      })
+    }
 })
 
