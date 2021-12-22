@@ -251,6 +251,8 @@ const post_input_photo = document.getElementById("task-photo");
 const post_input_cat = document.querySelector(".post-task-cat-input");
 const post_input_duration = document.querySelector(".post-task-input-duration");
 const post_input_duration_unit = document.querySelector(".task-duration-unit-opt");
+const submit_btn = document.querySelector(".post-input-submit");
+
 post_input.addEventListener("submit",async e=>{
   e.preventDefault();
   const post_photo = post_input_photo.files;
@@ -280,6 +282,10 @@ post_input.addEventListener("submit",async e=>{
   };
   console.log(postObj);
 
+  // loading 
+  submit_btn.value = "Uploading task...Please wait";
+  submit_btn.disabled = true;
+
   //add to database
   const addedDoc = await addDoc(collection(db,"task"),postObj);
 
@@ -306,7 +312,11 @@ post_input.addEventListener("submit",async e=>{
     })
     .catch(err => {
         console.log(err);
-    })            
+    })
+    
+    //success upload data
+    submit_btn.value = "Post Task";
+    submit_btn.disabled = false;
 });
 })
 
