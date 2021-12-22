@@ -271,7 +271,7 @@ post_input.addEventListener("submit",async e=>{
     added_at: Timestamp.now(),
     created_by: "", //user id
     status: "incomplete",
-
+    tasker_id:[],
   };
 
   //add to database
