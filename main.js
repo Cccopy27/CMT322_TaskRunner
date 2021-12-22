@@ -254,27 +254,37 @@ const post_input_duration = document.querySelector(".post-task-input-duration");
 const post_input_duration_unit = document.querySelector(".task-duration-unit-opt");
 const submit_btn = document.querySelector(".post-input-submit");
 const inputs = document.querySelectorAll("input[list]");
+const post_input_cat_list = document.querySelector(".post-task-cat-list");
 
-//input validation for datalist
-for(let i = 0;i < inputs.length; i++){
-  console.log(inputs[i].list.options[0].value);
-  inputs[i].addEventListener("change",e=>{
-    let optionFound = false;
-    const datalist = inputs[i].list;
-    // check option exists with current value or not
-    for(let j = 0;j < datalist.options.length; j++){
-      if(inputs[i].value === datalist.options[j].value){
-        optionFound = true;
-        break;
-      }
+const task_categories_list = [
+  "Delivery","Home Repairs","General Cleaning","Help Moving","Heavy Lifting","Personal Assistant","Yard Work Services","Wait in Line","Office Administration","Research","Ceiling Fan Installation","TV Mounting","Air Conditioner Installation","Painting","Plumbing","Shelf Mounting","Baby Proofing","Light Installation","Electrical Help","Carpentry & Construction","Mounting","Cabinet Installation"
+];
+
+// sort array
+task_categories_list.sort();
+
+// append each task into datalist
+task_categories_list.forEach(task=>{
+  const taskList= document.createElement("option");
+  taskList.value = task;
+  post_input_cat_list.appendChild(taskList)
+})
+
+post_input_cat.addEventListener("change", e=>{
+  let optionFound = false;
+  for(let i = 0; i < task_categories_list.length; i++){
+    if(post_input_cat.value === task_categories_list[i]){
+      optionFound = true;
+      break;
     }
-    if(optionFound){
-      inputs[i].setCustomValidity("");
-    }else{
-      inputs[i].setCustomValidity("Please select a valid value");
-    }
-  })
-}
+  }
+  if(optionFound){
+    post_input_cat.setCustomValidity("");
+  }else{
+    post_input_cat.setCustomValidity("Please select a valid category")
+  }
+})
+
 
 post_input.addEventListener("submit",async e=>{
   let error = false;
