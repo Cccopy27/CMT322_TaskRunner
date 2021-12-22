@@ -251,7 +251,7 @@ const post_input_cat = document.querySelector(".post-task-cat-input");
 
 post_input.addEventListener("submit",async e=>{
   e.preventDefault();
-
+  const post_photo = post_input_photo.files;
   const postObj ={
     post_title : post_input_title.value,
     post_categories: post_input_cat.value,
@@ -277,5 +277,9 @@ post_input.addEventListener("submit",async e=>{
   //add to database
   const addedDoc = await addDoc(collection(db,"task"),postObj);
 
+  // convert filelist to array to user array method
+  // const image_arr = Array.from(post_photo);
+
+  // console.log(image_arr);
 })
 
