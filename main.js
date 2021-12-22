@@ -247,13 +247,14 @@ const post_input_location = document.getElementById("task-location");
 const post_input_price = document.getElementById("task-price");
 const post_input_tasker_number = document.getElementById("task-tasker-needed");
 const post_input_photo = document.getElementById("task-photo");
-
+const post_input_cat = document.querySelector(".post-task-cat-input");
 
 post_input.addEventListener("submit",e=>{
   e.preventDefault();
 
   const postObj ={
     post_title : post_input_title.value,
+    post_categories: post_input_cat.value,
     post_des : post_input_des.value,
     post_start_date : post_input_start_date.value,
     post_start_time : post_input_start_time.value,
