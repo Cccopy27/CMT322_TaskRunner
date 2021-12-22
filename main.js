@@ -249,7 +249,7 @@ const post_input_tasker_number = document.getElementById("task-tasker-needed");
 const post_input_photo = document.getElementById("task-photo");
 const post_input_cat = document.querySelector(".post-task-cat-input");
 
-post_input.addEventListener("submit",e=>{
+post_input.addEventListener("submit",async e=>{
   e.preventDefault();
 
   const postObj ={
@@ -263,12 +263,19 @@ post_input.addEventListener("submit",e=>{
     post_location : post_input_location.value,
     post_price : post_input_price.value,
     post_tasker_no : post_input_tasker_number.value,
-    post_photo : post_input_photo.files,
+    post_photo_url : "",
     post_location_long: location_long,
     post_location_lat: location_lat,
     post_location_regionCode : location_regionCode,
     post_location_locality: location_locality,
-  }
-  console.log(postObj);
+    added_at: Timestamp.now(),
+    created_by: "", //user id
+    status: "incomplete",
+
+  };
+
+  //add to database
+  const addedDoc = await addDoc(collection(db,"task"),postObj);
+
 })
 
