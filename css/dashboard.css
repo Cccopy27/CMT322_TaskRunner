@@ -839,7 +839,8 @@ body {
 }
 
 .post-task-input:focus,
-.post-task-input-submit:focus {
+.post-task-input-submit:focus,
+.task-duration-unit-opt:focus {
   box-shadow: 0 0 1.2rem 0.8rem rgba(98, 222, 238, 0.13);
 }
 
@@ -865,8 +866,45 @@ body {
 .post-task-cat-input{
   padding: 10px;
   margin-left: 5px;
+  padding: 0.5rem 1.4rem;
+  border-radius: 0.8rem;
+  border: 0.1rem solid rgba(0, 0, 0, 0.178);
+  outline: none;
 }
 
-.post-task-cat-list{
+/* .post-task-cat-list option{
+  background-color: white;
+} */
+.input-task-duration-container{
+  display: flex;
+}
+.post-task-input-duration{
+  flex:1;
+  margin-right: 10px;
+}
+.task-duration-unit-opt{
+  padding: 0.5rem 1.4rem;
+  border-radius: 0.8rem;
+  border: 0.1rem solid rgba(0, 0, 0, 0.178);
+  outline: none;
+  flex:1;
   
+}
+
+.task-price-container{
+  display: flex;
+}
+
+.task-price-unit-opt{
+  margin-right: 10px;
+  padding: 0.5rem 1.4rem;
+  border-radius: 0.8rem;
+  border: 0.1rem solid rgba(0, 0, 0, 0.178);
+  outline: none;
+  flex:1;
+}
+
+.post-price-input{
+  flex:3;
+  margin-right: 10px;
 }

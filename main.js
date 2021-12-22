@@ -245,10 +245,12 @@ const post_input_end_date = document.getElementById("task-end-date");
 const post_input_end_time = document.getElementById("task-end-time");
 const post_input_location = document.getElementById("task-location");
 const post_input_price = document.getElementById("task-price");
+const post_input_price_unit = document.querySelector(".task-price-unit-opt");
 const post_input_tasker_number = document.getElementById("task-tasker-needed");
 const post_input_photo = document.getElementById("task-photo");
 const post_input_cat = document.querySelector(".post-task-cat-input");
-
+const post_input_duration = document.querySelector(".post-task-input-duration");
+const post_input_duration_unit = document.querySelector(".task-duration-unit-opt");
 post_input.addEventListener("submit",async e=>{
   e.preventDefault();
   const post_photo = post_input_photo.files;
@@ -261,7 +263,10 @@ post_input.addEventListener("submit",async e=>{
     post_end_date : post_input_end_date.value,
     post_end_time : post_input_end_time.value,
     post_location : post_input_location.value,
-    post_price : post_input_price.value,
+    post_price_amount : post_input_price.value,
+    post_price_unit : post_input_price_unit.value,
+    post_duration_amount: post_input_duration.value,
+    post_duration_unit: post_input_duration_unit.value,
     post_tasker_no : post_input_tasker_number.value,
     post_photo_url : "",
     post_location_long: location_long,
@@ -273,6 +278,7 @@ post_input.addEventListener("submit",async e=>{
     status: "incomplete",
     tasker_id:[],
   };
+  console.log(postObj);
 
   //add to database
   const addedDoc = await addDoc(collection(db,"task"),postObj);
@@ -296,7 +302,7 @@ post_input.addEventListener("submit",async e=>{
               post_photo_url: arrayUnion(imgURL)
             })
         })
-        console.log("added question successful");
+        console.log("added image successful");
     })
     .catch(err => {
         console.log(err);

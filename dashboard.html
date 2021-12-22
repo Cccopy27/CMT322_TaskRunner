@@ -458,8 +458,8 @@
               <!-- task categories  -->
               <div class="form-input-divider input-span">
                 <label for="post-task-cat-input" class="input-label">Task Categories: </label>
-                <input list="post-task-cat" class="post-task-cat-input input-label">
-                <datalist id="post-task-cat" class="post-task-cat-list">
+                <input list="post-task-cat" class="post-task-cat-input " required>
+                <datalist id="post-task-cat" class="post-task-cat-list ">
                   <option value="Random">
                   <option value="Car">
                 </datalist>
@@ -517,7 +517,7 @@
               <!-- task end date and time -->
               <div class="form-input-divider">
                 <!-- date -->
-                <span class="input-label">End time</span><br />
+                <span class="input-label">End time (Optional)</span><br />
                 <div class="date-time-div">
                   <label
                     for="task-end-date"
@@ -529,7 +529,7 @@
                       id="task-end-date"
                       class="post-task-input post-date-input"
                       type="date"
-                      required
+                      
                     />
                   </span>
                 </div>
@@ -546,7 +546,6 @@
                       id="task-end-time"
                       class="post-task-input post-date-input"
                       type="time"
-                      required
                     />
                   </span>
                 </div>
@@ -555,13 +554,26 @@
               <!-- task duration -->
               <div class="form-input-divider">
                 <label for="task-duration" class="input-label">Duration:</label>
-                <input
+                <div class="input-task-duration-container">
+                  <input
                   id="task-duration"
-                  class="post-task-input"
+                  class="post-task-input post-task-input-duration"
                   type="text"
-                  placeholder="Eg. 1 hour"
+                  placeholder="Eg. 25"
                   required
-                />
+                  />
+                  <select class="task-duration-unit-opt">
+                    <option value="seconds">seconds</option>
+                    <option value="minutes">minutes</option>
+                    <option value="hours">hours</option>
+                    <option value="days">days</option>
+                    <option value="weeks">weeks</option>
+                    <option value="months">months</option>
+                    <option value="years">years</option>
+
+                  </select>
+                </div>
+                
               </div>
 
               <!-- task location -->
@@ -597,15 +609,28 @@
               <!-- task price -->
               <div class="form-input-divider">
                 <label for="task-price" class="input-label"
-                  >Price (RM per person):</label
+                  >Price (per person):</label
                 >
-                <input
-                  id="task-price"
-                  class="post-task-input post-price-input"
-                  type="number"
-                  placeholder="Eg. RM 40"
-                  required
-                />
+                <div class="task-price-container">
+                  <select class="task-price-unit-opt">
+                    <option value="MYR">MYR</option>
+                    <option value="USD">USD</option>
+                    <option value="EUR">EUR</option>
+                    <option value="JPY">JPY</option>
+                    <option value="INR">INR</option>
+                    <option value="CNY">CNY</option>
+                    <option value="SGD">SGD</option>
+  
+                  </select>
+                  <input
+                    id="task-price"
+                    class="post-task-input post-price-input"
+                    type="number"
+                    placeholder="Eg. 40"
+                    required
+                  />
+                </div>
+                
               </div>
 
               <!-- task tasker needed -->
