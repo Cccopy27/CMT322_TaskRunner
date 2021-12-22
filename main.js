@@ -253,7 +253,28 @@ const post_input_cat = document.querySelector(".post-task-cat-input");
 const post_input_duration = document.querySelector(".post-task-input-duration");
 const post_input_duration_unit = document.querySelector(".task-duration-unit-opt");
 const submit_btn = document.querySelector(".post-input-submit");
+const inputs = document.querySelectorAll("input[list]");
 
+//input validation for datalist
+for(let i = 0;i < inputs.length; i++){
+  console.log(inputs[i].list.options[0].value);
+  inputs[i].addEventListener("change",e=>{
+    let optionFound = false;
+    const datalist = inputs[i].list;
+    // check option exists with current value or not
+    for(let j = 0;j < datalist.options.length; j++){
+      if(inputs[i].value === datalist.options[j].value){
+        optionFound = true;
+        break;
+      }
+    }
+    if(optionFound){
+      inputs[i].setCustomValidity("");
+    }else{
+      inputs[i].setCustomValidity("Please select a valid value");
+    }
+  })
+}
 
 post_input.addEventListener("submit",async e=>{
   let error = false;
@@ -290,39 +311,36 @@ post_input.addEventListener("submit",async e=>{
   submit_btn.disabled = true;
 
   //add to database
-  const addedDoc = await addDoc(collection(db,"task"),postObj);
+  // const addedDoc = await addDoc(collection(db,"task"),postObj);
   console.log("added document");
   // convert filelist to array to user array method
   const image_arr = Array.from(post_photo);
 
-  if(image_arr.length != 0){
-    
-  }
   // upload photo to storage firebase to get its photo URL
-  image_arr.forEach(img=>{
-    // the image will store in question/question.id/image.name
-    const uploadPath = `task/${addedDoc.id}/${img.name}`;
-    const storageRef = ref(storage, uploadPath);
+  // image_arr.forEach(img=>{
+  //   // the image will store in question/question.id/image.name
+  //   const uploadPath = `task/${addedDoc.id}/${img.name}`;
+  //   const storageRef = ref(storage, uploadPath);
 
-    uploadBytes(storageRef, img)
-    .then((storageImg) =>{
-        // get image URL from storage
-        getDownloadURL(storageRef)
-        .then((imgURL)=>{
-            // update doc imgURL
-            updateDoc(doc(db,"task",addedDoc.id),{
-              post_photo_url: arrayUnion(imgURL)
-            })
-        })
-        console.log("added image successful");
-    })
-    .catch(err => {
-        console.log(err);
-        error = true;
-    })
+  //   uploadBytes(storageRef, img)
+  //   .then((storageImg) =>{
+  //       // get image URL from storage
+  //       getDownloadURL(storageRef)
+  //       .then((imgURL)=>{
+  //           // update doc imgURL
+  //           updateDoc(doc(db,"task",addedDoc.id),{
+  //             post_photo_url: arrayUnion(imgURL)
+  //           })
+  //       })
+  //       console.log("added image successful");
+  //   })
+  //   .catch(err => {
+  //       console.log(err);
+  //       error = true;
+  //   })
     
     
-  });
+  // });
   console.log("finished");
 
     submit_btn.value = "Post Task";
