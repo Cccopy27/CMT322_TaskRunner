@@ -256,8 +256,9 @@ const submit_btn = document.querySelector(".post-input-submit");
 const inputs = document.querySelectorAll("input[list]");
 const post_input_cat_list = document.querySelector(".post-task-cat-list");
 
+// all task categories list here
 const task_categories_list = [
-  "Delivery","Home Repairs","General Cleaning","Help Moving","Heavy Lifting","Personal Assistant","Yard Work Services","Wait in Line","Office Administration","Research","Ceiling Fan Installation","TV Mounting","Air Conditioner Installation","Painting","Plumbing","Shelf Mounting","Baby Proofing","Light Installation","Electrical Help","Carpentry & Construction","Mounting","Cabinet Installation"
+  "Food Delivery","Home Repairs","General Cleaning","Help Moving","Heavy Lifting","Personal Assistant","Yard Work Services","Wait in Line","Office Administration","Research","Installation","Painting","Plumbing","Baby Proofing","Electrical Help","Carpentry & Construction","Mounting","Wallpapering Service","Repair Services","Unpacking Services","Packing Services","Junk Removal","Haircuts","House Cleaning","Goods Delivery","Car Wash Services","Walk the animal", "Welding"
 ];
 
 // sort array
