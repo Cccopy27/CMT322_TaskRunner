@@ -342,6 +342,9 @@ post_input.addEventListener("submit",async e=>{
         title: 'Successful!',
         text: 'Post task successfully',
       })
+
+      //reset form
+      post_input.reset();
     }
 })
 
