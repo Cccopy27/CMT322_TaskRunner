@@ -79,7 +79,7 @@ modal_window.addEventListener("click", function (e) {
   if (!e.target.classList.contains("btn--view-detail")) return;
 });
 
-// get user location using geolocation
+// get user location
 const loc_btn_get = document.querySelector(".form-location-get-btn");
 const loc_btn_input = document.querySelector(".form-location-input-btn");
 const map_location = document.querySelector("#map");
@@ -94,6 +94,10 @@ const loc_text = document.getElementById("task-location");
 const key = "56348ee0ae736660b862244f4a0535fc";
 const locationURLfor = "http://api.positionstack.com/v1/forward";
 const locationURLrev = "http://api.positionstack.com/v1/reverse";
+let location_long;
+let location_lat;
+let location_regionCode;
+let location_locality;
 
 const getLocation = function () {
   return new Promise((resolve, reject) =>
@@ -116,7 +120,11 @@ loc_btn_input.addEventListener("click", async (e) => {
   // forward geocoding
   const locKey = `?access_key=${key}`;
   const locQue = `&query=${loc_text.value}`;
-  const { label } = await getData(locationURLfor, locKey, locQue);
+  const { label,region_code, longitude, latitude, locality } = await getData(locationURLfor, locKey, locQue);
+  location_long = longitude;
+  location_lat = latitude;
+  location_regionCode = region_code;
+  location_locality = locality;
   loc_text.value = label;
 });
 
@@ -133,6 +141,10 @@ loc_btn_get.addEventListener("click", (e) => {
     })
     .then((data) => {
       loc_text.value = data.label;
+      location_long = data.longitude;
+      location_lat = data.latitude;
+      location_regionCode = data.region_code;
+      location_locality = data.locality;
     })
     .catch((error) => alert(`${error}`));
 });
@@ -182,6 +194,10 @@ save_btn.addEventListener("click", async function () {
   const loc = await getData(locationURLrev, locKey, locQue);
   console.log(loc);
   loc_text.value = loc.label;
+  location_long = loc.longitude;
+  location_lat = loc.latitude;
+  location_regionCode = loc.region_code;
+  location_locality = loc.locality;
   remove_overlay();
 });
 
@@ -211,5 +227,80 @@ image_input.addEventListener("change", e=>{
   // if(file){
   //   image_preview.src = URL.createObjectURL(file);
   // }
+})
+
+
+// firebase 
+
+// post task
+import {db, storage} from "./firebase/config";
+import {collection, addDoc, Timestamp, updateDoc, arrayUnion, doc} from "firebase/firestore";
+import {ref, uploadBytes, getDownloadURL } from "firebase/storage";
+const post_input = document.querySelector(".post-task-form");
+const post_input_title = document.getElementById("task-title");
+const post_input_des = document.getElementById("task-des");
+const post_input_start_date = document.getElementById("task-start-date");
+const post_input_start_time = document.getElementById("task-start-time");
+const post_input_end_date = document.getElementById("task-end-date");
+const post_input_end_time = document.getElementById("task-end-time");
+const post_input_location = document.getElementById("task-location");
+const post_input_price = document.getElementById("task-price");
+const post_input_tasker_number = document.getElementById("task-tasker-needed");
+const post_input_photo = document.getElementById("task-photo");
+const post_input_cat = document.querySelector(".post-task-cat-input");
+
+post_input.addEventListener("submit",async e=>{
+  e.preventDefault();
+  const post_photo = post_input_photo.files;
+  const postObj ={
+    post_title : post_input_title.value,
+    post_categories: post_input_cat.value,
+    post_des : post_input_des.value,
+    post_start_date : post_input_start_date.value,
+    post_start_time : post_input_start_time.value,
+    post_end_date : post_input_end_date.value,
+    post_end_time : post_input_end_time.value,
+    post_location : post_input_location.value,
+    post_price : post_input_price.value,
+    post_tasker_no : post_input_tasker_number.value,
+    post_photo_url : "",
+    post_location_long: location_long,
+    post_location_lat: location_lat,
+    post_location_regionCode : location_regionCode,
+    post_location_locality: location_locality,
+    added_at: Timestamp.now(),
+    created_by: "", //user id
+    status: "incomplete",
+    tasker_id:[],
+  };
+
+  //add to database
+  const addedDoc = await addDoc(collection(db,"task"),postObj);
+
+  // convert filelist to array to user array method
+  const image_arr = Array.from(post_photo);
+
+  // upload photo to storage firebase to get its photo URL
+  image_arr.forEach(img=>{
+    // the image will store in question/question.id/image.name
+    const uploadPath = `task/${addedDoc.id}/${img.name}`;
+    const storageRef = ref(storage, uploadPath);
+
+    uploadBytes(storageRef, img)
+    .then((storageImg) =>{
+        // get image URL from storage
+        getDownloadURL(storageRef)
+        .then((imgURL)=>{
+            // update doc imgURL
+            updateDoc(doc(db,"task",addedDoc.id),{
+              post_photo_url: arrayUnion(imgURL)
+            })
+        })
+        console.log("added question successful");
+    })
+    .catch(err => {
+        console.log(err);
+    })            
+});
 })
 

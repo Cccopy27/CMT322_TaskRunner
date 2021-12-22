@@ -861,3 +861,12 @@ body {
 .form-input-image-preview img{
   width: 100px;
 }
+
+.post-task-cat-input{
+  padding: 10px;
+  margin-left: 5px;
+}
+
+.post-task-cat-list{
+  
+}

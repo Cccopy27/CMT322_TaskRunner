@@ -448,11 +448,21 @@
                 <label for="task-title" class="input-label">Tittle:</label>
                 <input
                   id="task-title"
-                  class="post-task-input"
+                  class="post-task-input "
                   type="text"
                   placeholder="Enter your task title..."
                   required
                 />
+              </div>
+
+              <!-- task categories  -->
+              <div class="form-input-divider input-span">
+                <label for="post-task-cat-input" class="input-label">Task Categories: </label>
+                <input list="post-task-cat" class="post-task-cat-input input-label">
+                <datalist id="post-task-cat" class="post-task-cat-list">
+                  <option value="Random">
+                  <option value="Car">
+                </datalist>
               </div>
 
               <!-- task description -->
@@ -621,7 +631,6 @@
                   type="file"
                   multiple
                   accept="image/*"
-                  required
                 />
               </div>
 
