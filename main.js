@@ -322,36 +322,34 @@ post_input.addEventListener("submit",async e=>{
   submit_btn.disabled = true;
 
   //add to database
-  // const addedDoc = await addDoc(collection(db,"task"),postObj);
+  const addedDoc = await addDoc(collection(db,"task"),postObj);
   console.log("added document");
   // convert filelist to array to user array method
   const image_arr = Array.from(post_photo);
 
   // upload photo to storage firebase to get its photo URL
-  // image_arr.forEach(img=>{
-  //   // the image will store in question/question.id/image.name
-  //   const uploadPath = `task/${addedDoc.id}/${img.name}`;
-  //   const storageRef = ref(storage, uploadPath);
+  image_arr.forEach(img=>{
+    // the image will store in question/question.id/image.name
+    const uploadPath = `task/${addedDoc.id}/${img.name}`;
+    const storageRef = ref(storage, uploadPath);
 
-  //   uploadBytes(storageRef, img)
-  //   .then((storageImg) =>{
-  //       // get image URL from storage
-  //       getDownloadURL(storageRef)
-  //       .then((imgURL)=>{
-  //           // update doc imgURL
-  //           updateDoc(doc(db,"task",addedDoc.id),{
-  //             post_photo_url: arrayUnion(imgURL)
-  //           })
-  //       })
-  //       console.log("added image successful");
-  //   })
-  //   .catch(err => {
-  //       console.log(err);
-  //       error = true;
-  //   })
-    
-    
-  // });
+    uploadBytes(storageRef, img)
+    .then((storageImg) =>{
+        // get image URL from storage
+        getDownloadURL(storageRef)
+        .then((imgURL)=>{
+            // update doc imgURL
+            updateDoc(doc(db,"task",addedDoc.id),{
+              post_photo_url: arrayUnion(imgURL)
+            })
+        })
+        console.log("added image successful");
+    })
+    .catch(err => {
+        console.log(err);
+        error = true;
+    })
+  });
   console.log("finished");
 
     submit_btn.value = "Post Task";
