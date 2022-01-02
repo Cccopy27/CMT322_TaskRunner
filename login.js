@@ -57,9 +57,3 @@ login.addEventListener("submit", (e) => {
       console.log(err.message);
     });
 });
-
-onAuthStateChanged(auth, (user) => {
-  console.log("hi");
-  if (user) location.replace("dashboard.html");
-  else location.replace("login.html");
-});
