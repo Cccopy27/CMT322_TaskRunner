@@ -1,6 +1,10 @@
 "use strict";
-import {auth} from "./firebase/config"
-import {createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged}from "firebase/auth"
+import { auth } from "./firebase/config";
+import {
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  onAuthStateChanged,
+} from "firebase/auth";
 
 const section_all = document.querySelectorAll(".section");
 const create_account = document.querySelector(".create-account");
@@ -23,28 +27,39 @@ const toggle_section = () => {
 create_account.addEventListener("click", toggle_section);
 sign_in.addEventListener("click", toggle_section);
 
-sign_in_form.addEventListener("submit",(e)=>{
-  e.preventDefault()
+sign_in_form.addEventListener("submit", (e) => {
+  e.preventDefault();
 
-  const email = sign_in_form.email.value
-  const password = sign_in_form.password.value
+  const email = sign_in_form.email.value;
+  const password = sign_in_form.password.value;
 
-  createUserWithEmailAndPassword(auth, email, password).then((cred)=>{
-    console.log("user created: ", cred.user)
-  }).catch((err)=>{
-    console.log(err.message)
-  })
-})
+  createUserWithEmailAndPassword(auth, email, password)
+    .then((cred) => {
+      console.log("user created: ", cred.user);
+    })
+    .catch((err) => {
+      console.log(err.message);
+    });
+});
 
-login.addEventListener("submit",(e)=>{
-  e.preventDefault()
+login.addEventListener("submit", (e) => {
+  e.preventDefault();
 
-  const email = login.email.value
-  const password = login.password.value
+  const email = login.email.value;
+  const password = login.password.value;
 
-  signInWithEmailAndPassword(auth, email, password).then((cred)=>{
-    console.log("user login: ", cred.user)
-  }).catch((err)=>{
-    console.log(err.message)
-  })
-})
+  signInWithEmailAndPassword(auth, email, password)
+    .then((cred) => {
+      console.log("user login: ", cred.user);
+      location.replace("dashboard.html");
+    })
+    .catch((err) => {
+      console.log(err.message);
+    });
+});
+
+onAuthStateChanged(auth, (user) => {
+  console.log("hi");
+  if (user) location.replace("dashboard.html");
+  else location.replace("login.html");
+});
