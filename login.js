@@ -1,10 +1,12 @@
 "use strict";
-import { auth } from "./firebase/config";
+import { db, auth } from "./firebase/config";
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   onAuthStateChanged,
 } from "firebase/auth";
+
+import { addDoc, collection } from "firebase/firestore";
 
 const section_all = document.querySelectorAll(".section");
 const create_account = document.querySelector(".create-account");
@@ -27,19 +29,34 @@ const toggle_section = () => {
 create_account.addEventListener("click", toggle_section);
 sign_in.addEventListener("click", toggle_section);
 
-sign_in_form.addEventListener("submit", (e) => {
+sign_in_form.addEventListener("submit", function (e) {
   e.preventDefault();
 
   const email = sign_in_form.email.value;
   const password = sign_in_form.password.value;
 
+  let user;
+  if (document.querySelector(".option--tasker").checked) {
+    user = document.querySelector(".option--tasker").value;
+  } else if (document.querySelector(".option--customer").checked) {
+    user = document.querySelector(".option--customer").value;
+  }
+
   createUserWithEmailAndPassword(auth, email, password)
     .then((cred) => {
       console.log("user created: ", cred.user);
+      addDoc(collection(db, "user"), {
+        email,
+        password,
+        user_id: cred.user.uid,
+        role: user,
+      });
     })
     .catch((err) => {
       console.log(err.message);
     });
+
+  this.reset();
 });
 
 login.addEventListener("submit", (e) => {
