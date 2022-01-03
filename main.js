@@ -243,13 +243,45 @@ import {
   updateDoc,
   arrayUnion,
   doc,
+  query,
+  where,
+  onSnapshot,
+  getDocs,
+  getDoc,
 } from "firebase/firestore";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
-import { getAuth } from "firebase/auth";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
 
 const auth = getAuth();
-console.log(auth);
 
+onAuthStateChanged(auth, async (user) => {
+  if (user) {
+    let query_user = await getDocs(
+      query(collection(db, "user"), where("user_id", "==", user.uid))
+    );
+    query_user.forEach((user_now) => {
+      console.log(user_now.data());
+    });
+    let user_this = [query_user];
+    console.log(user_this);
+
+    let query_task = query(
+      collection(db, "task"),
+      where("created_by", "==", user.uid)
+    );
+    let task = await getDocs(query_task);
+    task.forEach((doc) => {
+      console.log(doc.data());
+    });
+  }
+});
+// let query_user;
+
+// query_user = query(collection(db, "task"), where("created_by", "==", user.uid));
+
+// onSnapshot(query_user, (snapShot) => {
+//   console.log(snapShot);
+// });
 const post_input = document.querySelector(".post-task-form");
 const post_input_title = document.getElementById("task-title");
 const post_input_des = document.getElementById("task-des");
@@ -352,7 +384,7 @@ post_input.addEventListener("submit", async (e) => {
     post_location_regionCode: location_regionCode,
     post_location_locality: location_locality,
     added_at: Timestamp.now(),
-    created_by: "", //user id
+    created_by: auth.currentUser.uid, //user id
     status: "incomplete",
     tasker_id: [],
   };
