@@ -58,13 +58,13 @@
               >Profile</a
             >
           </li>
-          <li class="list-section" data-link="3">
+          <li class="list-section list-browse" data-link="3">
             <a class="list-section-link" href="#"
               ><ion-icon class="dashboard-sidebar-icon" name="search"></ion-icon
               >Browse tasks</a
             >
           </li>
-          <li class="list-section" data-link="4">
+          <li class="list-section list-post" data-link="4">
             <a class="list-section-link" href="#"
               ><ion-icon class="dashboard-sidebar-icon" name="create"></ion-icon
               >Post task</a
@@ -92,9 +92,9 @@
 
             <div class="task-card-content">
               <!--  -->
-              <div class="slide-task-holder">
-                <div class="section-task-card">
-                  <img class="search-task-img" src="img/painting.jpg" alt="" />
+              <!-- <div class="slide-task-holder"> -->
+                <!-- <div class="section-task-card">
+                  <img class="search-task-img" src="img/painting.jpg" alt="" /> -->
                   <!-- <div class="padding-div">
                     <p class="search-task-paragraph">
                       Lorem ipsum dolor sit amet consectetur adipisicing elit.
@@ -102,7 +102,7 @@
                     </p>
                   </div> -->
 
-                  <div class="padding-div">
+                  <!-- <div class="padding-div">
                     <div class="option-button-div">
                       <a href="#" class="btn--view-detail">view details</a>
                       <button class="btn btn--apply">Complete</button>
@@ -110,7 +110,7 @@
                   </div>
                 </div>
                 <div class="section-task-card">
-                  <img class="search-task-img" src="img/painting.jpg" alt="" />
+                  <img class="search-task-img" src="img/painting.jpg" alt="" /> -->
                   <!-- <div class="padding-div">
                     <p class="search-task-paragraph">
                       Lorem ipsum dolor sit amet consectetur adipisicing elit.
@@ -118,7 +118,7 @@
                     </p>
                   </div> -->
 
-                  <div class="padding-div">
+                  <!-- <div class="padding-div">
                     <div class="option-button-div">
                       <a href="#" class="btn--view-detail">view details</a>
                       <button class="btn btn--apply">Complete</button>
@@ -135,12 +135,12 @@
                     </div>
                   </div>
                 </div>
-              </div>
+              </div> -->
               <!--  -->
 
-              <div class="slide-task-holder">
+              <!-- <div class="slide-task-holder">
                 <div class="section-task-card">
-                  <img class="search-task-img" src="img/painting.jpg" alt="" />
+                  <img class="search-task-img" src="img/painting.jpg" alt="" /> -->
                   <!-- <div class="padding-div">
                     <p class="search-task-paragraph">
                       Lorem ipsum dolor sit amet consectetur adipisicing elit.
@@ -148,7 +148,7 @@
                     </p>
                   </div> -->
 
-                  <div class="padding-div">
+                  <!-- <div class="padding-div">
                     <div class="option-button-div">
                       <a href="#" class="btn--view-detail">view details</a>
                       <button class="btn btn--apply">Complete</button>
@@ -156,7 +156,7 @@
                   </div>
                 </div>
                 <div class="section-task-card">
-                  <img class="search-task-img" src="img/painting.jpg" alt="" />
+                  <img class="search-task-img" src="img/painting.jpg" alt="" /> -->
                   <!-- <div class="padding-div">
                     <p class="search-task-paragraph">
                       Lorem ipsum dolor sit amet consectetur adipisicing elit.
@@ -164,7 +164,7 @@
                     </p>
                   </div> -->
 
-                  <div class="padding-div">
+                  <!-- <div class="padding-div">
                     <div class="option-button-div">
                       <a href="#" class="btn--view-detail">view details</a>
                       <button class="btn btn--apply">Complete</button>
@@ -180,8 +180,8 @@
                       <button class="btn btn--apply">Complete</button>
                     </div>
                   </div>
-                </div>
-              </div>
+                </div> -->
+              <!-- </div> -->
 
               <!--  -->
 
@@ -279,48 +279,86 @@
         <!-- window -->
 
         <div class="window-task-information display-hidden">
-          <div class="window-grid-container">
+          <!-- <div class="window-grid-container">
             <img class="window-img" src="img/painting.jpg" alt="" />
             <p class="task-description">
               Lorem ipsum dolor sit amet consectetur adipisicing elit.
               Cupiditate eveniet molestiae architecto dolores ea vel sit
               perspiciatis
             </p>
-            <div class="customer-info">
-              <ion-icon
-                class="customer-info-icon"
-                name="person-outline"
-              ></ion-icon>
-              <p class="customer-info--text">Mr. Loh</p>
+            <p class="task-tag">tag</p>
+            <div class="task-details-bottom">
+              <div class="customer-info-container">
+                <div class="customer-info">
+                  <ion-icon
+                    class="customer-info-icon"
+                    name="person-outline"
+                  ></ion-icon>
+                  <p class="customer-info--text">Mr. Loh</p>
+                </div>
+                <div class="customer-info">
+                  <ion-icon
+                    class="customer-info-icon"
+                    name="location-outline"
+                  ></ion-icon>
+                  <p class="customer-info--text">Bayan Lepas,Penang</p>
+                </div>
+                <div class="customer-info">
+                  <ion-icon
+                    class="customer-info-icon"
+                    name="call-outline"
+                  ></ion-icon>
+                  <p class="customer-info--text">0115261200</p>
+                </div>
+                <div class="customer-info">
+                  <ion-icon
+                    class="customer-info-icon"
+                    name="wallet-outline"
+                  ></ion-icon>
+                  <p class="customer-info--text">MYR 60</p>
+                </div>
+              </div>
+              <div class="task-info-container">
+                <div class="task-info">
+                  <ion-icon
+                  class="task-info-icon"
+                  name="time"
+                  ></ion-icon>
+                  <p class="task-info-text">Starting time</p>
+                </div>
+                <div class="task-info">
+                  <ion-icon
+                  class="task-info-icon"
+                  name="time"
+                  ></ion-icon>
+                  <p class="task-info-text">End time</p>
+                </div>
+                <div class="task-info">
+                  <ion-icon
+                  class="task-info-icon"
+                  name="information"
+                  ></ion-icon>
+                  <p class="task-info-text">Duration </p>
+                  
+                </div>
+                <div class="task-info">
+                  <ion-icon
+                  class="task-info-icon"
+                  name="people"
+                  ></ion-icon>
+                  <p class="task-info-text">Number of tasker</p>
+                  
+                </div>
+              </div>
             </div>
-            <div class="customer-info">
-              <ion-icon
-                class="customer-info-icon"
-                name="location-outline"
-              ></ion-icon>
-              <p class="customer-info--text">Bayan Lepas,Penang</p>
-            </div>
-            <div class="customer-info">
-              <ion-icon
-                class="customer-info-icon"
-                name="call-outline"
-              ></ion-icon>
-              <p class="customer-info--text">0115261200</p>
-            </div>
-            <div class="customer-info">
-              <ion-icon
-                class="customer-info-icon"
-                name="wallet-outline"
-              ></ion-icon>
-              <p class="customer-info--text">MYR 60</p>
-            </div>
+            
             <div class="padding-div">
               <div class="option-button-div">
                 <a href="#" class="btn--view-detail">view details</a>
                 <button class="btn btn--apply">apply</button>
               </div>
             </div>
-          </div>
+          </div> -->
         </div>
 
         <!-- window -->
@@ -377,7 +415,7 @@
 
         <section class="browse-task--section display-hidden" data-section="3">
           <div class="search-task--section">
-            <div class="section-task-card">
+            <!-- <div class="section-task-card">
               <img class="search-task-img" src="img/painting.jpg" alt="" />
               <div class="padding-div">
                 <p class="search-task-paragraph">
@@ -426,13 +464,48 @@
                 </div>
               </div>
             </div>
+
+            
+
+            <div class="section-task-card">
+              <img class="search-task-img" src="img/painting.jpg" alt="" />
+              <div class="padding-div">
+                <p class="search-task-paragraph">
+                  Lorem ipsum dolor sit amet consectetur adipisicing elit.
+                  Officiis quo doloribus odio iste?
+                </p>
+              </div>
+
+              <div class="padding-div">
+                <div class="option-button-div">
+                  <a href="#" class="btn--view-detail">view details</a>
+                  <button class="btn btn--apply">apply</button>
+                </div>
+              </div>
+            </div>
+            <div class="section-task-card">
+              <img class="search-task-img" src="img/painting.jpg" alt="" />
+              <div class="padding-div">
+                <p class="search-task-paragraph">
+                  Lorem ipsum dolor sit amet consectetur adipisicing elit.
+                  Officiis quo doloribus odio iste?
+                </p>
+              </div>
+
+              <div class="padding-div">
+                <div class="option-button-div">
+                  <a href="#" class="btn--view-detail">view details</a>
+                  <button class="btn btn--apply">apply</button>
+                </div>
+              </div>
+            </div> -->
           </div>
         </section>
         <!-- browse task section -->
 
         <!-- post task section -->
         <section class="post-task display-hidden" data-section="4">
-          <div class="search-task--section">
+          <div class="post-task--section">
             <div class="map-container display-hidden">
               <div id="map"></div>
               <div class="map--btn-container">
@@ -667,8 +740,9 @@
               </div>
               <br />
               <!-- button  -->
-              <div class="form-input-divider input-span">
+              <div class="form-input-divider input-span edit_post_btn_grp">
                 <input class="post-input-submit" type="submit" value="Post Task"/>
+                
               </div>
             </form>
           </div>
