@@ -232,7 +232,9 @@ image_input.addEventListener("change", (e) => {
   // }
 });
 
-// firebase
+//////////////////////////////////////////////////////////////
+//firebase
+//////////////////////////////////////////////////////////////
 
 // post task
 import { db, storage } from "./firebase/config";
@@ -243,13 +245,26 @@ import {
   updateDoc,
   arrayUnion,
   doc,
+  onSnapshot,
+  where,
+  query,
+  orderBy
 } from "firebase/firestore";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
-import { getAuth } from "firebase/auth";
-
+import { getAuth, onAuthStateChanged } from "firebase/auth";
+let uid = "";
 const auth = getAuth();
 console.log(auth);
 
+onAuthStateChanged(auth, (user) => {
+  if (user) {
+    uid = user.uid;
+    console.log(uid);
+    
+  } else {
+    
+  }
+});
 const post_input = document.querySelector(".post-task-form");
 const post_input_title = document.getElementById("task-title");
 const post_input_des = document.getElementById("task-des");
@@ -329,6 +344,7 @@ post_input_cat.addEventListener("change", (e) => {
 });
 
 post_input.addEventListener("submit", async (e) => {
+  console.log(uid);
   let error = false;
   e.preventDefault();
   const post_photo = post_input_photo.files;
@@ -352,7 +368,7 @@ post_input.addEventListener("submit", async (e) => {
     post_location_regionCode: location_regionCode,
     post_location_locality: location_locality,
     added_at: Timestamp.now(),
-    created_by: "", //user id
+    created_by: uid,
     status: "incomplete",
     tasker_id: [],
   };
@@ -413,3 +429,48 @@ post_input.addEventListener("submit", async (e) => {
     post_input.reset();
   }
 });
+
+
+
+// output task with data
+const task_list = document.querySelector(".search-task--section");
+// fetch all data
+// order by latest
+const Outref = query(collection(db,"task"),orderBy("added_at","desc"));
+
+onSnapshot(Outref, (snapshot)=>{
+  console.log("I keep running in onSnapShot collections");
+  let document =[];
+  task_list.innerHTML="";
+  snapshot.docs.forEach((doc)=>{
+    document.push({...doc.data(), id: doc.id});
+    console.log(document);
+    // html format
+    const html = `
+            <div class="section-task-card">
+              <img class="search-task-img" src=${doc.data().post_photo_url} alt="" />
+              <div class="padding-div">
+                <p class="search-task-paragraph">
+                  ${doc.data().post_title}
+                </p>
+              </div>
+
+              <div class="padding-div">
+                <div class="option-button-div">
+                  <a href="#" class="btn--view-detail">view details</a>
+                  <button class="btn btn--apply">apply</button>
+                </div>
+              </div>
+            </div>
+            `
+    task_list.innerHTML += html;
+  });
+
+  
+},(error)=>{
+  console.log(error);
+
+})
+
+
+
