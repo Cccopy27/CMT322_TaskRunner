@@ -671,7 +671,7 @@ onSnapshot(Outref, (snapshot)=>{
   // add final html
   task_list.innerHTML += finalHtml1;
   overview_task_list.innerHTML+=finalHtml2;
-  
+
 },(error)=>{
   console.log(error);
 })
@@ -861,9 +861,9 @@ const functionHandleDetails = (e,current_layout) =>{
               // Uh-oh, an error occurred!
               });
               })
-              
+              Swal.showLoading();
               await deleteDoc(doc(collection(db,"task"),e.target.id));
-
+              Swal.close();
               Swal.fire('Deleted!', '', 'success');
               task_details_ref.innerHTML="";
               task_details_ref.classList.add("display-hidden");
@@ -873,8 +873,10 @@ const functionHandleDetails = (e,current_layout) =>{
       })
 
     }
+    Swal.showLoading();
     fetchData();  
     listContainer.style.pointerEvents="none";
+    Swal.close();
   }
   else{
     task_details_ref.innerHTML="";

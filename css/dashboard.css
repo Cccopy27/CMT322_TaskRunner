@@ -564,8 +564,8 @@ body {
 }
 
 .window-img {
-  max-width: 200px;
-  min-width: 200px;
+  max-width: 300px;
+  min-width: 300px;
   /* grid-column: 1/3; */
 }
 
