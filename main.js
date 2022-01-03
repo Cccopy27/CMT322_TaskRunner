@@ -248,10 +248,13 @@ import {
   onSnapshot,
   where,
   query,
-  orderBy
+  orderBy,
+  getDoc,
+  deleteDoc
 } from "firebase/firestore";
-import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { ref, uploadBytes, getDownloadURL, list,  deleteObject } from "firebase/storage";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
+import { async } from "@firebase/util";
 let uid = "";
 const auth = getAuth();
 console.log(auth);
@@ -348,6 +351,14 @@ post_input.addEventListener("submit", async (e) => {
   let error = false;
   e.preventDefault();
   const post_photo = post_input_photo.files;
+
+  // convert filelist to array to user array method
+  const image_arr = Array.from(post_photo);
+
+  const image_name_temp = [];
+  image_arr.forEach(item=>{
+    image_name_temp.push(item.name);
+  })
   const postObj = {
     post_title: post_input_title.value,
     post_categories: post_input_cat.value,
@@ -363,6 +374,7 @@ post_input.addEventListener("submit", async (e) => {
     post_duration_unit: post_input_duration_unit.value,
     post_tasker_no: post_input_tasker_number.value,
     post_photo_url: "",
+    post_photo_name: image_name_temp,
     post_location_long: location_long,
     post_location_lat: location_lat,
     post_location_regionCode: location_regionCode,
@@ -381,8 +393,7 @@ post_input.addEventListener("submit", async (e) => {
   //add to database
   const addedDoc = await addDoc(collection(db, "task"), postObj);
   console.log("added document");
-  // convert filelist to array to user array method
-  const image_arr = Array.from(post_photo);
+
 
   // upload photo to storage firebase to get its photo URL
   image_arr.forEach((img) => {
@@ -437,17 +448,16 @@ const task_list = document.querySelector(".search-task--section");
 // fetch all data
 // order by latest
 const Outref = query(collection(db,"task"),orderBy("added_at","desc"));
+// let document =[""];
 
 onSnapshot(Outref, (snapshot)=>{
   console.log("I keep running in onSnapShot collections");
-  let document =[];
   task_list.innerHTML="";
   snapshot.docs.forEach((doc)=>{
-    document.push({...doc.data(), id: doc.id});
-    console.log(document);
+    // document.push({...doc.data(), id: doc.id});
     // html format
     const html = `
-            <div class="section-task-card">
+            <div class="section-task-card" >
               <img class="search-task-img" src=${doc.data().post_photo_url} alt="" />
               <div class="padding-div">
                 <p class="search-task-paragraph">
@@ -457,7 +467,7 @@ onSnapshot(Outref, (snapshot)=>{
 
               <div class="padding-div">
                 <div class="option-button-div">
-                  <a href="#" class="btn--view-detail">view details</a>
+                  <a href="#" class="btn--view-detail" id=${doc.id}>view details</a>
                   <button class="btn btn--apply">apply</button>
                 </div>
               </div>
@@ -472,5 +482,199 @@ onSnapshot(Outref, (snapshot)=>{
 
 })
 
+// check task details
+
+const task_details_ref = document.querySelector(".window-task-information");
+// console.log(document);
+// fetch data
+const post_task_ref = document.querySelector(".post-task");
+const browser_task_ref = document.querySelector(".browse-task--section");
+
+task_list.addEventListener("click",(e)=>{
+  // console.log(e);
+  if(e.target.className === "btn--view-detail"){
+    const fetchData = async()=>{
+      const docSnap = await getDoc(doc(db,"task",e.target.id));
+      console.log("hit");
+      let taskDetailsHtml =`
+      <div class="window-grid-container">
+        <div class="window-img-container">
+          <img class="window-img" src=${docSnap.data().post_photo_url} alt="" />
+        </div>
+        <p class="task-title">
+          ${docSnap.data().post_title}
+        </p>
+        <p class="task-description">
+          ${docSnap.data().post_des}
+        </p>
+        <div class="tag-container">
+          <p class="task-tag">
+            Categories: ${docSnap.data().post_categories}
+          </p>
+          <div class="btn-grp">
+            <button class="btn-browse-edit">edit</button>
+            <button class="btn-browse-delete">delete</button>
+          </div>
+        </div>
+        
+        <div class="task-details-bottom">
+          <div class="customer-info-container">
+            <div class="customer-info">
+              <ion-icon
+                class="customer-info-icon"
+                name="person-outline"
+              ></ion-icon>
+              <p class="customer-info--text">Mr. Loh</p>
+            </div>
+            <div class="customer-info">
+              <ion-icon
+                class="customer-info-icon"
+                name="location-outline"
+              ></ion-icon>
+              <p class="customer-info--text">
+                ${docSnap.data().post_location}
+              </p>
+            </div>
+            <div class="customer-info">
+              <ion-icon
+                class="customer-info-icon"
+                name="call-outline"
+              ></ion-icon>
+               <p class="customer-info--text">0115261200</p>
+            </div>
+            <div class="customer-info">
+              <ion-icon
+                class="customer-info-icon"
+                name="wallet-outline"
+              ></ion-icon>
+              <p class="customer-info--text">
+                ${docSnap.data().post_price_unit} ${docSnap.data().post_price_amount}
+              </p>
+            </div>
+          </div>
+          <div class="task-info-container">
+            <div class="task-info">
+              <ion-icon
+              class="task-info-icon"
+              name="time-outline"
+              ></ion-icon>
+              <p class="task-info-text">
+              Start: 
+                ${docSnap.data().post_start_date} ${docSnap.data().post_start_time}
+              </p>
+            </div>
+            <div class="task-info">
+              <ion-icon
+              class="task-info-icon"
+              name="time-outline"
+              ></ion-icon>
+              <p class="task-info-text">
+                End: ${docSnap.data().post_end_date} ${docSnap.data().post_end_time}
+              </p>
+            </div>
+            <div class="task-info">
+              <ion-icon
+              class="task-info-icon"
+              name="timer-outline"
+              ></ion-icon>
+              <p class="task-info-text">
+              ${docSnap.data().post_duration_amount} ${docSnap.data().post_duration_unit} 
+              </p>
+            </div>
+            <div class="task-info">
+              <ion-icon
+              class="task-info-icon"
+              name="people-outline"
+              ></ion-icon>
+              <p class="task-info-text">${docSnap.data().post_tasker_no} tasker required</p>
+            </div>
+          </div>
+        </div>
+        
+        <div class="padding-div">
+          <div class="option-button-div">
+            <a href="#" class="btn--view-detail">Accept</a>
+            <button class="btn btn--apply" id="close_task_details">Close</button>
+          </div>
+        </div>
+      </div>`
+      task_details_ref.innerHTML+=taskDetailsHtml;
+      task_details_ref.classList.remove("display-hidden");
+
+      // close task details
+      const close_btn_ref = document.getElementById("close_task_details");
+      close_btn_ref.addEventListener("click",e=>{
+        console.log(e);
+          e.preventDefault();
+          task_details_ref.innerHTML="";
+          task_details_ref.classList.add("display-hidden");
+          listContainer.style.pointerEvents="";
+      })
+
+      const edit_btn_ref = document.querySelector(".btn-browse-edit");
+      const delete_btn_ref = document.querySelector(".btn-browse-delete");
+
+      // navigate to post task to edit
+      edit_btn_ref.addEventListener("click",e=>{
+        e.preventDefault();
+        post_task_ref.classList.remove("display-hidden");
+        browser_task_ref.classList.add("display-hidden");
+      });
+
+      // delete
+      delete_btn_ref.addEventListener("click",eDel=>{
+        eDel.preventDefault();
+        Swal.fire({
+          title: 'Do you want to delete the question?',
+          showDenyButton: true,
+          confirmButtonText: 'Yes',
+          denyButtonText: `No`,
+        }).then(async(result) => {
+          // delete
+          if(result.isConfirmed){
+            Swal.fire({
+              title:"Now Loading...",
+              allowEscapeKey: false,
+              allowOutsideClick: false,
+            })
+            Swal.showLoading();
+
+            // delete storage image
+            // loop each image
+            
+            docSnap.data().post_photo_name.forEach(image_name=>{
+              // Create a reference to the file to delete
+              const desertRef = ref(storage, `task/${e.target.id}/${image_name}`);
+              // Delete the file
+              deleteObject(desertRef).then(() => {
+                  // File deleted successfully
+
+              }).catch((error) => {
+                  console.log(error);
+              // Uh-oh, an error occurred!
+              });
+              })
+              
+              await deleteDoc(doc(collection(db,"task"),e.target.id));
+
+              Swal.fire('Deleted!', '', 'success');
+              task_details_ref.innerHTML="";
+              task_details_ref.classList.add("display-hidden");
+              listContainer.style.pointerEvents="";
+          }
+        })
+      })
+
+    }
+    fetchData();  
+    listContainer.style.pointerEvents="none";
+    
+  }
+  else{
+    task_details_ref.innerHTML="";
+    task_details_ref.classList.add("display-hidden");
+    listContainer.style.pointerEvents="";
+  }
+})
 
 
