@@ -13,7 +13,11 @@ const create_account = document.querySelector(".create-account");
 const sign_in = document.querySelector(".sign-in--option");
 const sign_in_form = document.querySelector(".sign-up--form");
 const login = document.querySelector(".login-form");
-
+const password = document.querySelector("#password");
+const validation_message = document.querySelector(".validation--popup");
+const validation_list = document.querySelectorAll(".validation--list");
+const icon_tick = `<ion-icon class="validation--icon tick" name="checkmark-circle-outline"></ion-icon>`;
+const icon_cross = `<ion-icon class="validation--icon cross" name="close-circle-outline"></ion-icon>`;
 (() => {
   section_all.forEach((current) => {
     current.classList.contains("section-main")
@@ -34,7 +38,6 @@ sign_in_form.addEventListener("submit", function (e) {
 
   const email = sign_in_form.email.value;
   const password = sign_in_form.password.value;
-  
 
   let user;
   if (document.querySelector(".option--tasker").checked) {
@@ -52,17 +55,16 @@ sign_in_form.addEventListener("submit", function (e) {
         user_id: cred.user.uid,
         role: user,
       });
-      document.getElementById("error").innerHTML = ""
+      document.getElementById("error").innerHTML = "";
       this.reset();
     })
     .catch((err) => {
       console.log(err.message);
       // Changing HTML to draw attention
-      document.getElementById("error").innerHTML = "<span style='color: red;'>"+
-                                                "*Password must be at least 6 characters</span>";
+      document.getElementById("error").innerHTML =
+        "<span style='color: red;'>" +
+        "*Password must be at least 6 characters</span>";
     });
-
-  
 });
 
 login.addEventListener("submit", (e) => {
@@ -79,4 +81,52 @@ login.addEventListener("submit", (e) => {
     .catch((err) => {
       console.log(err.message);
     });
+});
+
+let render = true;
+
+password.addEventListener("focus", function (e) {
+  validation_message.classList.remove("validation--hidden");
+  if (render) {
+    validation_list.forEach((paragraph) => {
+      paragraph.insertAdjacentHTML("afterbegin", icon_cross);
+    });
+  }
+  render = false;
+});
+
+const render_validation = function (icon_to_render) {
+  let validation_state = this.querySelector(".validation--icon");
+  validation_state.remove();
+  this.insertAdjacentHTML("afterbegin", icon_to_render);
+};
+
+password.addEventListener("keyup", function () {
+  let lowerCaseLetter = /[a-z]/;
+  if (this.value.match(lowerCaseLetter)) {
+    render_validation.call(validation_list[0], icon_tick);
+  } else {
+    render_validation.call(validation_list[0], icon_cross);
+  }
+
+  let upperCaseLetter = /[A-Z]/;
+  if (this.value.match(upperCaseLetter)) {
+    render_validation.call(validation_list[1], icon_tick);
+  } else {
+    render_validation.call(validation_list[1], icon_cross);
+  }
+
+  let number = /[0-9]/;
+  if (this.value.match(number)) {
+    render_validation.call(validation_list[2], icon_tick);
+  } else {
+    render_validation.call(validation_list[2], icon_cross);
+  }
+
+  let length = this.value.length;
+  if (length >= 8) {
+    render_validation.call(validation_list[3], icon_tick);
+  } else {
+    render_validation.call(validation_list[3], icon_cross);
+  }
 });
