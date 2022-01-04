@@ -34,6 +34,7 @@ sign_in_form.addEventListener("submit", function (e) {
 
   const email = sign_in_form.email.value;
   const password = sign_in_form.password.value;
+  
 
   let user;
   if (document.querySelector(".option--tasker").checked) {
@@ -51,12 +52,17 @@ sign_in_form.addEventListener("submit", function (e) {
         user_id: cred.user.uid,
         role: user,
       });
+      document.getElementById("error").innerHTML = ""
+      this.reset();
     })
     .catch((err) => {
       console.log(err.message);
+      // Changing HTML to draw attention
+      document.getElementById("error").innerHTML = "<span style='color: red;'>"+
+                                                "*Password must be at least 6 characters</span>";
     });
 
-  this.reset();
+  
 });
 
 login.addEventListener("submit", (e) => {
