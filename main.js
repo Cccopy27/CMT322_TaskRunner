@@ -371,7 +371,7 @@ const post_nav_link = document.querySelector(".list-post");
 let temp_array_image_arr = [];
 
 // toggle edit mode
-const outputEditData = () => {
+const outputEditData = (current_layout) => {
   if (post_input.classList.contains("edit_mode")) {
     // update button from post to save
     edit_post_btn_grp.firstElementChild.setAttribute("value", "Save");
@@ -414,7 +414,7 @@ const outputEditData = () => {
 
           // navigate to browse mode
           post_task_ref.classList.add("display-hidden");
-          browser_task_ref.classList.remove("display-hidden");
+          current_layout.classList.remove("display-hidden");
           task_details_ref.innerHTML = "";
           task_details_ref.classList.add("display-hidden");
         }
@@ -603,7 +603,7 @@ post_input.addEventListener("submit", (e) => {
       // delete original image storage if required
       if (
         post_input.classList.contains("edit_mode") &&
-        postObj.post_photo_name.length !== 0
+        temp_array_image_arr.length !== 0
       ) {
         // delete storage image
         // loop each image
@@ -675,9 +675,9 @@ post_input.addEventListener("submit", (e) => {
         // remove last btn
         edit_post_btn_grp.removeChild(edit_post_btn_grp.lastChild);
 
-        // navigate to browse mode
+        // navigate to overview 
         post_task_ref.classList.add("display-hidden");
-        browser_task_ref.classList.remove("display-hidden");
+        overview_ref.classList.remove("display-hidden");
         task_details_ref.innerHTML = "";
         task_details_ref.classList.add("display-hidden");
 
@@ -927,7 +927,7 @@ const functionHandleDetails = (e, current_layout) => {
         task_details_ref.innerHTML = "";
         task_details_ref.classList.add("display-hidden");
         // toggle edit mode
-        outputEditData();
+        outputEditData(current_layout);
       });
 
       // handle delete
