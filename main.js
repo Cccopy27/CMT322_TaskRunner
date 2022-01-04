@@ -368,6 +368,7 @@ const edit_post_btn_grp = document.querySelector(".edit_post_btn_grp");
 
 const browse_nav_link = document.querySelector(".list-browse");
 const post_nav_link = document.querySelector(".list-post");
+const overview_nav_link = document.querySelector(".list-overview");
 let temp_array_image_arr = [];
 
 // toggle edit mode
@@ -682,7 +683,7 @@ post_input.addEventListener("submit", (e) => {
         task_details_ref.classList.add("display-hidden");
 
         // change nav
-        browse_nav_link.classList.add("list-section-active");
+        overview_nav_link.classList.add("list-section-active");
         post_nav_link.classList.remove("list-section-active");
       }
     }
