@@ -2,11 +2,10 @@
 
 let current_slide = 0;
 
-const slide = document.querySelectorAll(".slide-task-holder");
-let maxSlide = slide.length;
+let slide = document.querySelectorAll(".slide-task-holder");
+let maxSlide;
 
-const slider = document.querySelector(".task-card-content");
-// slider.style.transform = "scale(0.5)";
+// const slider = document.querySelector(".task-card-content");
 
 const slider_btn_right = document.querySelector(".slider-button-right");
 const slider_btn_left = document.querySelector(".slider-button-left");
@@ -17,22 +16,20 @@ const slide_to = function (move) {
   });
 };
 
-slide_to(0);
+// slide_to(0).call(slide);
 
 const direction = function (move, condition) {
-  if (current_slide === condition) {
-    return;
-  }
+  console.log(current_slide);
+
+  let mov = condition ? current_slide < maxSlide - 1 : current_slide > 0;
+  if (!mov) return;
 
   move === "right" ? current_slide++ : current_slide--;
 
   slide_to(current_slide);
 };
 
-slider_btn_right.addEventListener(
-  "click",
-  direction.bind(null, "right", maxSlide - 1)
-);
+slider_btn_right.addEventListener("click", direction.bind(null, "right", 1));
 slider_btn_left.addEventListener("click", direction.bind(null, "left", 0));
 
 //
@@ -279,27 +276,70 @@ import {
 } from "firebase/storage";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { async } from "@firebase/util";
+let overview_task = document.querySelector(".task-card-content");
+let search_task_section = document.querySelector(".search-task--section");
 
 const auth = getAuth();
+let uid;
 
 onAuthStateChanged(auth, async (user) => {
   if (user) {
     let query_user = await getDocs(
       query(collection(db, "user"), where("user_id", "==", user.uid))
     );
-    query_user.forEach((user_now) => {
-      console.log(user_now.data());
-    });
-    let user_this = [query_user];
-    console.log(user_this);
+    uid = user.uid;
+
+    let current_user = query_user.docs[0].data();
 
     let query_task = query(
       collection(db, "task"),
       where("created_by", "==", user.uid)
+      // orderBy("added_at", "desc")
     );
-    let task = await getDocs(query_task);
-    task.forEach((doc) => {
-      console.log(doc.data());
+
+    onSnapshot(query_task, (snapshot) => {
+      overview_task.innerHTML = "";
+      search_task_section.innerHTML = "";
+      let count = 0;
+      let index = 0;
+      let task_holder = `<div class="slide-task-holder"></div>`;
+      let total_holder = task_holder.repeat(
+        Math.ceil(snapshot.docs.length / 3)
+      );
+
+      overview_task.insertAdjacentHTML("beforeend", total_holder);
+      let all_holder = [...document.querySelectorAll(".slide-task-holder")];
+
+      maxSlide = all_holder.length;
+
+      snapshot.docs.forEach((doc) => {
+        if (count % 3 === 0 && count !== 0) index++;
+        let html = `<div class="section-task-card">
+                        <img class="search-task-img" src="${
+                          doc.data().post_photo_url
+                        }" alt="" />
+                        <div class="padding-div">
+                          <p class="search-task-paragraph">
+                            ${doc.data().post_title}
+                          </p>
+                        </div>
+
+                        <div class="padding-div">
+                          <div class="option-button-div">
+                            <a href="#" class="btn--view-detail" id=${doc.id}>
+                              view details
+                            </a>
+                            <button class="btn btn--apply">Complete</button>
+                          </div>
+                        </div>
+                      </div>`;
+
+        all_holder[index].insertAdjacentHTML("beforeend", html);
+        search_task_section.insertAdjacentHTML("beforeend", html);
+        count++;
+      });
+      slide = all_holder;
+      slide_to(0);
     });
   }
 });
@@ -625,78 +665,83 @@ post_input.addEventListener("submit", (e) => {
 });
 
 // display task with data
-const task_list = document.querySelector(".search-task--section");
-const overview_task_list = document.querySelector(".task-card-content");
+// const task_list = document.querySelector(".search-task--section");
+// const overview_task_list = document.querySelector(".task-card-content");
 // fetch all data
 // order by latest
-const Outref = query(collection(db, "task"), orderBy("added_at", "desc"));
+// const Outref = query(collection(db, "task"), orderBy("added_at", "desc"));
 // let document =[""];
 
-const addHtml = (html1, html2) => {};
+// const addHtml = (html1, html2) => {};
 // real time listener
-onSnapshot(
-  Outref,
-  (snapshot) => {
-    console.log("I keep running in onSnapShot collections");
-    task_list.innerHTML = "";
-    // filter here with uid
-    //
-    //
-    //
+// onSnapshot(
+//   Outref,
+//   (snapshot) => {
+//     console.log("I keep running in onSnapShot collections");
+//     task_list.innerHTML = "";
+//     // filter here with uid
+//     //
+//     //
+//     //
 
-    let count = 0;
-    let finalHtml1 = "";
-    let finalHtml2 = "";
-    snapshot.docs.forEach((doc) => {
-      // html format
-      let extraHtml = "";
-      let endHtml = "";
-      if (count === 0) {
-        extraHtml = `<div class="slide-task-holder">`;
-      } else if (count === snapshot.docs.length - 1) {
-        endHtml = `</div>`;
-      } else if (count % 3 === 0) {
-        extraHtml = `</div><div class="slide-task-holder">`;
-      }
-      count++;
+//     let count = 0;
+//     let finalHtml1 = "";
+//     let finalHtml2 = "";
+//     snapshot.docs.forEach((doc) => {
+//       // html format
+//       let extraHtml = "";
+//       let endHtml = "";
+//       if (count === 0) {
+//         extraHtml = `<div class="slide-task-holder">`;
+//       } else if (count === snapshot.docs.length - 1) {
+//         endHtml = `</div>`;
+//       } else if (count % 3 === 0) {
+//         extraHtml = `</div><div class="slide-task-holder">`;
+//       }
+//       count++;
 
-      const html = `
-            <div class="section-task-card" >
-              <img class="search-task-img" src=${
-                doc.data().post_photo_url
-              } alt="" />
-              <div class="padding-div">
-                <p class="search-task-paragraph">
-                  ${doc.data().post_title}
-                </p>
-              </div>
+//       const html = `
+//             <div class="section-task-card" >
+//               <img class="search-task-img" src=${
+//                 doc.data().post_photo_url
+//               } alt="" />
+//               <div class="padding-div">
+//                 <p class="search-task-paragraph">
+//                   ${doc.data().post_title}
+//                 </p>
+//               </div>
 
-              <div class="padding-div">
-                <div class="option-button-div">
-                  <a href="#" class="btn--view-detail" id=${
-                    doc.id
-                  }>view details</a>
-                  <button class="btn btn--apply">apply</button>
-                </div>
-              </div>
-            </div>
-            `;
+//               <div class="padding-div">
+//                 <div class="option-button-div">
+//                   <a href="#" class="btn--view-detail" id=${
+//                     doc.id
+//                   }>view details</a>
+//                   <button class="btn btn--apply">apply</button>
+//                 </div>
+//               </div>
+//             </div>
+//             `;
 
-      const combineHtml = extraHtml + html + endHtml;
-      // add all to browse task
+//       const combineHtml = extraHtml + html + endHtml;
+//       // add all to browse task
 
-      finalHtml1 += html;
-      finalHtml2 += combineHtml;
-    });
+//       finalHtml1 += html;
+//       finalHtml2 += combineHtml;
+//     });
 
-    // add final html
-    task_list.innerHTML += finalHtml1;
-    overview_task_list.innerHTML += finalHtml2;
-  },
-  (error) => {
-    console.log(error);
-  }
-);
+//     // add final html
+//     task_list.innerHTML += finalHtml1;
+//     overview_task_list.innerHTML += finalHtml2;
+
+//     slide = document.querySelectorAll(".slide-task-holder");
+
+//     maxSlide = slide.length;
+//     slide_to(0);
+//   },
+//   (error) => {
+//     console.log(error);
+//   }
+// );
 // check task details
 const task_details_ref = document.querySelector(".window-task-information");
 
@@ -918,11 +963,11 @@ const functionHandleDetails = (e, current_layout) => {
 };
 // when user click task
 // browse task part
-task_list.addEventListener("click", (e) => {
+search_task_section.addEventListener("click", (e) => {
   functionHandleDetails(e, browser_task_ref);
 });
 
 // overview part
-overview_task_list.addEventListener("click", (e) => {
+overview_task.addEventListener("click", (e) => {
   functionHandleDetails(e, overview_ref);
 });
