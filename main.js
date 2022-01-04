@@ -311,6 +311,7 @@ const edit_post_btn_grp = document.querySelector(".edit_post_btn_grp");
 
 const browse_nav_link = document.querySelector(".list-browse");
 const post_nav_link = document.querySelector(".list-post");
+let temp_array_image_arr = [];
 
 // toggle edit mode
 const outputEditData=()=>{
@@ -380,7 +381,9 @@ const outputEditData=()=>{
       // preview image
       let count = 0;
       image_preview.innerHTML = "";
+      temp_array_image_arr = [];
       docSnap.data().post_photo_url.forEach(item=>{
+        temp_array_image_arr.push(docSnap.data().post_photo_name[count]);
         const image = document.createElement("img");
         image.setAttribute("src", item);
         image_preview.appendChild(image);
@@ -482,7 +485,7 @@ post_input.addEventListener("submit", (e) => {
         image_name_temp.push(item.name);
       })
 
-      // image obj
+      // task obj
       const postObj = {
         post_title: post_input_title.value,
         post_categories: post_input_cat.value,
@@ -535,6 +538,23 @@ post_input.addEventListener("submit", (e) => {
       const addedDoc = post_input.classList.contains("edit_mode") ? await updateDoc(doc(collection(db, "task"),post_input.id), postObj): await addDoc(collection(db, "task"), postObj);
       // console.log(addedDoc);
 
+      // delete original image storage if required
+      if(post_input.classList.contains("edit_mode") && postObj.post_photo_name.length !== 0){
+        // delete storage image
+            // loop each image
+            temp_array_image_arr.forEach(image_name=>{
+              // Create a reference to the file to delete
+              const desertRef = ref(storage, `task/${post_input.id}/${image_name}`);
+              // Delete the file
+              deleteObject(desertRef).then(() => {
+                  // File deleted successfully
+
+              }).catch((error) => {
+                  console.log(error);
+              // Uh-oh, an error occurred!
+              });
+              })
+      }
 
       // upload photo to storage firebase to get its photo URL
       image_arr.forEach((img) => {
@@ -618,10 +638,6 @@ const addHtml=(html1,html2)=>{
 onSnapshot(Outref, (snapshot)=>{
   console.log("I keep running in onSnapShot collections");
   task_list.innerHTML="";
-  // filter here with uid
-  //
-  //
-  //
 
   let count = 0;
   let finalHtml1 = "";
