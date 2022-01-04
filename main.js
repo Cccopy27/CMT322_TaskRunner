@@ -368,6 +368,7 @@ const edit_post_btn_grp = document.querySelector(".edit_post_btn_grp");
 
 const browse_nav_link = document.querySelector(".list-browse");
 const post_nav_link = document.querySelector(".list-post");
+let temp_array_image_arr = [];
 
 // toggle edit mode
 const outputEditData = () => {
@@ -440,7 +441,9 @@ const outputEditData = () => {
       // preview image
       let count = 0;
       image_preview.innerHTML = "";
+      temp_array_image_arr = [];
       docSnap.data().post_photo_url.forEach((item) => {
+        temp_array_image_arr.push(docSnap.data().post_photo_name[count]);
         const image = document.createElement("img");
         image.setAttribute("src", item);
         image_preview.appendChild(image);
@@ -542,7 +545,7 @@ post_input.addEventListener("submit", (e) => {
         image_name_temp.push(item.name);
       });
 
-      // image obj
+      // task obj
       const postObj = {
         post_title: post_input_title.value,
         post_categories: post_input_cat.value,
@@ -596,6 +599,28 @@ post_input.addEventListener("submit", (e) => {
         ? await updateDoc(doc(collection(db, "task"), post_input.id), postObj)
         : await addDoc(collection(db, "task"), postObj);
       // console.log(addedDoc);
+
+      // delete original image storage if required
+      if (
+        post_input.classList.contains("edit_mode") &&
+        postObj.post_photo_name.length !== 0
+      ) {
+        // delete storage image
+        // loop each image
+        temp_array_image_arr.forEach((image_name) => {
+          // Create a reference to the file to delete
+          const desertRef = ref(storage, `task/${post_input.id}/${image_name}`);
+          // Delete the file
+          deleteObject(desertRef)
+            .then(() => {
+              // File deleted successfully
+            })
+            .catch((error) => {
+              console.log(error);
+              // Uh-oh, an error occurred!
+            });
+        });
+      }
 
       // upload photo to storage firebase to get its photo URL
       image_arr.forEach((img) => {
@@ -942,9 +967,9 @@ const functionHandleDetails = (e, current_layout) => {
                   // Uh-oh, an error occurred!
                 });
             });
-
+            Swal.showLoading();
             await deleteDoc(doc(collection(db, "task"), e.target.id));
-
+            Swal.close();
             Swal.fire("Deleted!", "", "success");
             task_details_ref.innerHTML = "";
             task_details_ref.classList.add("display-hidden");
@@ -953,8 +978,10 @@ const functionHandleDetails = (e, current_layout) => {
         });
       });
     };
+    Swal.showLoading();
     fetchData();
     listContainer.style.pointerEvents = "none";
+    Swal.close();
   } else {
     task_details_ref.innerHTML = "";
     task_details_ref.classList.add("display-hidden");
