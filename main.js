@@ -315,9 +315,9 @@ onAuthStateChanged(auth, async (user) => {
       snapshot.docs.forEach((doc) => {
         if (count % 3 === 0 && count !== 0) index++;
         let html = `<div class="section-task-card">
-                        <img class="search-task-img" src="${
+                        <img class="search-task-img" src=${
                           doc.data().post_photo_url
-                        }" alt="" />
+                        } />
                         <div class="padding-div">
                           <p class="search-task-paragraph">
                             ${doc.data().post_title}
@@ -373,6 +373,7 @@ let temp_array_image_arr = [];
 
 // toggle edit mode
 const outputEditData = (current_layout) => {
+  Swal.showLoading();
   if (post_input.classList.contains("edit_mode")) {
     // update button from post to save
     edit_post_btn_grp.firstElementChild.setAttribute("value", "Save");
@@ -453,6 +454,8 @@ const outputEditData = (current_layout) => {
     };
     fetchData();
   }
+  Swal.close();
+
 };
 
 // all task categories list here
