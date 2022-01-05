@@ -58,7 +58,6 @@ sign_in_form.addEventListener("submit", function (e) {
         address: "",
         profile_pic_name: "",
         profile_pic_url: "",
-        name: "",
         gender: "",
         marital_status: "",
       });
