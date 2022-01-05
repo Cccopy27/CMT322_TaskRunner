@@ -373,6 +373,7 @@ onAuthStateChanged(auth, async (user) => {
         address: address_ref.value,
         gender: gender_ref.value,
         marital_status: marital_status_ref.value,
+        profile_pic_url: prof
       }
 
       updateDoc(doc(collection(db, "user"), query_user.docs[0].id), profileObj)
@@ -383,6 +384,53 @@ onAuthStateChanged(auth, async (user) => {
           console.log(err);
           Swal.fire("Something wrong...","","error");
         })
+
+      // delete original image storage if required
+      if (
+        post_input.classList.contains("edit_mode") &&
+        temp_array_image_arr.length !== 0
+      ) {
+        // delete original image
+        // loop each image
+        temp_array_image_arr.forEach((image_name) => {
+          // Create a reference to the file to delete
+          const desertRef = ref(storage, `task/${post_input.id}/${image_name}`);
+          // Delete the file
+          deleteObject(desertRef)
+            .then(() => {
+              // File deleted successfully
+            })
+            .catch((error) => {
+              console.log(error);
+              // Uh-oh, an error occurred!
+            });
+        });
+      }
+
+      // upload photo to storage firebase to get its photo URL
+      image_arr.forEach((img) => {
+        // the image will store in question/question.id/image.name
+        // update doc will giv undefined
+        const tempDocId = addedDoc === undefined ? post_input.id : addedDoc.id;
+        const uploadPath = `task/${tempDocId}/${img.name}`;
+        const storageRef = ref(storage, uploadPath);
+
+        uploadBytes(storageRef, img)
+          .then((storageImg) => {
+            // get image URL from storage
+            getDownloadURL(storageRef).then((imgURL) => {
+              // update doc imgURL
+              updateDoc(doc(db, "task", tempDocId), {
+                post_photo_url: arrayUnion(imgURL),
+              });
+            });
+            console.log("added image successful");
+          })
+          .catch((err) => {
+            console.log(err);
+            error = true;
+          });
+      });
     }))
     const ref = doc(collection(db,"user"),query_user.docs[0].id);
 
@@ -396,6 +444,7 @@ onAuthStateChanged(auth, async (user) => {
         gender_ref.value = snapshot.data().gender;
         marital_status_ref.value = snapshot.data().marital_status;
         role_ref.value = snapshot.data().role;
+        profile_image_preview_ref.src = snapshot.data().profile_pic_url;
       }
     },(err)=>{
       console.log(err);

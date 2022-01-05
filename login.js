@@ -57,7 +57,7 @@ sign_in_form.addEventListener("submit", function (e) {
         contact: "",
         address: "",
         profile_pic_name: "",
-        profile_pic_url: "",
+        profile_pic_url: "https://picsum.photos/18",
         gender: "",
         marital_status: "",
         user_id: cred.user.uid,
