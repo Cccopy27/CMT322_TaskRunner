@@ -735,6 +735,55 @@ body {
   border-bottom: 0.2rem solid #51eb82;
 }
 
+.profile-picture-form-container{
+  display: flex;
+  justify-content: center;
+}
+
+.profile-picture-form{
+  position: relative;
+  /* background-color: #08545e; */
+  /* width: 100%; */
+  width: 12rem;
+  height: 12rem;
+  border-radius: 50%;
+  /* align-self: center; */
+}
+
+.profile-picture-form:hover .profile-picture-input-preview{
+  opacity: 0.3;
+}
+
+.profile-picture-form:hover .upload-image-label{
+  opacity: 1;
+}
+
+.profile-picture-input-preview{
+  width: 12rem;
+  height: 12rem;
+  border-radius: 50%;
+}
+.profile-picture-input-file:hover{
+  cursor: pointer;
+}
+
+.profile-picture-input-file{
+  width: 12rem;
+  height: 12rem;
+  border-radius: 50%;
+  /* background-color: #08545e; */
+  opacity: 0;
+  position: absolute;
+  left: 0%;
+}
+
+.upload-image-label{
+  opacity: 0;
+  position: absolute;
+  top: 30%;
+  left: 30%;
+}
+
 .form-input-divider {
   margin-bottom: 1.2rem;
 }

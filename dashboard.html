@@ -371,21 +371,45 @@
               <h2 class="form-heading">
                 Task<span class="form-span">Runner</span>
               </h2>
-              <div class="form-input-divider input-span">
-                <label for="username" class="input-label">username</label>
+              <div class="profile-picture-form-container">
+                <div class="profile-picture-form">
+                  <img class ="profile-picture-input-preview" src="https://picsum.photos/18" alt=""/>
+                  <label for="task-photo" class="input-label upload-image-label">Upload image</label>
+                  <input
+                    class="profile-picture-input-file"
+                    id="task-photo"
+                    class=""
+                    type="file"
+                    accept="image/*"
+                  >
+                  
+                </div>
+              </div>
+              
+              <div class="form-input-divider input-span-submit">
+                <label for="username" class="input-label">Username</label>
                 <input
                   id="username"
                   class="profile-input"
                   type="text"
                   required
                 />
+                <label for="role" class="input-label input-role">Role</label>
+                <input
+                  value=""
+                  id="role"
+                  class="profile-input profile-role-show-input"
+                  type="text"
+                  required
+                  disabled
+                />
               </div>
               <div class="form-input-divider">
-                <label for="email" class="input-label">email</label>
+                <label for="email" class="input-label">Email</label>
                 <input id="email" class="profile-input" type="email" required />
               </div>
               <div class="form-input-divider">
-                <label for="contact" class="input-label">contact</label>
+                <label for="contact" class="input-label">Contact</label>
                 <input
                   id="contact"
                   class="profile-input"
@@ -393,8 +417,26 @@
                   required
                 />
               </div>
+              <div class="form-input-divider">
+                <label for="Gender" class="input-label">Gender</label>
+                <select name="Gender" id="Gender" class="profile-input" required>
+                  <option value="Male">Male</option>
+                  <option value="Female">Female</option>
+                </select>
+              </div>
+              <div class="form-input-divider">
+                <label for="Marital_Status" class="input-label">Marital Status</label>
+                <select name="Marital_Status" id="Marital_Status" class="profile-input" required>
+                  <option value="Single">Single</option>
+                  <option value="Married">Married</option>
+                  <option value="Widowed">Widowed</option>
+                  <option value="Divorced">Divorced</option>
+                  <option value="Separated">Separated</option>
+                  <option value="Registered Partnership">Registered Partnership</option>
+                </select>
+              </div>
               <div class="form-input-divider input-span">
-                <label for="address" class="input-label">address</label>
+                <label for="address" class="input-label">Address</label>
                 <input
                   id="address"
                   class="profile-input"

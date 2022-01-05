@@ -323,7 +323,6 @@ onAuthStateChanged(auth, async (user) => {
       query(collection(db, "user"), where("user_id", "==", user.uid))
     );
     uid = user.uid;
-
     let current_user = query_user.docs[0].data();
     console.log(current_user);
 
@@ -377,6 +376,129 @@ onAuthStateChanged(auth, async (user) => {
       slide_to(0);
       populate_data();
     });
+
+    // get user profile data from database
+    // update profile field with current data
+    const profile_form_ref = document.querySelector(".profile_form");
+    const username_ref = document.getElementById("username");
+    const email_ref = document.getElementById("email");
+    const contact_ref = document.getElementById("contact");
+    const address_ref = document.getElementById("address");
+    const profile_image_preview_ref = document.querySelector(
+      ".profile-picture-input-preview"
+    );
+    const profile_image_input_ref = document.querySelector(
+      ".profile-picture-input-file"
+    );
+    const gender_ref = document.getElementById("Gender");
+    const marital_status_ref = document.getElementById("Marital_Status");
+    const role_ref = document.querySelector(".profile-role-show-input");
+    const profile_form_submit_ref = document.querySelector(".profile-form");
+
+    // handle profile image
+    profile_image_input_ref.addEventListener("change", (e) => {
+      const file = profile_image_input_ref.files;
+      console.log(file);
+      // preview image
+      profile_image_preview_ref.setAttribute(
+        "src",
+        `${URL.createObjectURL(file[0])}`
+      );
+    });
+    // user submit profile form
+    profile_form_submit_ref.addEventListener("submit", (e) => {
+      e.preventDefault();
+
+      const profileObj = {
+        username: username_ref.value,
+        email: email_ref.value,
+        contact: contact_ref.value,
+        address: address_ref.value,
+        gender: gender_ref.value,
+        marital_status: marital_status_ref.value,
+      };
+      // if user change profile pic
+      console.log(query_user.docs[0].profile_pic_name);
+      if (profile_image_input_ref.files.length !== 0) {
+        profileObj["profile_pic_name"] = profile_image_input_ref.files[0].name;
+      }
+      if (!query_user.docs[0].profile_pic_name) {
+        console.log("hi");
+      }
+
+      updateDoc(doc(collection(db, "user"), query_user.docs[0].id), profileObj)
+        .then(() => {
+          // if user change profile pic
+          if (profile_image_input_ref.files.length !== 0) {
+            // upload photo to storage firebase to get its photo URL
+            const uploadPath = `user/${query_user.docs[0].id}/${profile_image_input_ref.files[0].name}`;
+            const storageRef = ref(storage, uploadPath);
+
+            uploadBytes(storageRef, profile_image_input_ref.files[0])
+              .then((storageImg) => {
+                // get image URL from storage
+                getDownloadURL(storageRef).then((imgURL) => {
+                  // update doc imgURL
+                  updateDoc(doc(db, "user", query_user.docs[0].id), {
+                    profile_pic_url: imgURL,
+                    profile_pic_name: profile_image_input_ref.files[0].name,
+                  }).then(() => {
+                    // delete original image if user have previous image in database
+                    if (query_user.docs[0].profile_pic_name) {
+                      // Create a reference to the file to delete
+                      const desertRef = ref(
+                        storage,
+                        `user/${query_user.docs[0].id}/${profile_image_input_ref.files[0].name}`
+                      );
+
+                      // Delete the file
+                      deleteObject(desertRef)
+                        .then(() => {
+                          // File deleted successfully
+                          Swal.fire("Saved!", "", "success");
+                        })
+                        .catch((error) => {
+                          console.log(error);
+                          // Uh-oh, an error occurred!
+                          Swal.fire("Something wrong...", "", "error");
+                        });
+                    }
+                  });
+                });
+              })
+              .catch((err) => {
+                console.log(err);
+                Swal.fire("Something wrong...", "", "error");
+              });
+          }
+          Swal.fire("Saved!", "", "success");
+        })
+        .catch((err) => {
+          console.log(err);
+          Swal.fire("Something wrong...", "", "error");
+        });
+    });
+    const profile_doc_ref = doc(collection(db, "user"), query_user.docs[0].id);
+
+    // add listener to user doc
+    onSnapshot(
+      profile_doc_ref,
+      (snapshot) => {
+        if (snapshot.data()) {
+          username_ref.value = snapshot.data().username;
+          email_ref.value = snapshot.data().email;
+          contact_ref.value = snapshot.data().contact;
+          address_ref.value = snapshot.data().address;
+          gender_ref.value = snapshot.data().gender;
+          marital_status_ref.value = snapshot.data().marital_status;
+          role_ref.value = snapshot.data().role;
+          profile_image_preview_ref.src = snapshot.data().profile_pic_url;
+        }
+      },
+      (err) => {
+        console.log(err);
+      }
+    );
   }
 });
 
@@ -745,84 +867,6 @@ post_input.addEventListener("submit", (e) => {
   });
 });
 
-// display task with data
-// const task_list = document.querySelector(".search-task--section");
-// const overview_task_list = document.querySelector(".task-card-content");
-// fetch all data
-// order by latest
-// const Outref = query(collection(db, "task"), orderBy("added_at", "desc"));
-// let document =[""];
-
-// const addHtml = (html1, html2) => {};
-// real time listener
-// onSnapshot(
-//   Outref,
-//   (snapshot) => {
-//     console.log("I keep running in onSnapShot collections");
-//     task_list.innerHTML = "";
-//     // filter here with uid
-//     //
-//     //
-//     //
-
-//     let count = 0;
-//     let finalHtml1 = "";
-//     let finalHtml2 = "";
-//     snapshot.docs.forEach((doc) => {
-//       // html format
-//       let extraHtml = "";
-//       let endHtml = "";
-//       if (count === 0) {
-//         extraHtml = `<div class="slide-task-holder">`;
-//       } else if (count === snapshot.docs.length - 1) {
-//         endHtml = `</div>`;
-//       } else if (count % 3 === 0) {
-//         extraHtml = `</div><div class="slide-task-holder">`;
-//       }
-//       count++;
-
-//       const html = `
-//             <div class="section-task-card" >
-//               <img class="search-task-img" src=${
-//                 doc.data().post_photo_url
-//               } alt="" />
-//               <div class="padding-div">
-//                 <p class="search-task-paragraph">
-//                   ${doc.data().post_title}
-//                 </p>
-//               </div>
-
-//               <div class="padding-div">
-//                 <div class="option-button-div">
-//                   <a href="#" class="btn--view-detail" id=${
-//                     doc.id
-//                   }>view details</a>
-//                   <button class="btn btn--apply">apply</button>
-//                 </div>
-//               </div>
-//             </div>
-//             `;
-
-//       const combineHtml = extraHtml + html + endHtml;
-//       // add all to browse task
-
-//       finalHtml1 += html;
-//       finalHtml2 += combineHtml;
-//     });
-
-//     // add final html
-//     task_list.innerHTML += finalHtml1;
-//     overview_task_list.innerHTML += finalHtml2;
-
-//     slide = document.querySelectorAll(".slide-task-holder");
-
-//     maxSlide = slide.length;
-//     slide_to(0);
-//   },
-//   (error) => {
-//     console.log(error);
-//   }
-// );
 // check task details
 const task_details_ref = document.querySelector(".window-task-information");
 
