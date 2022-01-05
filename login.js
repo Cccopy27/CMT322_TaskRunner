@@ -6,7 +6,7 @@ import {
   onAuthStateChanged,
 } from "firebase/auth";
 
-import { addDoc, collection } from "firebase/firestore";
+import { addDoc, collection,setDoc, doc } from "firebase/firestore";
 
 const section_all = document.querySelectorAll(".section");
 const create_account = document.querySelector(".create-account");
@@ -49,11 +49,18 @@ sign_in_form.addEventListener("submit", function (e) {
   createUserWithEmailAndPassword(auth, email, password)
     .then((cred) => {
       console.log("user created: ", cred.user);
-      addDoc(collection(db, "user"), {
+      setDoc(doc(db, "user",cred.user.uid), {
         email,
         password,
-        user_id: cred.user.uid,
         role: user,
+        username: "",
+        contact: "",
+        address: "",
+        profile_pic_name: "",
+        profile_pic_url: "",
+        name: "",
+        gender: "",
+        marital_status: "",
       });
       document.getElementById("error").innerHTML = "";
       this.reset();
