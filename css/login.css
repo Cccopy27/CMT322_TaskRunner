@@ -11,6 +11,7 @@ html {
 body {
   /* display: flex; */
   font-family: "Inter", sans-serif;
+  position: relative;
 
   /* align-items: center;
   justify-content: center; */
@@ -262,4 +263,59 @@ body {
 .section-hidden {
   display: none;
   transform: translate(0, 2.2rem);
+}
+
+.validation--popup {
+  opacity: 1;
+  max-width: 30rem;
+  position: absolute;
+  top: 60%;
+  right: 3%;
+  transition: opacity 300ms, transform 300ms;
+}
+
+.validation--popup.validation--hidden {
+  opacity: 0;
+  transform: translate(0, 1.2rem);
+}
+
+.validation--list {
+  display: flex;
+  align-items: center;
+  margin-bottom: 1.4rem;
+  gap: 1.4rem;
+}
+
+.validation--heading {
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: #333;
+  line-height: 1.2;
+  margin-bottom: 1.2rem;
+}
+
+.validation--paragraph {
+  font-size: 1.6rem;
+  font-weight: 500;
+  line-height: 1.6;
+  color: #555;
+}
+
+.validation--span {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #333;
+}
+
+.validation--icon {
+  width: 2.6rem;
+  height: 2.6rem;
+}
+
+.tick {
+  color: #54df45;
+}
+
+.cross {
+  color: #f74343;
 }
