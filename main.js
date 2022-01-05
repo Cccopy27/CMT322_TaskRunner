@@ -358,8 +358,10 @@ onAuthStateChanged(auth, async (user) => {
     // handle profile image
     profile_image_input_ref.addEventListener("change", (e) => {
       const file = profile_image_input_ref.files;
+      console.log(file);
       // preview image
       profile_image_preview_ref.setAttribute("src",`${URL.createObjectURL(file[0])}`);
+
 
     });
     // user submit profile form
@@ -373,11 +375,62 @@ onAuthStateChanged(auth, async (user) => {
         address: address_ref.value,
         gender: gender_ref.value,
         marital_status: marital_status_ref.value,
-        profile_pic_url: prof
+      }
+      // if user change profile pic
+      console.log(query_user.docs[0].profile_pic_name);
+      if(profile_image_input_ref.files.length !== 0){
+        profileObj["profile_pic_name"] = profile_image_input_ref.files[0].name;
+
+      }
+      if(!query_user.docs[0].profile_pic_name){
+            console.log("hi"); 
       }
 
       updateDoc(doc(collection(db, "user"), query_user.docs[0].id), profileObj)
         .then(()=>{
+          // if user change profile pic
+          if(profile_image_input_ref.files.length !== 0){
+
+            // upload photo to storage firebase to get its photo URL
+              const uploadPath = `user/${query_user.docs[0].id}/${profile_image_input_ref.files[0].name}`;
+              const storageRef = ref(storage, uploadPath);
+
+              uploadBytes(storageRef, profile_image_input_ref.files[0])
+                .then((storageImg) => {
+                  // get image URL from storage
+                  getDownloadURL(storageRef).then((imgURL) => {
+                    // update doc imgURL
+                    updateDoc(doc(db, "user", query_user.docs[0].id), {
+                      profile_pic_url: imgURL,
+                      profile_pic_name: profile_image_input_ref.files[0].name,
+                    })
+                    .then(()=>{
+                    // delete original image if user have previous image in database
+                    if(query_user.docs[0].profile_pic_name){
+                      // Create a reference to the file to delete
+                      const desertRef = ref(storage, `user/${query_user.docs[0].id}/${profile_image_input_ref.files[0].name}`);
+
+                      // Delete the file
+                      deleteObject(desertRef)
+                        .then(() => {
+                          // File deleted successfully
+                          Swal.fire("Saved!","","success");
+                        })
+                        .catch((error) => {
+                          console.log(error);
+                          // Uh-oh, an error occurred!
+                          Swal.fire("Something wrong...","","error");
+
+                        });
+                    }
+                    });
+                  });
+                })
+                .catch((err) => {
+                  console.log(err);
+                  Swal.fire("Something wrong...","","error");
+                });
+          }
           Swal.fire("Saved!","","success");
         })
         .catch(err=>{
@@ -385,57 +438,12 @@ onAuthStateChanged(auth, async (user) => {
           Swal.fire("Something wrong...","","error");
         })
 
-      // delete original image storage if required
-      if (
-        post_input.classList.contains("edit_mode") &&
-        temp_array_image_arr.length !== 0
-      ) {
-        // delete original image
-        // loop each image
-        temp_array_image_arr.forEach((image_name) => {
-          // Create a reference to the file to delete
-          const desertRef = ref(storage, `task/${post_input.id}/${image_name}`);
-          // Delete the file
-          deleteObject(desertRef)
-            .then(() => {
-              // File deleted successfully
-            })
-            .catch((error) => {
-              console.log(error);
-              // Uh-oh, an error occurred!
-            });
-        });
-      }
-
-      // upload photo to storage firebase to get its photo URL
-      image_arr.forEach((img) => {
-        // the image will store in question/question.id/image.name
-        // update doc will giv undefined
-        const tempDocId = addedDoc === undefined ? post_input.id : addedDoc.id;
-        const uploadPath = `task/${tempDocId}/${img.name}`;
-        const storageRef = ref(storage, uploadPath);
-
-        uploadBytes(storageRef, img)
-          .then((storageImg) => {
-            // get image URL from storage
-            getDownloadURL(storageRef).then((imgURL) => {
-              // update doc imgURL
-              updateDoc(doc(db, "task", tempDocId), {
-                post_photo_url: arrayUnion(imgURL),
-              });
-            });
-            console.log("added image successful");
-          })
-          .catch((err) => {
-            console.log(err);
-            error = true;
-          });
-      });
+      
     }))
-    const ref = doc(collection(db,"user"),query_user.docs[0].id);
+    const profile_doc_ref = doc(collection(db,"user"),query_user.docs[0].id);
 
     // add listener to user doc
-    onSnapshot(ref,(snapshot)=>{
+    onSnapshot(profile_doc_ref,(snapshot)=>{
       if(snapshot.data()){
         username_ref.value = snapshot.data().username;
         email_ref.value = snapshot.data().email;
