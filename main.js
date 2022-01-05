@@ -355,6 +355,13 @@ onAuthStateChanged(auth, async (user) => {
     const role_ref = document.querySelector(".profile-role-show-input");
     const profile_form_submit_ref = document.querySelector(".profile-form");
 
+    // handle profile image
+    profile_image_input_ref.addEventListener("change", (e) => {
+      const file = profile_image_input_ref.files;
+      // preview image
+      profile_image_preview_ref.setAttribute("src",`${URL.createObjectURL(file[0])}`);
+
+    });
     // user submit profile form
     profile_form_submit_ref.addEventListener("submit",(e=>{
       e.preventDefault();
