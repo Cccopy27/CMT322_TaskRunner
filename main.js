@@ -342,6 +342,21 @@ onAuthStateChanged(auth, async (user) => {
       slide_to(0);
     });
   }
+  console.log(user.uid);
+
+  // get user profile data from database
+  // update profile field with current data
+  const profile_form_ref = document.querySelector(".profile_form");
+  const username_ref = document.getElementById("username");
+  const email_ref = document.getElementById("email");
+  const contact_ref = document.getElementById("contact");
+  const address_ref = document.getElementById("address");
+  // onSnapshot((doc(collection(db,"user")),user.uid),(snapshot=>{
+  //   if(snapshot.data()){
+  //     email_ref.value = snapshot.data().email;
+
+  //   }
+  // }))
 });
 
 const post_input = document.querySelector(".post-task-form");
