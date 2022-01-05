@@ -355,17 +355,33 @@ onAuthStateChanged(auth, async (user) => {
     const role_ref = document.querySelector(".profile-role-show-input");
     const profile_form_submit_ref = document.querySelector(".profile-form");
 
-
+    // user submit profile form
     profile_form_submit_ref.addEventListener("submit",(e=>{
       e.preventDefault();
-      console.log("Im clicking");
+
+      const profileObj = {
+        username: username_ref.value,
+        email: email_ref.value,
+        contact: contact_ref.value,
+        address: address_ref.value,
+        gender: gender_ref.value,
+        marital_status: marital_status_ref.value,
+      }
+
+      updateDoc(doc(collection(db, "user"), query_user.docs[0].id), profileObj)
+        .then(()=>{
+          Swal.fire("Saved!","","success");
+        })
+        .catch(err=>{
+          console.log(err);
+          Swal.fire("Something wrong...","","error");
+        })
     }))
     const ref = doc(collection(db,"user"),query_user.docs[0].id);
 
+    // add listener to user doc
     onSnapshot(ref,(snapshot)=>{
       if(snapshot.data()){
-        console.log("enter");
-        console.log(snapshot.data());
         username_ref.value = snapshot.data().username;
         email_ref.value = snapshot.data().email;
         contact_ref.value = snapshot.data().contact;
@@ -377,6 +393,8 @@ onAuthStateChanged(auth, async (user) => {
     },(err)=>{
       console.log(err);
     })
+
+
   }
 
   
