@@ -27,7 +27,8 @@
           </div class="input-holder">
           <div class="input-holder">
             <label class="form-label">Password</label>
-            <input class="form-input" name="password" type="password" placeholder="Your password" required/>
+            <input class="form-input" name="password" type="password" placeholder="Your password" pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}" required/>
+            
           </div class="input-holder">
           <div class="input-holder">
             <button class="form-button">Log in</button>
@@ -55,7 +56,8 @@
 
         <div class="sign-up--input-field">
           <label for="password" class="sign-up--label">Password</label>
-          <input id="password" class="sign-up--input sign-up-input-pattern" type="password" required/>
+          <input id="password" class="sign-up--input sign-up-input-pattern" type="password" pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}" required/>
+          <span id="error"></span>
         </div>
 
         
@@ -63,11 +65,11 @@
           <label class="radio-title">Choose one of the following</label>
           <div class="radio--option">
             <label for="option-tasker" class="radio-label">Tasker</label>
-            <input id="option-tasker" name="tasker" class="tasker-radio-button option--tasker" type="radio" value="tasker" />
+            <input id="option-tasker" name="role" class="tasker-radio-button option--tasker" type="radio" value="tasker" />
           </div>
           <div class="radio--option">
             <label for="option-customer" class="radio-label">Customer</label>
-            <input id="option-customer" name="customer" class="tasker-radio-button option--customer" type="radio" value="customer" />
+            <input id="option-customer" name="role" class="tasker-radio-button option--customer" type="radio" value="customer"  />
           </div>
         </div>
 
@@ -81,7 +83,35 @@
 
       </form>
 
+      <div class="validation--popup validation--hidden">
+        <h2 class="validation--heading">Password must match the following condition</h2>
+        <div class="validation--list">
+          
+          <p class="validation--paragraph">A <span class="validation--span">lowercase</span> letter</p>
+        </div>
+        <div class="validation--list">
+
+          <p class="validation--paragraph">At least one<span class="validation--span"> uppercase</span> letter</p>
+        </div>
+        <div class="validation--list">
+
+          <p class="validation--paragraph">A<span class="validation--span"> numeric character</span></p>
+        </div>
+        <div class="validation--list">
+
+          <p class="validation--paragraph">At least 8 <span class="validation--span">lowercase</span> characters</p>
+        </div>
+      </div>
+
     </section>
+    <script
+      type="module"
+      src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"
+    ></script>
+    <script
+      nomodule
+      src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"
+    ></script>
     <script src="./dist/login.bundle.js"></script>
   </body>
 </html>
