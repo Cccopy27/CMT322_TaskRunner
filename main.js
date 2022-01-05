@@ -278,6 +278,7 @@ import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { async } from "@firebase/util";
 let overview_task = document.querySelector(".task-card-content");
 let search_task_section = document.querySelector(".search-task--section");
+let job_category = document.querySelector("#job--category");
 
 const auth = getAuth();
 let uid;
@@ -290,6 +291,7 @@ onAuthStateChanged(auth, async (user) => {
     uid = user.uid;
 
     let current_user = query_user.docs[0].data();
+    console.log(current_user);
 
     let query_task = query(
       collection(db, "task"),
@@ -455,7 +457,6 @@ const outputEditData = (current_layout) => {
     fetchData();
   }
   Swal.close();
-
 };
 
 // all task categories list here
@@ -679,7 +680,7 @@ post_input.addEventListener("submit", (e) => {
         // remove last btn
         edit_post_btn_grp.removeChild(edit_post_btn_grp.lastChild);
 
-        // navigate to overview 
+        // navigate to overview
         post_task_ref.classList.add("display-hidden");
         overview_ref.classList.remove("display-hidden");
         task_details_ref.innerHTML = "";

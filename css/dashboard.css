@@ -533,6 +533,49 @@ body {
   color: #333;
 }
 
+.loader {
+  border: 1.6rem solid #888;
+  border-top: 1.6rem solid #51ec82;
+
+  border-radius: 50%;
+  width: 7.2rem;
+  height: 7.2rem;
+  position: absolute;
+  animation: spin 2s linear infinite;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.search--input--field {
+  display: flex;
+  margin-bottom: 1.6rem;
+  justify-content: center;
+  gap: 1.2rem;
+}
+
+.job--choice {
+  width: 22rem;
+}
+
+.search--task--button {
+  border: none;
+  padding: 0.8rem 1.4rem;
+  color: #fff;
+  font-size: 1.6rem;
+  font-weight: 600;
+  background-color: #7fcffa;
+}
+
 /* window */
 
 .window-task-information {
