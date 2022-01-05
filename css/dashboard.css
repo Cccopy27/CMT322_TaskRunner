@@ -534,6 +534,7 @@ body {
 }
 
 .loader {
+  display: block;
   border: 1.6rem solid #888;
   border-top: 1.6rem solid #51ec82;
 
@@ -545,6 +546,11 @@ body {
   left: 50%;
   top: 50%;
   transform: translate(-50%, -50%);
+  transition: display 300ms;
+}
+
+.loader.loader--hidden {
+  display: none;
 }
 
 @keyframes spin {
@@ -574,6 +580,10 @@ body {
   font-size: 1.6rem;
   font-weight: 600;
   background-color: #7fcffa;
+  cursor: pointer;
+}
+
+.search--task--button:hover {
 }
 
 /* window */

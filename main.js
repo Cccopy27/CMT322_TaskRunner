@@ -279,9 +279,43 @@ import { async } from "@firebase/util";
 let overview_task = document.querySelector(".task-card-content");
 let search_task_section = document.querySelector(".search-task--section");
 let job_category = document.querySelector("#job--category");
+const search_task_button = document.querySelector(".search--task--button");
+const loader = document.querySelector(".loader");
 
 const auth = getAuth();
 let uid;
+
+const render_search_result = function (section) {
+  section.innerHTML = "";
+  this.forEach((doc) => {
+    let html = `<div class="section-task-card">
+                  <img class="search-task-img" src=${
+                    doc.data().post_photo_url
+                  } />
+                  <div class="padding-div">
+                    <p class="search-task-paragraph">
+                    ${doc.data().post_title}
+                    </p>
+                  </div>
+                  
+                  <div class="padding-div">
+                    <div class="option-button-div">
+                      <a href="#" class="btn--view-detail" id=${doc.id}>
+                      view details
+                      </a>
+                      <button class="btn btn--apply">Complete</button>
+                    </div>
+                  </div>
+                </div>`;
+    section.insertAdjacentHTML("beforeend", html);
+  });
+};
+
+const populate_data = async function () {
+  let search_section_data = await getDocs(collection(db, "task"));
+
+  render_search_result.call(search_section_data.docs, search_task_section);
+};
 
 onAuthStateChanged(auth, async (user) => {
   if (user) {
@@ -337,11 +371,11 @@ onAuthStateChanged(auth, async (user) => {
                       </div>`;
 
         all_holder[index].insertAdjacentHTML("beforeend", html);
-        search_task_section.insertAdjacentHTML("beforeend", html);
         count++;
       });
       slide = all_holder;
       slide_to(0);
+      populate_data();
     });
   }
 });
@@ -495,10 +529,27 @@ const task_categories_list = [
 task_categories_list.sort();
 
 // append each task into datalist
-task_categories_list.forEach((task) => {
-  const taskList = document.createElement("option");
-  taskList.value = task;
-  post_input_cat_list.appendChild(taskList);
+const add_category = function (task_category_list) {
+  task_category_list.forEach((task) => {
+    const taskList = `<option>${task}</option>`;
+    this.insertAdjacentHTML("beforeend", taskList);
+  });
+};
+
+add_category.call(post_input_cat_list, task_categories_list);
+add_category.call(job_category, task_categories_list);
+
+search_task_button.addEventListener("click", async (e) => {
+  let search_section = e.target.closest(".search--input--field");
+  let input = search_section.querySelector(".job--choice").value;
+  loader.classList.remove("loader--hidden");
+
+  let tasks = await getDocs(
+    query(collection(db, "task"), where("post_categories", "==", input))
+  );
+  render_search_result.call(tasks.docs, search_task_section);
+
+  loader.classList.add("loader--hidden");
 });
 
 // keep checking user selected correct categories
@@ -519,7 +570,6 @@ post_input_cat.addEventListener("change", (e) => {
 
 // handle submit
 post_input.addEventListener("submit", (e) => {
-  console.log(uid);
   let error = false;
   e.preventDefault();
 
@@ -543,6 +593,7 @@ post_input.addEventListener("submit", (e) => {
 
       // convert filelist to array to user array method
       const image_arr = Array.from(post_photo);
+      console.log(image_arr, "-----------------");
 
       // store image name
       const image_name_temp = [];
