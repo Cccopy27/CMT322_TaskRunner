@@ -288,9 +288,8 @@ onAuthStateChanged(auth, async (user) => {
       query(collection(db, "user"), where("user_id", "==", user.uid))
     );
     uid = user.uid;
-
     let current_user = query_user.docs[0].data();
-
+ 
     let query_task = query(
       collection(db, "task"),
       where("created_by", "==", user.uid)
@@ -341,22 +340,46 @@ onAuthStateChanged(auth, async (user) => {
       slide = all_holder;
       slide_to(0);
     });
+
+    // get user profile data from database
+    // update profile field with current data
+    const profile_form_ref = document.querySelector(".profile_form");
+    const username_ref = document.getElementById("username");
+    const email_ref = document.getElementById("email");
+    const contact_ref = document.getElementById("contact");
+    const address_ref = document.getElementById("address");
+    const profile_image_preview_ref = document.querySelector(".profile-picture-input-preview");
+    const profile_image_input_ref = document.querySelector(".profile-picture-input-file");
+    const gender_ref = document.getElementById("Gender");
+    const marital_status_ref = document.getElementById("Marital_Status");
+    const role_ref = document.querySelector(".profile-role-show-input");
+    const profile_form_submit_ref = document.querySelector(".profile-form");
+
+
+    profile_form_submit_ref.addEventListener("submit",(e=>{
+      e.preventDefault();
+      console.log("Im clicking");
+    }))
+    const ref = doc(collection(db,"user"),query_user.docs[0].id);
+
+    onSnapshot(ref,(snapshot)=>{
+      if(snapshot.data()){
+        console.log("enter");
+        console.log(snapshot.data());
+        username_ref.value = snapshot.data().username;
+        email_ref.value = snapshot.data().email;
+        contact_ref.value = snapshot.data().contact;
+        address_ref.value = snapshot.data().address;
+        gender_ref.value = snapshot.data().gender;
+        marital_status_ref.value = snapshot.data().marital_status;
+        role_ref.value = snapshot.data().role;
+      }
+    },(err)=>{
+      console.log(err);
+    })
   }
-  console.log(user.uid);
 
-  // get user profile data from database
-  // update profile field with current data
-  const profile_form_ref = document.querySelector(".profile_form");
-  const username_ref = document.getElementById("username");
-  const email_ref = document.getElementById("email");
-  const contact_ref = document.getElementById("contact");
-  const address_ref = document.getElementById("address");
-  // onSnapshot((doc(collection(db,"user")),user.uid),(snapshot=>{
-  //   if(snapshot.data()){
-  //     email_ref.value = snapshot.data().email;
-
-  //   }
-  // }))
+  
 });
 
 const post_input = document.querySelector(".post-task-form");
