@@ -892,115 +892,139 @@ const functionHandleDetails = (e, current_layout) => {
       // add details html
       let taskDetailsHtml = `
       <div class="window-grid-container">
-        <div class="window-img-container">
+        
           ${imgHtml}
-        </div>
-        <p class="task-title">
-          ${docSnap.data().post_title}
-        </p>
-        <p class="task-description">
-          ${docSnap.data().post_des}
-        </p>
-        <div class="tag-container">
+        
+        <div class="task--info">
+          <h2 class="task-title">
+            ${docSnap.data().post_title}
+          </h2>
           <p class="task-tag">
-            Categories: ${docSnap.data().post_categories}
+              Categories: ${docSnap.data().post_categories}
           </p>
-          <div class="btn-grp">
+          
+          <div class="tag-container">
+          
             <button class="btn-browse-edit">edit</button>
             <button class="btn-browse-delete">delete</button>
+            
           </div>
-        </div>
-        
-        <div class="task-details-bottom">
-          <div class="customer-info-container">
-            <div class="customer-info">
-              <ion-icon
-                class="customer-info-icon"
-                name="person-outline"
-              ></ion-icon>
-              <p class="customer-info--text">Mr???</p>
-            </div>
-            <div class="customer-info">
-              <ion-icon
-                class="customer-info-icon"
-                name="location-outline"
-              ></ion-icon>
-              <p class="customer-info--text">
-                ${docSnap.data().post_location}
-              </p>
-            </div>
-            <div class="customer-info">
-              <ion-icon
-                class="customer-info-icon"
-                name="call-outline"
-              ></ion-icon>
-              <p class="customer-info--text">???</p>
-            </div>
-            <div class="customer-info">
-              <ion-icon
-                class="customer-info-icon"
-                name="wallet-outline"
-              ></ion-icon>
-              <p class="customer-info--text">
-                ${docSnap.data().post_price_unit} ${
+
+            <p class="task-description">
+              ${docSnap.data().post_des} lOREn dniwnd wnwindwi wnnwi wnmos nrnrn
+            </p>
+          
+          </div>
+
+          <div class="task-details-bottom">
+            <div class="customer-info-container">
+              <div class="customer-info">
+                <ion-icon
+                  class="customer-info-icon"
+                  name="person-outline"
+                ></ion-icon>
+                <p class="customer-info--text">Mr???</p>
+              </div>
+              <div class="customer-info">
+                <ion-icon
+                  class="customer-info-icon"
+                  name="location-outline"
+                ></ion-icon>
+                <p class="customer-info--text">
+                  address
+                  <span class="tool-tip">
+                    ${docSnap.data().post_location}
+                  </span>
+                </p>
+              </div>
+              <div class="customer-info">
+                <ion-icon
+                  class="customer-info-icon"
+                  name="call-outline"
+                ></ion-icon>
+                <p class="customer-info--text">???</p>
+              </div>
+              <div class="customer-info">
+                <ion-icon
+                  class="customer-info-icon"
+                  name="wallet-outline"
+                ></ion-icon>
+                <p class="customer-info--text">
+                  ${docSnap.data().post_price_unit} ${
         docSnap.data().post_price_amount
       }
-              </p>
+                </p>
+              </div>
             </div>
-          </div>
-          <div class="task-info-container">
-            <div class="task-info">
-              <ion-icon
-              class="task-info-icon"
-              name="time-outline"
-              ></ion-icon>
-              <p class="task-info-text">
-              Start: 
+            <div class="task-info-container">
+              <div class="task-info">
+                <ion-icon
+                class="task-info-icon"
+                name="time-outline"
+                ></ion-icon>
+                <p class="task-info-text">
+                Start
+                <span class="tool-tip">
+
                 ${docSnap.data().post_start_date} ${
         docSnap.data().post_start_time
       }
-              </p>
-            </div>
-            <div class="task-info">
-              <ion-icon
-              class="task-info-icon"
-              name="time-outline"
-              ></ion-icon>
-              <p class="task-info-text">
-                End: ${docSnap.data().post_end_date} ${
-        docSnap.data().post_end_time
+                </span> 
+                 
+                </p>
+              </div>
+              <div class="task-info">
+                <ion-icon
+                class="task-info-icon"
+                name="time-outline"
+                ></ion-icon>
+                <p class="task-info-text">
+                End
+                <span class="tool-tip">
+
+                ${docSnap.data().post_start_date} ${
+        docSnap.data().post_start_time
       }
-              </p>
-            </div>
-            <div class="task-info">
-              <ion-icon
-              class="task-info-icon"
-              name="timer-outline"
-              ></ion-icon>
-              <p class="task-info-text">
-              ${docSnap.data().post_duration_amount} ${
+                </span> 
+                </p>
+              </div>
+              <div class="task-info">
+                <ion-icon
+                class="task-info-icon"
+                name="timer-outline"
+                ></ion-icon>
+                <p class="task-info-text">
+                ${docSnap.data().post_duration_amount} ${
         docSnap.data().post_duration_unit
       } 
-              </p>
+                </p>
+              </div>
+              <div class="task-info">
+                <ion-icon
+                class="task-info-icon"
+                name="people-outline"
+                ></ion-icon>
+                <p class="task-info-text">
+                <span class="tool-tip">
+
+                ${docSnap.data().post_tasker_no} tasker required
+
+                  
+                </span> 
+                ${docSnap.data().post_tasker_no} tasker</p>
+              </div>
             </div>
-            <div class="task-info">
-              <ion-icon
-              class="task-info-icon"
-              name="people-outline"
-              ></ion-icon>
-              <p class="task-info-text">${
-                docSnap.data().post_tasker_no
-              } tasker required</p>
+
+            <div class="padding-div accept--button">
+            <div class="option-button-div">
+              <a href="#" class="btn--view-detail">Accept</a>
+              <button class="btn btn--apply" id="close_task_details">Close</button>
             </div>
           </div>
-        </div>
-        
-        <div class="padding-div">
-          <div class="option-button-div">
-            <a href="#" class="btn--view-detail">Accept</a>
-            <button class="btn btn--apply" id="close_task_details">Close</button>
+
           </div>
-        </div>
+          
+    
       </div>`;
       task_details_ref.innerHTML += taskDetailsHtml;
       task_details_ref.classList.remove("display-hidden");
