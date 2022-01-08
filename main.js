@@ -869,15 +869,20 @@ post_input.addEventListener("submit", (e) => {
 
 // check task details
 const task_details_ref = document.querySelector(".window-task-information");
-
+// use to prevent the user open multiple task details at once
+let isTaskDetailsOpen = false;
 // fetch data
 const post_task_ref = document.querySelector(".post-task");
 const browser_task_ref = document.querySelector(".browse-task--section");
 const overview_ref = document.querySelector(".main-section");
 
 const functionHandleDetails = (e, current_layout) => {
+  e.preventDefault();
   // if user click view details button
-  if (e.target.className === "btn--view-detail") {
+  if (e.target.className === "btn--view-detail" && !isTaskDetailsOpen) {
+ 
+    // set to true to prevent user open another task details
+    isTaskDetailsOpen = true;
     const fetchData = async () => {
       // fetch data
       const docSnap = await getDoc(doc(db, "task", e.target.id));
@@ -1036,6 +1041,8 @@ const functionHandleDetails = (e, current_layout) => {
         task_details_ref.innerHTML = "";
         task_details_ref.classList.add("display-hidden");
         listContainer.style.pointerEvents = "";
+        // set to false so the user can open another task details
+        isTaskDetailsOpen = false;
       });
 
       const edit_btn_ref = document.querySelector(".btn-browse-edit");
@@ -1107,6 +1114,7 @@ const functionHandleDetails = (e, current_layout) => {
     listContainer.style.pointerEvents = "none";
     Swal.close();
   } else {
+    isTaskDetailsOpen = false;
     task_details_ref.innerHTML = "";
     task_details_ref.classList.add("display-hidden");
     listContainer.style.pointerEvents = "";
@@ -1115,6 +1123,7 @@ const functionHandleDetails = (e, current_layout) => {
 // when user click task
 // browse task part
 search_task_section.addEventListener("click", (e) => {
+  e.preventDefault();
   functionHandleDetails(e, browser_task_ref);
 });
 
