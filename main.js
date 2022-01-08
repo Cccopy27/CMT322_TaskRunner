@@ -886,6 +886,10 @@ const functionHandleDetails = (e, current_layout) => {
     const fetchData = async () => {
       // fetch data
       const docSnap = await getDoc(doc(db, "task", e.target.id));
+      // fetch user data that create this task
+      const q = query(collection(db,"user"),where("user_id","==",docSnap.data().created_by))
+      const userSnap = await getDocs(q);
+      const userData = userSnap.docs[0];
       // add image html
       let imgHtml = "";
       if (docSnap.data().post_photo_url) {
@@ -928,7 +932,7 @@ const functionHandleDetails = (e, current_layout) => {
                   class="customer-info-icon"
                   name="person-outline"
                 ></ion-icon>
-                <p class="customer-info--text">Mr???</p>
+                <p class="customer-info--text">Mr${userData.data().username === undefined ? "?":userData.data().username }</p>
               </div>
               <div class="customer-info">
                 <ion-icon
@@ -947,7 +951,7 @@ const functionHandleDetails = (e, current_layout) => {
                   class="customer-info-icon"
                   name="call-outline"
                 ></ion-icon>
-                <p class="customer-info--text">???</p>
+                <p class="customer-info--text">${userData.data().contact === undefined ? "?": userData.data().contact}</p>
               </div>
               <div class="customer-info">
                 <ion-icon
