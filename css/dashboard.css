@@ -595,7 +595,7 @@ body {
   min-height: 65rem;
   max-height: 65rem; */
   overflow-y: overlay;
-  position: absolute;
+  position: fixed;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
