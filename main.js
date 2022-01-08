@@ -513,7 +513,7 @@ const post_input_location = document.getElementById("task-location");
 const post_input_price = document.getElementById("task-price");
 const post_input_price_unit = document.querySelector(".task-price-unit-opt");
 const post_input_tasker_number = document.getElementById("task-tasker-needed");
-const post_input_photo = document.getElementById("task-photo");
+// const post_input_photo = document.getElementById("task-photo");
 const post_input_cat = document.querySelector(".post-task-cat-input");
 const post_input_duration = document.querySelector(".post-task-input-duration");
 const post_input_duration_unit = document.querySelector(
@@ -711,7 +711,7 @@ post_input.addEventListener("submit", (e) => {
       Swal.showLoading();
 
       // check mode (edit or post)
-      const post_photo = post_input_photo.files;
+      const post_photo = image_input.files;
 
       // convert filelist to array to user array method
       const image_arr = Array.from(post_photo);
