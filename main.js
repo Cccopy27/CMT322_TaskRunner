@@ -911,9 +911,9 @@ const functionHandleDetails = (e, current_layout) => {
           <p class="task-tag">
               Categories: ${docSnap.data().post_categories}
           </p>
-          
+
           <div class="tag-container">
-          
+           
             <button class="btn-browse-edit">edit</button>
             <button class="btn-browse-delete">delete</button>
             
@@ -1048,70 +1048,81 @@ const functionHandleDetails = (e, current_layout) => {
         // set to false so the user can open another task details
         isTaskDetailsOpen = false;
       });
-
-      const edit_btn_ref = document.querySelector(".btn-browse-edit");
-      const delete_btn_ref = document.querySelector(".btn-browse-delete");
-
-      // navigate to edit page
-      edit_btn_ref.addEventListener("click", (eEdit) => {
-        eEdit.preventDefault();
-        post_task_ref.classList.remove("display-hidden");
-        current_layout.classList.add("display-hidden");
-        post_input.classList.add("edit_mode");
-        post_input.setAttribute("id", e.target.id);
-        task_details_ref.innerHTML = "";
-        task_details_ref.classList.add("display-hidden");
-        // toggle edit mode
-        outputEditData(current_layout);
-      });
-
-      // handle delete
-      delete_btn_ref.addEventListener("click", (eDel) => {
-        eDel.preventDefault();
-        // alert user
-        Swal.fire({
-          title: "Do you want to delete the question?",
-          showDenyButton: true,
-          confirmButtonText: "Yes",
-          denyButtonText: `No`,
-        }).then(async (result) => {
-          // delete
-          if (result.isConfirmed) {
-            Swal.fire({
-              title: "Now Loading...",
-              allowEscapeKey: false,
-              allowOutsideClick: false,
-            });
-            Swal.showLoading();
-
-            // delete storage image
-            // loop each image
-            docSnap.data().post_photo_name.forEach((image_name) => {
-              // Create a reference to the file to delete
-              const desertRef = ref(
-                storage,
-                `task/${e.target.id}/${image_name}`
-              );
-              // Delete the file
-              deleteObject(desertRef)
-                .then(() => {
-                  // File deleted successfully
-                })
-                .catch((error) => {
-                  console.log(error);
-                  // Uh-oh, an error occurred!
-                });
-            });
-            Swal.showLoading();
-            await deleteDoc(doc(collection(db, "task"), e.target.id));
-            Swal.close();
-            Swal.fire("Deleted!", "", "success");
-            task_details_ref.innerHTML = "";
-            task_details_ref.classList.add("display-hidden");
-            listContainer.style.pointerEvents = "";
-          }
+      // only show edit delete if user created it
+      const authEditDelete = getAuth();
+      const userEditDelete = authEditDelete.currentUser;
+      if(docSnap.data().created_by === userEditDelete.uid){
+        const edit_btn_ref = document.querySelector(".btn-browse-edit");
+        const delete_btn_ref = document.querySelector(".btn-browse-delete");
+  
+        // navigate to edit page
+        edit_btn_ref.addEventListener("click", (eEdit) => {
+          eEdit.preventDefault();
+          post_task_ref.classList.remove("display-hidden");
+          current_layout.classList.add("display-hidden");
+          post_input.classList.add("edit_mode");
+          post_input.setAttribute("id", e.target.id);
+          task_details_ref.innerHTML = "";
+          task_details_ref.classList.add("display-hidden");
+          // toggle edit mode
+          outputEditData(current_layout);
         });
-      });
+  
+        // handle delete
+        delete_btn_ref.addEventListener("click", (eDel) => {
+          eDel.preventDefault();
+          // alert user
+          Swal.fire({
+            title: "Do you want to delete the question?",
+            showDenyButton: true,
+            confirmButtonText: "Yes",
+            denyButtonText: `No`,
+          }).then(async (result) => {
+            // delete
+            if (result.isConfirmed) {
+              Swal.fire({
+                title: "Now Loading...",
+                allowEscapeKey: false,
+                allowOutsideClick: false,
+              });
+              Swal.showLoading();
+  
+              // delete storage image
+              // loop each image
+              docSnap.data().post_photo_name.forEach((image_name) => {
+                // Create a reference to the file to delete
+                const desertRef = ref(
+                  storage,
+                  `task/${e.target.id}/${image_name}`
+                );
+                // Delete the file
+                deleteObject(desertRef)
+                  .then(() => {
+                    // File deleted successfully
+                  })
+                  .catch((error) => {
+                    console.log(error);
+                    // Uh-oh, an error occurred!
+                  });
+              });
+              Swal.showLoading();
+              await deleteDoc(doc(collection(db, "task"), e.target.id));
+              Swal.close();
+              Swal.fire("Deleted!", "", "success");
+              task_details_ref.innerHTML = "";
+              task_details_ref.classList.add("display-hidden");
+              listContainer.style.pointerEvents = "";
+            }
+          });
+        });
+      }
+      else{
+        // hide edit delete button
+        const edit_delete_ref = document.querySelector(".tag-container");
+        edit_delete_ref.style.visibility = "hidden";
+
+      }
+      
     };
     Swal.showLoading();
     fetchData();
