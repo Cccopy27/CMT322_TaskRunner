@@ -377,6 +377,9 @@ onAuthStateChanged(auth, async (user) => {
       populate_data();
     });
 
+
+    // ------------- Profile of current user ----------------
+
     // get user profile data from database
     // update profile field with current data
     const profile_form_ref = document.querySelector(".profile_form");
@@ -395,20 +398,24 @@ onAuthStateChanged(auth, async (user) => {
     const role_ref = document.querySelector(".profile-role-show-input");
     const profile_form_submit_ref = document.querySelector(".profile-form");
 
-    // handle profile image
+    // -------------------------------------------------------
+
+    // user click to upload profile image
     profile_image_input_ref.addEventListener("change", (e) => {
       const file = profile_image_input_ref.files;
-      console.log(file);
+
       // preview image
       profile_image_preview_ref.setAttribute(
         "src",
         `${URL.createObjectURL(file[0])}`
       );
     });
-    // user submit profile form
+
+    // user click submit profile form
     profile_form_submit_ref.addEventListener("submit", (e) => {
       e.preventDefault();
 
+      // alert user
       Swal.fire({
         title: "Now Loading...",
         allowEscapeKey: false,
@@ -416,6 +423,7 @@ onAuthStateChanged(auth, async (user) => {
       });
       Swal.showLoading();
 
+      // data to update
       const profileObj = {
         username: username_ref.value,
         email: email_ref.value,
@@ -424,34 +432,40 @@ onAuthStateChanged(auth, async (user) => {
         gender: gender_ref.value,
         marital_status: marital_status_ref.value,
       };
+
       // if user change profile pic
-      console.log(query_user.docs[0].profile_pic_name);
       if (profile_image_input_ref.files.length !== 0) {
+        // add new key to the update object
         profileObj["profile_pic_name"] = profile_image_input_ref.files[0].name;
       }
-      if (!query_user.docs[0].profile_pic_name) {
-        console.log("hi");
-      }
 
+      // update database
       updateDoc(doc(collection(db, "user"), query_user.docs[0].id), profileObj)
         .then(() => {
+
           // if user change profile pic
           if (profile_image_input_ref.files.length !== 0) {
-            // upload photo to storage firebase to get its photo URL
+
+            // set path for photo upload
             const uploadPath = `user/${query_user.docs[0].id}/${profile_image_input_ref.files[0].name}`;
             const storageRef = ref(storage, uploadPath);
 
+            // upload photo to storage firebase to get its photo URL
             uploadBytes(storageRef, profile_image_input_ref.files[0])
               .then((storageImg) => {
+
                 // get image URL from storage
                 getDownloadURL(storageRef).then((imgURL) => {
+
                   // update doc imgURL
                   updateDoc(doc(db, "user", query_user.docs[0].id), {
                     profile_pic_url: imgURL,
                     profile_pic_name: profile_image_input_ref.files[0].name,
+
                   }).then(() => {
                     // delete original image if user have previous image in database
                     if (query_user.docs[0].profile_pic_name) {
+                      
                       // Create a reference to the file to delete
                       const desertRef = ref(
                         storage,
@@ -485,9 +499,11 @@ onAuthStateChanged(auth, async (user) => {
           Swal.fire("Something wrong...", "", "error");
         });
     });
+
+    // add listener to user doc to capture latest changes
+
     const profile_doc_ref = doc(collection(db, "user"), query_user.docs[0].id);
 
-    // add listener to user doc
     onSnapshot(
       profile_doc_ref,
       (snapshot) => {
@@ -508,6 +524,9 @@ onAuthStateChanged(auth, async (user) => {
     );
   }
 });
+
+
+// ---------------------Post task ------------------------
 
 const post_input = document.querySelector(".post-task-form");
 const post_input_title = document.getElementById("task-title");
@@ -536,10 +555,17 @@ const post_nav_link = document.querySelector(".list-post");
 const overview_nav_link = document.querySelector(".list-overview");
 let temp_array_image_arr = [];
 
-// toggle edit mode
+// ------------------------------------------------------
+
+
+// toggle edit mode in post page
 const outputEditData = (current_layout) => {
+
+  // loading
   Swal.showLoading();
+
   if (post_input.classList.contains("edit_mode")) {
+
     // update button from post to save
     edit_post_btn_grp.firstElementChild.setAttribute("value", "Save");
     // add cancel button
@@ -549,10 +575,12 @@ const outputEditData = (current_layout) => {
     cancelBtn.setAttribute("value", "Cancel");
     edit_post_btn_grp.appendChild(cancelBtn);
 
-    // handle cancel
+    // user click cancel
     const post_input_cancel_btn = document.querySelector(".post-input-cancel");
+
     post_input_cancel_btn.addEventListener("click", (e) => {
       e.preventDefault();
+
       // alert user
       Swal.fire({
         title: "Do you want to discard your changes?",
@@ -560,12 +588,13 @@ const outputEditData = (current_layout) => {
         confirmButtonText: "Yes",
         denyButtonText: `No`,
       }).then((result) => {
+
         // yes
         if (result.isConfirmed) {
-          // update edit mode
+          // remove edit mode
           post_input.classList.remove("edit_mode");
           post_input.removeAttribute("id");
-          //reset form
+          // reset form
           post_input.reset();
           listContainer.style.pointerEvents = "";
           image_preview.innerHTML = "";
@@ -617,12 +646,18 @@ const outputEditData = (current_layout) => {
         count++;
       });
     };
+
     fetchData();
   }
   Swal.close();
 };
 
-// all task categories list here
+// ---------------------Post task end---------------------
+
+
+
+// --------------all task categories list here-----------------
+
 const task_categories_list = [
   "Food Delivery",
   "Home Repairs",
@@ -653,9 +688,11 @@ const task_categories_list = [
   "Walk the animal",
   "Welding",
 ];
-
 // sort array
 task_categories_list.sort();
+
+// --------------all task categories list end -----------------
+
 
 // append each task into datalist
 const add_category = function (task_category_list) {
@@ -697,7 +734,7 @@ post_input_cat.addEventListener("change", (e) => {
   }
 });
 
-// handle submit
+// user click submit
 post_input.addEventListener("submit", (e) => {
   let error = false;
   e.preventDefault();
@@ -709,6 +746,8 @@ post_input.addEventListener("submit", (e) => {
     confirmButtonText: "Yes",
     denyButtonText: "No",
   }).then(async (result) => {
+    
+    // user click yes
     if (result.isConfirmed) {
       Swal.fire({
         title: "Uploading...",
@@ -730,7 +769,7 @@ post_input.addEventListener("submit", (e) => {
         image_name_temp.push(item.name);
       });
 
-      // task obj
+      // task obj to submit
       const postObj = {
         post_title: post_input_title.value,
         post_categories: post_input_cat.value,
@@ -778,11 +817,9 @@ post_input.addEventListener("submit", (e) => {
       }
 
       //add or update to database
-
       const addedDoc = post_input.classList.contains("edit_mode")
         ? await updateDoc(doc(collection(db, "task"), post_input.id), postObj)
         : await addDoc(collection(db, "task"), postObj);
-      // console.log(addedDoc);
 
       // delete original image storage if required
       if (
@@ -815,6 +852,7 @@ post_input.addEventListener("submit", (e) => {
         const uploadPath = `task/${tempDocId}/${img.name}`;
         const storageRef = ref(storage, uploadPath);
 
+        // upload image
         uploadBytes(storageRef, img)
           .then((storageImg) => {
             // get image URL from storage
@@ -831,7 +869,7 @@ post_input.addEventListener("submit", (e) => {
             error = true;
           });
       });
-      console.log("finished");
+
       if (error) {
         //fail to upload data
         Swal.fire({
@@ -875,15 +913,36 @@ post_input.addEventListener("submit", (e) => {
   });
 });
 
-// check task details
-// const modal_window = document.querySelector(".window-task-information");
+// --------------------task details ----------------------
+
+
 // use to prevent the user open multiple task details at once
 let isTaskDetailsOpen = false;
-// fetch data
 const post_task_ref = document.querySelector(".post-task");
-// const browse_section = document.querySelector(".browse-task--section");
 const overview_ref = document.querySelector(".main-section");
+const task_details_modal_ref = document.querySelector(".window-grid-container");
+const close_btn_ref = document.getElementById("close_task_details");
+const edit_btn_ref = document.querySelector(".btn-browse-edit");
+const delete_btn_ref = document.querySelector(".btn-browse-delete");
+const edit_delete_ref = document.querySelector(".tag-container");
+const task_details_title_ref = document.querySelector(".task-title");
+const task_details_tag_ref = document.querySelector(".task-tag");
+const task_details_des_ref = document.querySelector(".task-description");
+const task_details_cus_name_ref = document.querySelector(".customer-info-name");
+const task_details_location_ref = document.querySelector(".task-location");
+const task_details_contact_ref = document.querySelector(".customer-info-contact");
+const task_details_price_ref = document.querySelector(".task-price");
+const task_details_start_time_ref = document.querySelector(".task-start-time");
+const task_details_end_time_ref = document.querySelector(".task-end-time");
+const task_details_duration_ref = document.querySelector(".task-duration");
+const task_details_tasker_no_ref = document.querySelector(".tasker-required");
+const task_details_tasker_no_span_ref = document.querySelector(".tasker-required-span");
+const task_details_image_container_ref = document.querySelector(".window-img-container");
 
+// -------------------------------------------------------
+
+
+// handle details
 const functionHandleDetails = (e, current_layout) => {
   e.preventDefault();
   // if user click view details button
@@ -891,203 +950,108 @@ const functionHandleDetails = (e, current_layout) => {
  
     // set to true to prevent user open another task details
     isTaskDetailsOpen = true;
+
+    // fetch data
     const fetchData = async () => {
-      // fetch data
       const docSnap = await getDoc(doc(db, "task", e.target.id));
-      // fetch user data that create this task
-      const q = query(collection(db,"user"),where("user_id","==",docSnap.data().created_by))
+      const q = query(collection(db, "user"), where("user_id", "==", docSnap.data().created_by))
       const userSnap = await getDocs(q);
       const userData = userSnap.docs[0];
-      // add image html
-      let imgHtml = "";
+      
+      // ------------- add the data details start -------------
+
+      // add image 
       if (docSnap.data().post_photo_url) {
         docSnap.data().post_photo_url.forEach((img) => {
-          imgHtml += `<img class="window-img" src=${img} alt="" />`;
+          const image = document.createElement("img");
+          image.setAttribute("src", img);
+          image.classList.add("window-img");
+          task_details_image_container_ref.appendChild(image,task_details_modal_ref);
         });
       }
 
-      // add details html
-      let taskDetailsHtml = `
-      <div class="window-grid-container">
-        
-          ${imgHtml}
-        
-        <div class="task--info">
-          <h2 class="task-title">
-            ${docSnap.data().post_title}
-          </h2>
-          <p class="task-tag">
-              Categories: ${docSnap.data().post_categories}
-          </p>
-
-          <div class="tag-container">
-           
-            <button class="btn-browse-edit">edit</button>
-            <button class="btn-browse-delete">delete</button>
-            
-          </div>
-
-            <p class="task-description">
-              ${docSnap.data().post_des} lOREn dniwnd wnwindwi wnnwi wnmos nrnrn
-            </p>
-          
-          </div>
-
-          <div class="task-details-bottom">
-            <div class="customer-info-container">
-              <div class="customer-info">
-                <ion-icon
-                  class="customer-info-icon"
-                  name="person-outline"
-                ></ion-icon>
-                <p class="customer-info--text customer-info-click">${userData.data().gender === undefined ? "" : userData.data().gender === "Male" ? "Mr" : "Mrs"} ${userData.data().username === undefined ? "?":userData.data().username }</p>
-              </div>
-              <div class="customer-info">
-                <ion-icon
-                  class="customer-info-icon"
-                  name="location-outline"
-                ></ion-icon>
-                <p class="customer-info--text">
-                  address
-                  <span class="tool-tip">
-                    ${docSnap.data().post_location}
-                  </span>
-                </p>
-              </div>
-              <div class="customer-info">
-                <ion-icon
-                  class="customer-info-icon"
-                  name="call-outline"
-                ></ion-icon>
-                <p class="customer-info--text">${userData.data().contact === undefined ? "?": userData.data().contact}</p>
-              </div>
-              <div class="customer-info">
-                <ion-icon
-                  class="customer-info-icon"
-                  name="wallet-outline"
-                ></ion-icon>
-                <p class="customer-info--text">
-                  ${docSnap.data().post_price_unit} ${
-        docSnap.data().post_price_amount
+      // add the rest details
+      task_details_title_ref.innerText = docSnap.data().post_title;
+      task_details_tag_ref.innerText = `Categories: ${docSnap.data().post_categories}`;
+      task_details_des_ref.innerText = `${docSnap.data().post_des} lOREn dniwnd wnwindwi wnnwi wnmos nrnrn`;
+      if (userData.data().gender && userData.data().username) {
+        task_details_cus_name_ref.innerText = userData.data().gender + " " + userData.data().username;
       }
-                </p>
-              </div>
-            </div>
-            <div class="task-info-container">
-              <div class="task-info">
-                <ion-icon
-                class="task-info-icon"
-                name="time-outline"
-                ></ion-icon>
-                <p class="task-info-text">
-                Start
-                <span class="tool-tip">
 
-                ${docSnap.data().post_start_date} ${
-        docSnap.data().post_start_time
+      task_details_location_ref.innerText = docSnap.data().post_location;
+      if (userData.data().contact) {
+        task_details_contact_ref.innerText = userData.data().contact;
       }
-                </span> 
-                 
-                </p>
-              </div>
-              <div class="task-info">
-                <ion-icon
-                class="task-info-icon"
-                name="time-outline"
-                ></ion-icon>
-                <p class="task-info-text">
-                End
-                <span class="tool-tip">
+      task_details_price_ref.innerText = docSnap.data().post_price_unit + " "+ docSnap.data().post_price_amount;
+      task_details_start_time_ref.innerText = docSnap.data().post_start_date + docSnap.data().post_start_time
+      task_details_end_time_ref.innerText = docSnap.data().post_end_date + docSnap.data().post_end_time
+      task_details_duration_ref.innerText = docSnap.data().post_duration_amount + docSnap.data().post_duration_unit
+      task_details_tasker_no_ref.innerText = `${docSnap.data().post_tasker_no}tasker `
+      const tasker_span = document.createElement("span");
+      tasker_span.classList.add("tool-tip");
+      tasker_span.innerText = `${docSnap.data().post_tasker_no} tasker required`;
+      task_details_tasker_no_ref.appendChild(tasker_span);
+     
+      // ------------- add the details end -------------
 
-                ${docSnap.data().post_start_date} ${
-        docSnap.data().post_start_time
-      }
-                </span> 
-                </p>
-              </div>
-              <div class="task-info">
-                <ion-icon
-                class="task-info-icon"
-                name="timer-outline"
-                ></ion-icon>
-                <p class="task-info-text">
-                ${docSnap.data().post_duration_amount} ${
-        docSnap.data().post_duration_unit
-      } 
-                </p>
-              </div>
-              <div class="task-info">
-                <ion-icon
-                class="task-info-icon"
-                name="people-outline"
-                ></ion-icon>
-                <p class="task-info-text">
-                <span class="tool-tip">
-
-                ${docSnap.data().post_tasker_no} tasker required
-
-                  
-                </span> 
-                ${docSnap.data().post_tasker_no} tasker</p>
-              </div>
-            </div>
-
-            <div class="padding-div accept--button">
-            <div class="option-button-div">
-              <a href="#" class="btn--view-detail">Accept</a>
-              <button class="btn btn--apply" id="close_task_details">Close</button>
-            </div>
-          </div>
-
-          </div>
-          
-    
-      </div>`;
-      modal_window.innerHTML += taskDetailsHtml;
+      // show modal
       modal_window.classList.remove("display-hidden");
 
       // close task details
-      const close_btn_ref = document.getElementById("close_task_details");
       close_btn_ref.addEventListener("click", (e) => {
         e.preventDefault();
-        modal_window.innerHTML = "";
+        // hide task details
         modal_window.classList.add("display-hidden");
         listContainer.style.pointerEvents = "";
         // set to false so the user can open another task details
         isTaskDetailsOpen = false;
+        // reset image and span container
+        task_details_image_container_ref.innerHTML = "";
+        task_details_tasker_no_ref.innerHTML = "";
       });
-      // only show edit delete if user created it
+
+      // only show edit delete button if user created it
       const authEditDelete = getAuth();
       const userEditDelete = authEditDelete.currentUser;
-      if(docSnap.data().created_by === userEditDelete.uid){
-        const edit_btn_ref = document.querySelector(".btn-browse-edit");
-        const delete_btn_ref = document.querySelector(".btn-browse-delete");
-  
-        // navigate to edit page
+
+      // if user created it
+      if (docSnap.data().created_by === userEditDelete.uid) {
+
+        // when user click edit
         edit_btn_ref.addEventListener("click", (eEdit) => {
           eEdit.preventDefault();
+
+          // unhide post page and hide current page
           post_task_ref.classList.remove("display-hidden");
           current_layout.classList.add("display-hidden");
+
+          // turn edit mode on for post page
           post_input.classList.add("edit_mode");
           post_input.setAttribute("id", e.target.id);
-          modal_window.innerHTML = "";
+
+          // hide task details modal
           modal_window.classList.add("display-hidden");
+
           // toggle edit mode
           outputEditData(current_layout);
         });
   
-        // handle delete
+        // when user click delete
         delete_btn_ref.addEventListener("click", (eDel) => {
           eDel.preventDefault();
+
           // alert user
           Swal.fire({
             title: "Do you want to delete the question?",
             showDenyButton: true,
             confirmButtonText: "Yes",
             denyButtonText: `No`,
+
           }).then(async (result) => {
+
             // delete
             if (result.isConfirmed) {
+              // loading
               Swal.fire({
                 title: "Now Loading...",
                 allowEscapeKey: false,
@@ -1115,11 +1079,13 @@ const functionHandleDetails = (e, current_layout) => {
                     // Uh-oh, an error occurred!
                   });
               });
-              Swal.showLoading();
+
+              // delete doc
               await deleteDoc(doc(collection(db, "task"), e.target.id));
               Swal.close();
               Swal.fire("Deleted!", "", "success");
-              modal_window.innerHTML = "";
+
+              // hide task details modal
               modal_window.classList.add("display-hidden");
               listContainer.style.pointerEvents = "";
             }
@@ -1127,33 +1093,37 @@ const functionHandleDetails = (e, current_layout) => {
         });
       }
       else{
+        // user didnt create it
         // hide edit delete button
-        const edit_delete_ref = document.querySelector(".tag-container");
         edit_delete_ref.style.visibility = "hidden";
 
       }
-      // show profile of customer
-      const cus_profile_click_ref = document.querySelector(".customer-info-click");
-      cus_profile_click_ref.addEventListener("click",e=>{
-        
-        showUserProfile([docSnap.data().created_by]);
-      })
+      // // show profile of customer
+      
+      // const cus_profile_click_ref = document.querySelector(".customer-info-click");
+      // cus_profile_click_ref.addEventListener("click",e=>{
+      //   // task_details_modal_ref.style.opacity = 0;
+      //   showUserProfile([docSnap.data().created_by]);
+      //   console.log("lick");
+      // })
       
     };
-
-   
+    // user can open task details
     Swal.showLoading();
     fetchData();
     listContainer.style.pointerEvents = "none";
     Swal.close();
-  } else {
+  } 
+  // user cannot open task details
+  else {
     isTaskDetailsOpen = false;
-    modal_window.innerHTML = "";
+    // hide current task detail 
     modal_window.classList.add("display-hidden");
     listContainer.style.pointerEvents = "";
   }
 };
-// when user click task
+
+// when user click task details for 
 // browse task part
 search_task_section.addEventListener("click", (e) => {
   e.preventDefault();
@@ -1162,14 +1132,88 @@ search_task_section.addEventListener("click", (e) => {
 
 // overview part
 overview_task.addEventListener("click", (e) => {
+  e.preventDefault();
   functionHandleDetails(e, overview_ref);
 });
 
-// function to show profile of user
+// ------------- task details end ----------------
 
-const showUserProfile = (user_id) =>{
-  user_id.forEach((Item)=>{
-    console.log(Item);
-  })
-}
 
+// ------------- task details profile ----------------
+
+// // function to show profile of user
+// const showUserProfile = (user_id,task_details_modal_ref) =>{
+
+
+//   modal_window.innerHTML += 
+//   `
+//     <div class="profile_modal_popup_container">
+//     <div class="profile_modal_popup_title">
+//       <p>User Info</p>
+//       <ion-icon name="close-outline" class="profile_modal_popup_close"></ion-icon>
+//     </div>
+//     <div class="profile_modal_popup_content">
+//       <div class="profile_modal_popup_content_left">
+//         <ul class="profile_modal_popup_content_user_list">
+//           <li class="profile_modal_popup_content_user_li" id="1">
+//               user 1 awewaeawewaewaewaew
+//           </li>
+//           <li class="profile_modal_popup_content_user_li" id="2">
+//               user 1 awewaeawewaewaewaew
+//           </li>
+//           <li class="profile_modal_popup_content_user_li" id="3">
+//               user 1 awewaeawewaewaewaew
+//           </li>
+//         </ul>
+//       </div>
+//       <div class="profile_modal_popup_content_right">
+//         <div class="profile_modal_popup_content_right_top">
+//           <div class="profile_modal_popup_content_picture">
+//             <img class="profile_modal_popup_picture_img" src="" alt="" />
+//           </div>
+//           <div class="profile_modal_popup_content_name_role">
+//             <p class="profile_modal_popup_content_name">name</p>
+//             <p class="profile_modal_popup_content_role">role</p>
+//           </div>
+//         </div>
+//         <div class="profile_modal_popup_content_email_contact">
+//           <p class="profile_modal_popup_content_email">email</p>
+//           <p class="profile_modal_popup_content_contact">contact</p>
+
+//         </div>
+//         <div class="profile_modal_popup_content_gender_status">
+//           <p class="profile_modal_popup_content_gender">gender</p>
+//           <p class="profile_modal_popup_content_status">status</p>
+//         </div>
+//         <div class="profile_modal_popup_content_address">
+//           <p class="profile_modal_popup_content_address">address</p>
+//         </div>
+//       </div>
+//     </div>
+//   </div>
+//   `
+
+//   const profile_modal_user_list_ref = document.querySelectorAll(".profile_modal_popup_content_user_li");
+//   const profile_modal_user_container_ref = document.querySelector(".profile_modal_popup_content_user_list");
+//   const profile_modal_close_ref = document.querySelector(".profile_modal_popup_close");
+//   const profile_modal_container_ref = document.querySelector(".profile_modal_popup_container");
+//   profile_modal_close_ref.addEventListener("click",e=>{
+//     console.log(e);
+//     modal_window.removeChild(profile_modal_container_ref);
+//     // profile_modal_container_ref.style.visibility = "hidden";
+//     // task_details_modal_ref.style.display = "grid";
+//     // console.log(task_details_modal_ref);
+
+//   })
+//   profile_modal_user_container_ref.addEventListener("click",e=>{
+//     profile_modal_user_list_ref.forEach(user_nav=>{
+//       e.target.id === user_nav.id ? 
+//       user_nav.classList.add("profile_modal_user_list_active") :
+//       user_nav.classList.remove("profile_modal_user_list_active");
+//     })
+
+//     console.log(e);
+//   })
+// }
+
+// ------------- task details profile end----------------
