@@ -516,7 +516,7 @@ const post_input_start_date = document.getElementById("task-start-date");
 const post_input_start_time = document.getElementById("task-start-time");
 const post_input_end_date = document.getElementById("task-end-date");
 const post_input_end_time = document.getElementById("task-end-time");
-const post_input_location = document.getElementById("task-location");
+// const loc_text = document.getElementById("task-location");
 const post_input_price = document.getElementById("task-price");
 const post_input_price_unit = document.querySelector(".task-price-unit-opt");
 const post_input_tasker_number = document.getElementById("task-tasker-needed");
@@ -603,7 +603,7 @@ const outputEditData = (current_layout) => {
       post_input_cat.value = docSnap.data().post_categories;
       post_input_duration.value = docSnap.data().post_duration_amount;
       post_input_duration_unit.value = docSnap.data().post_duration_unit;
-      post_input_location.value = docSnap.data().post_location;
+      loc_text.value = docSnap.data().post_location;
 
       // preview image
       let count = 0;
@@ -739,7 +739,7 @@ post_input.addEventListener("submit", (e) => {
         post_start_time: post_input_start_time.value,
         post_end_date: post_input_end_date.value,
         post_end_time: post_input_end_time.value,
-        post_location: post_input_location.value,
+        post_location: loc_text.value,
         post_price_amount: post_input_price.value,
         post_price_unit: post_input_price_unit.value,
         post_duration_amount: post_input_duration.value,
@@ -881,7 +881,7 @@ post_input.addEventListener("submit", (e) => {
 let isTaskDetailsOpen = false;
 // fetch data
 const post_task_ref = document.querySelector(".post-task");
-const browser_task_ref = document.querySelector(".browse-task--section");
+// const browse_section = document.querySelector(".browse-task--section");
 const overview_ref = document.querySelector(".main-section");
 
 const functionHandleDetails = (e, current_layout) => {
@@ -1157,7 +1157,7 @@ const functionHandleDetails = (e, current_layout) => {
 // browse task part
 search_task_section.addEventListener("click", (e) => {
   e.preventDefault();
-  functionHandleDetails(e, browser_task_ref);
+  functionHandleDetails(e, browse_section);
 });
 
 // overview part
