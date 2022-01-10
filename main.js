@@ -776,7 +776,6 @@ post_input.addEventListener("submit", (e) => {
         // customer not allow to change accepted user
         delete postObj.tasker_id;
       }
-      console.log(postObj);
 
       //add or update to database
 
@@ -788,7 +787,7 @@ post_input.addEventListener("submit", (e) => {
       // delete original image storage if required
       if (
         post_input.classList.contains("edit_mode") &&
-        temp_array_image_arr.length !== 0
+        postObj.post_photo_name !== undefined
       ) {
         // delete storage image
         // loop each image
@@ -798,6 +797,7 @@ post_input.addEventListener("submit", (e) => {
           // Delete the file
           deleteObject(desertRef)
             .then(() => {
+              console.log("delete image");
               // File deleted successfully
             })
             .catch((error) => {
@@ -939,7 +939,7 @@ const functionHandleDetails = (e, current_layout) => {
                   class="customer-info-icon"
                   name="person-outline"
                 ></ion-icon>
-                <p class="customer-info--text">${userData.data().gender === undefined ? "" : userData.data().gender === "Male" ? "Mr" : "Mrs"} ${userData.data().username === undefined ? "?":userData.data().username }</p>
+                <p class="customer-info--text customer-info-click">${userData.data().gender === undefined ? "" : userData.data().gender === "Male" ? "Mr" : "Mrs"} ${userData.data().username === undefined ? "?":userData.data().username }</p>
               </div>
               <div class="customer-info">
                 <ion-icon
@@ -1105,6 +1105,8 @@ const functionHandleDetails = (e, current_layout) => {
                 // Delete the file
                 deleteObject(desertRef)
                   .then(() => {
+                  console.log("delete image");
+
                     // File deleted successfully
                   })
                   .catch((error) => {
@@ -1129,8 +1131,16 @@ const functionHandleDetails = (e, current_layout) => {
         edit_delete_ref.style.visibility = "hidden";
 
       }
+      // show profile of customer
+      const cus_profile_click_ref = document.querySelector(".customer-info-click");
+      cus_profile_click_ref.addEventListener("click",e=>{
+        
+        showUserProfile([docSnap.data().created_by]);
+      })
       
     };
+
+   
     Swal.showLoading();
     fetchData();
     listContainer.style.pointerEvents = "none";
@@ -1153,3 +1163,12 @@ search_task_section.addEventListener("click", (e) => {
 overview_task.addEventListener("click", (e) => {
   functionHandleDetails(e, overview_ref);
 });
+
+// function to show profile of user
+
+const showUserProfile = (user_id) =>{
+  user_id.forEach((Item)=>{
+    console.log(Item);
+  })
+}
+
