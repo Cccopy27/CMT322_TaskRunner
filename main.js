@@ -582,8 +582,8 @@ const outputEditData = (current_layout) => {
           // navigate to browse mode
           post_task_ref.classList.add("display-hidden");
           current_layout.classList.remove("display-hidden");
-          task_details_ref.innerHTML = "";
-          task_details_ref.classList.add("display-hidden");
+          modal_window.innerHTML = "";
+          modal_window.classList.add("display-hidden");
         }
       });
     });
@@ -863,19 +863,20 @@ post_input.addEventListener("submit", (e) => {
         // navigate to overview
         post_task_ref.classList.add("display-hidden");
         overview_ref.classList.remove("display-hidden");
-        task_details_ref.innerHTML = "";
-        task_details_ref.classList.add("display-hidden");
+        modal_window.innerHTML = "";
+        modal_window.classList.add("display-hidden");
 
         // change nav
         overview_nav_link.classList.add("list-section-active");
         post_nav_link.classList.remove("list-section-active");
+        browse_nav_link.classList.remove("list-section-active");
       }
     }
   });
 });
 
 // check task details
-const task_details_ref = document.querySelector(".window-task-information");
+// const modal_window = document.querySelector(".window-task-information");
 // use to prevent the user open multiple task details at once
 let isTaskDetailsOpen = false;
 // fetch data
@@ -1042,15 +1043,15 @@ const functionHandleDetails = (e, current_layout) => {
           
     
       </div>`;
-      task_details_ref.innerHTML += taskDetailsHtml;
-      task_details_ref.classList.remove("display-hidden");
+      modal_window.innerHTML += taskDetailsHtml;
+      modal_window.classList.remove("display-hidden");
 
       // close task details
       const close_btn_ref = document.getElementById("close_task_details");
       close_btn_ref.addEventListener("click", (e) => {
         e.preventDefault();
-        task_details_ref.innerHTML = "";
-        task_details_ref.classList.add("display-hidden");
+        modal_window.innerHTML = "";
+        modal_window.classList.add("display-hidden");
         listContainer.style.pointerEvents = "";
         // set to false so the user can open another task details
         isTaskDetailsOpen = false;
@@ -1069,8 +1070,8 @@ const functionHandleDetails = (e, current_layout) => {
           current_layout.classList.add("display-hidden");
           post_input.classList.add("edit_mode");
           post_input.setAttribute("id", e.target.id);
-          task_details_ref.innerHTML = "";
-          task_details_ref.classList.add("display-hidden");
+          modal_window.innerHTML = "";
+          modal_window.classList.add("display-hidden");
           // toggle edit mode
           outputEditData(current_layout);
         });
@@ -1118,8 +1119,8 @@ const functionHandleDetails = (e, current_layout) => {
               await deleteDoc(doc(collection(db, "task"), e.target.id));
               Swal.close();
               Swal.fire("Deleted!", "", "success");
-              task_details_ref.innerHTML = "";
-              task_details_ref.classList.add("display-hidden");
+              modal_window.innerHTML = "";
+              modal_window.classList.add("display-hidden");
               listContainer.style.pointerEvents = "";
             }
           });
@@ -1147,8 +1148,8 @@ const functionHandleDetails = (e, current_layout) => {
     Swal.close();
   } else {
     isTaskDetailsOpen = false;
-    task_details_ref.innerHTML = "";
-    task_details_ref.classList.add("display-hidden");
+    modal_window.innerHTML = "";
+    modal_window.classList.add("display-hidden");
     listContainer.style.pointerEvents = "";
   }
 };
