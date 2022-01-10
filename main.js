@@ -409,6 +409,13 @@ onAuthStateChanged(auth, async (user) => {
     profile_form_submit_ref.addEventListener("submit", (e) => {
       e.preventDefault();
 
+      Swal.fire({
+        title: "Now Loading...",
+        allowEscapeKey: false,
+        allowOutsideClick: false,
+      });
+      Swal.showLoading();
+
       const profileObj = {
         username: username_ref.value,
         email: email_ref.value,
@@ -932,7 +939,7 @@ const functionHandleDetails = (e, current_layout) => {
                   class="customer-info-icon"
                   name="person-outline"
                 ></ion-icon>
-                <p class="customer-info--text">Mr${userData.data().username === undefined ? "?":userData.data().username }</p>
+                <p class="customer-info--text">${userData.data().gender === undefined ? "" : userData.data().gender === "Male" ? "Mr" : "Mrs"} ${userData.data().username === undefined ? "?":userData.data().username }</p>
               </div>
               <div class="customer-info">
                 <ion-icon
