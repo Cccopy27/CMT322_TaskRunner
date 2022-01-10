@@ -1267,7 +1267,7 @@ body {
   flex: 1;
 }
 
-.customer-info-name:hover{
+.customer-info-name:hover,.tasker-required:hover{
   cursor: pointer;
   color: #51eb82;
 }
@@ -1293,8 +1293,4 @@ body {
 
 .profile_modal_user_list_inactive{
   background-color: transparent;
-}
-
-.window-grid-container{
-
 }
