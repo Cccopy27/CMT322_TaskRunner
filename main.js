@@ -700,6 +700,7 @@ add_category.call(post_input_cat_list, task_categories_list);
 add_category.call(job_category, task_categories_list);
 
 const handle_empty_input = function (e) {
+  latest_oldest_option.value = "Please select an option";
   if (e.target.value === "") {
     populate_data();
   }
