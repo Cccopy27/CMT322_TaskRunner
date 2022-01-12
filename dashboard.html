@@ -30,6 +30,7 @@
     ></script>
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.3.0/dist/sweetalert2.all.min.js"></script>
+    
 
     <script defer src="./dist/dashboard.bundle.js"></script>
   </head>
@@ -459,9 +460,16 @@
           <div class="search--input--field">
             <input list="job--category" class="job--choice" />
             <datalist id="job--category">
-              <option>hahaha</option>              
-              <option>hahaha</option>              
+                          
             </datalist>
+            
+            <select id="date-list">
+              <option selected>Please select an option</option>
+              <option>Latest</option>
+              <option>oldest</option>
+
+            </select>
+
             <button class="search--task--button">Search</button>
           </div>
           <div class="search-task--section">

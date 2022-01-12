@@ -273,13 +273,16 @@ import {
   getDownloadURL,
   list,
   deleteObject,
+  connectStorageEmulator,
 } from "firebase/storage";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { async } from "@firebase/util";
 let overview_task = document.querySelector(".task-card-content");
 let search_task_section = document.querySelector(".search-task--section");
 let job_category = document.querySelector("#job--category");
+let latest_oldest_option = document.querySelector("#date-list");
 const search_task_button = document.querySelector(".search--task--button");
+let input_field = document.querySelector(".job--choice");
 const loader = document.querySelector(".loader");
 
 const auth = getAuth();
@@ -311,9 +314,44 @@ const render_search_result = function (section) {
   });
 };
 
-const populate_data = async function () {
-  let search_section_data = await getDocs(collection(db, "task"));
+const sort_task = function (order) {
+  if (!(this.length - 1) || order === "pleaseselectanoption") return;
 
+  this.sort(function (first_task, second_task) {
+    let first_date = new Date(
+      first_task.data().added_at.seconds * 1000 +
+        first_task.data().added_at.nanoseconds / 1000000
+    );
+    let second_date = new Date(
+      second_task.data().added_at.seconds * 1000 +
+        second_task.data().added_at.nanoseconds / 1000000
+    );
+    if (order === "latest") {
+      console.log("hello");
+      return second_date - first_date;
+    } else {
+      return first_date - second_date;
+    }
+  });
+  this.forEach((task) => {
+    console.log(task.data());
+  });
+  return this;
+};
+
+const populate_data = async function () {
+  input_field.removeEventListener("keyup", handle_empty_input);
+  loader.classList.remove("loader--hidden");
+  let search_section_data = await getDocs(collection(db, "task"));
+  loader.classList.add("loader--hidden");
+
+  latest_oldest_option.onchange = function (e) {
+    let order = this.value.toLowerCase().replace(" ", "");
+
+    let task_sorted = sort_task.call(search_section_data.docs, order);
+
+    render_search_result.call(task_sorted, search_task_section);
+  };
   render_search_result.call(search_section_data.docs, search_task_section);
 };
 
@@ -661,15 +699,32 @@ const add_category = function (task_category_list) {
 add_category.call(post_input_cat_list, task_categories_list);
 add_category.call(job_category, task_categories_list);
 
+const handle_empty_input = function (e) {
+  if (e.target.value === "") {
+    populate_data();
+  }
+};
+
 search_task_button.addEventListener("click", async (e) => {
+  latest_oldest_option.value = "Please select an option";
   let search_section = e.target.closest(".search--input--field");
-  let input = search_section.querySelector(".job--choice").value;
+  let input_field = search_section.querySelector(".job--choice");
+  let input = input_field.value;
+
   loader.classList.remove("loader--hidden");
 
   let tasks = await getDocs(
     query(collection(db, "task"), where("post_categories", "==", input))
   );
+
+  input_field.addEventListener("keyup", handle_empty_input);
+
   render_search_result.call(tasks.docs, search_task_section);
+  latest_oldest_option.onchange = function (e) {
+    let order = this.value.toLowerCase().replace(" ", "");
+    let task = sort_task.call(tasks.docs, order);
+    render_search_result.call(task, search_task_section);
+  };
 
   loader.classList.add("loader--hidden");
 });
