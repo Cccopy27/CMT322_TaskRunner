@@ -28,6 +28,9 @@
       integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
       crossorigin=""
     ></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.3.0/dist/sweetalert2.all.min.js"></script>
+
     <script defer src="./dist/dashboard.bundle.js"></script>
   </head>
   <body>
@@ -39,8 +42,8 @@
             Task<span class="dashboard-heading-span">Runner</span>
           </h1>
         </div>
-        <ul class="list-container">
-          <li class="list-section" data-link="1">
+        <ul class="list-container ">
+          <li class="list-section list-overview" data-link="1">
             <a class="list-section-link" href="#"
               ><ion-icon
                 class="dashboard-sidebar-icon"
@@ -55,13 +58,13 @@
               >Profile</a
             >
           </li>
-          <li class="list-section" data-link="3">
+          <li class="list-section list-browse" data-link="3">
             <a class="list-section-link" href="#"
               ><ion-icon class="dashboard-sidebar-icon" name="search"></ion-icon
               >Browse tasks</a
             >
           </li>
-          <li class="list-section" data-link="4">
+          <li class="list-section list-post" data-link="4">
             <a class="list-section-link" href="#"
               ><ion-icon class="dashboard-sidebar-icon" name="create"></ion-icon
               >Post task</a
@@ -89,9 +92,9 @@
 
             <div class="task-card-content">
               <!--  -->
-              <div class="slide-task-holder">
-                <div class="section-task-card">
-                  <img class="search-task-img" src="img/painting.jpg" alt="" />
+              <!-- <div class="slide-task-holder"> -->
+                <!-- <div class="section-task-card">
+                  <img class="search-task-img" src="img/painting.jpg" alt="" /> -->
                   <!-- <div class="padding-div">
                     <p class="search-task-paragraph">
                       Lorem ipsum dolor sit amet consectetur adipisicing elit.
@@ -99,7 +102,7 @@
                     </p>
                   </div> -->
 
-                  <div class="padding-div">
+                  <!-- <div class="padding-div">
                     <div class="option-button-div">
                       <a href="#" class="btn--view-detail">view details</a>
                       <button class="btn btn--apply">Complete</button>
@@ -107,7 +110,7 @@
                   </div>
                 </div>
                 <div class="section-task-card">
-                  <img class="search-task-img" src="img/painting.jpg" alt="" />
+                  <img class="search-task-img" src="img/painting.jpg" alt="" /> -->
                   <!-- <div class="padding-div">
                     <p class="search-task-paragraph">
                       Lorem ipsum dolor sit amet consectetur adipisicing elit.
@@ -115,7 +118,7 @@
                     </p>
                   </div> -->
 
-                  <div class="padding-div">
+                  <!-- <div class="padding-div">
                     <div class="option-button-div">
                       <a href="#" class="btn--view-detail">view details</a>
                       <button class="btn btn--apply">Complete</button>
@@ -132,12 +135,12 @@
                     </div>
                   </div>
                 </div>
-              </div>
+              </div> -->
               <!--  -->
 
-              <div class="slide-task-holder">
+              <!-- <div class="slide-task-holder">
                 <div class="section-task-card">
-                  <img class="search-task-img" src="img/painting.jpg" alt="" />
+                  <img class="search-task-img" src="img/painting.jpg" alt="" /> -->
                   <!-- <div class="padding-div">
                     <p class="search-task-paragraph">
                       Lorem ipsum dolor sit amet consectetur adipisicing elit.
@@ -145,7 +148,7 @@
                     </p>
                   </div> -->
 
-                  <div class="padding-div">
+                  <!-- <div class="padding-div">
                     <div class="option-button-div">
                       <a href="#" class="btn--view-detail">view details</a>
                       <button class="btn btn--apply">Complete</button>
@@ -153,7 +156,7 @@
                   </div>
                 </div>
                 <div class="section-task-card">
-                  <img class="search-task-img" src="img/painting.jpg" alt="" />
+                  <img class="search-task-img" src="img/painting.jpg" alt="" /> -->
                   <!-- <div class="padding-div">
                     <p class="search-task-paragraph">
                       Lorem ipsum dolor sit amet consectetur adipisicing elit.
@@ -161,7 +164,7 @@
                     </p>
                   </div> -->
 
-                  <div class="padding-div">
+                  <!-- <div class="padding-div">
                     <div class="option-button-div">
                       <a href="#" class="btn--view-detail">view details</a>
                       <button class="btn btn--apply">Complete</button>
@@ -177,8 +180,8 @@
                       <button class="btn btn--apply">Complete</button>
                     </div>
                   </div>
-                </div>
-              </div>
+                </div> -->
+              <!-- </div> -->
 
               <!--  -->
 
@@ -276,48 +279,143 @@
         <!-- window -->
 
         <div class="window-task-information display-hidden">
+          <!-- task details modal  -->
           <div class="window-grid-container">
-            <img class="window-img" src="img/painting.jpg" alt="" />
-            <p class="task-description">
-              Lorem ipsum dolor sit amet consectetur adipisicing elit.
-              Cupiditate eveniet molestiae architecto dolores ea vel sit
-              perspiciatis
-            </p>
-            <div class="customer-info">
-              <ion-icon
-                class="customer-info-icon"
-                name="person-outline"
-              ></ion-icon>
-              <p class="customer-info--text">Mr. Loh</p>
+            <div class="window-img-container">
+            </div>         
+            <div class="task--info">
+              <h2 class="task-title">
+              </h2>
+              <p class="task-tag">
+              </p>
+              <div class="tag-container">
+                <button class="btn-browse-edit">Edit</button>
+                <button class="btn-browse-delete">Delete</button>
+              </div>
+              <p class="task-description">         
+              </p>           
             </div>
-            <div class="customer-info">
-              <ion-icon
-                class="customer-info-icon"
-                name="location-outline"
-              ></ion-icon>
-              <p class="customer-info--text">Bayan Lepas,Penang</p>
-            </div>
-            <div class="customer-info">
-              <ion-icon
-                class="customer-info-icon"
-                name="call-outline"
-              ></ion-icon>
-              <p class="customer-info--text">0115261200</p>
-            </div>
-            <div class="customer-info">
-              <ion-icon
-                class="customer-info-icon"
-                name="wallet-outline"
-              ></ion-icon>
-              <p class="customer-info--text">MYR 60</p>
-            </div>
-            <div class="padding-div">
-              <div class="option-button-div">
-                <a href="#" class="btn--view-detail">view details</a>
-                <button class="btn btn--apply">apply</button>
+            <div class="task-details-bottom">
+              <div class="customer-info-container">
+                <div class="customer-info ">
+                  <ion-icon
+                    class="customer-info-icon"
+                    name="person-outline"
+                  ></ion-icon>
+                  <p class="customer-info--text customer-info-name">?</p>
+                </div>
+                <div class="customer-info">
+                  <ion-icon
+                    class="customer-info-icon"
+                    name="location-outline"
+                  ></ion-icon>
+                  <p class="customer-info--text">
+                    address
+                    <span class="tool-tip task-location">
+                    </span>
+                  </p>
+                </div>
+                <div class="customer-info">
+                  <ion-icon
+                    class="customer-info-icon"
+                    name="call-outline"
+                  ></ion-icon>
+                  <p class="customer-info--text customer-info-contact">?</p>
+                </div>
+                <div class="customer-info">
+                  <ion-icon
+                    class="customer-info-icon"
+                    name="wallet-outline"
+                  ></ion-icon>
+                  <p class="customer-info--text task-price"> 
+                  </p>
+                </div>
+              </div>
+              <div class="task-info-container">
+                <div class="task-info">
+                  <ion-icon
+                  class="task-info-icon"
+                  name="time-outline"
+                  ></ion-icon>
+                  <p class="task-info-text">
+                  Start
+                  <span class="tool-tip task-start-time">
+                  </span> 
+                  </p>
+                </div>
+                <div class="task-info">
+                  <ion-icon
+                  class="task-info-icon"
+                  name="time-outline"
+                  ></ion-icon>
+                  <p class="task-info-text">
+                  End
+                  <span class="tool-tip task-end-time">
+                  </span> 
+                  </p>
+                </div>
+                <div class="task-info">
+                  <ion-icon
+                  class="task-info-icon"
+                  name="timer-outline"
+                  ></ion-icon>
+                  <p class="task-info-text task-duration">
+                  </p>
+                </div>
+                <div class="task-info">
+                  <ion-icon
+                  class="task-info-icon"
+                  name="people-outline"
+                  ></ion-icon>
+                  <p class="task-info-text tasker-required">
+                  </p>
+                </div>
+              </div>
+              <div class="padding-div accept--button">
+                <div class="option-button-div">
+                  <a href="#" class="btn--view-detail">Accept</a>
+                  <button class="btn btn--apply" id="close_task_details">Close</button>
+                </div>
               </div>
             </div>
           </div>
+          <!-- task detail modal  -->
+
+          <!-- profile modal  -->
+          <div class="profile_modal_popup_container display-hidden">
+            <div class="profile_modal_popup_title">
+              <p>User Profile Info</p>
+              <ion-icon name="close-outline" class="profile_modal_popup_close"></ion-icon>
+            </div>
+            <div class="profile_modal_popup_content">
+              <div class="profile_modal_popup_content_left">
+                <ul class="profile_modal_popup_content_user_list">
+                </ul>
+              </div>
+               <div class="profile_modal_popup_content_right">
+                <div class="profile_modal_popup_content_right_top">
+                  <div class="profile_modal_popup_content_picture">
+                    <img class="profile_modal_popup_picture_img" src="" alt="" />
+                  </div>
+                  <div class="profile_modal_popup_content_name_role">
+                    <p class="profile_modal_popup_content_name"></p>
+                    <p class="profile_modal_popup_content_role"></p>
+                  <p class="profile_modal_popup_content_contact"></p>
+                  </div>
+                </div>
+                <div class="profile_modal_popup_content_email_contact">
+                  <p class="profile_modal_popup_content_gender"></p>
+                  <p class="profile_modal_popup_content_email"></p>
+                </div>
+                <div class="profile_modal_popup_content_gender_status">
+                  <p class="profile_modal_popup_content_status"></p>
+                  <p class="profile_modal_popup_content_address"></p>
+                </div>
+              </div> 
+            </div>
+          </div>
+
+          <!-- profile modal  -->
         </div>
 
         <!-- window -->
@@ -330,21 +428,44 @@
               <h2 class="form-heading">
                 Task<span class="form-span">Runner</span>
               </h2>
-              <div class="form-input-divider input-span">
-                <label for="username" class="input-label">username</label>
+              <div class="profile-picture-form-container">
+                <div class="profile-picture-form">
+                  <img class ="profile-picture-input-preview" src="https://picsum.photos/18" alt=""/>
+                  <label for="task-photo" class="input-label upload-image-label">Upload image</label>
+                  <input
+                    class="profile-picture-input-file"
+                    class=""
+                    type="file"
+                    accept="image/*"
+                  >
+                  
+                </div>
+              </div>
+              
+              <div class="form-input-divider input-span-submit">
+                <label for="username" class="input-label">Username</label>
                 <input
                   id="username"
                   class="profile-input"
                   type="text"
                   required
                 />
+                <label for="role" class="input-label input-role">Role</label>
+                <input
+                  value=""
+                  id="role"
+                  class="profile-input profile-role-show-input"
+                  type="text"
+                  required
+                  disabled
+                />
               </div>
               <div class="form-input-divider">
-                <label for="email" class="input-label">email</label>
+                <label for="email" class="input-label">Email</label>
                 <input id="email" class="profile-input" type="email" required />
               </div>
               <div class="form-input-divider">
-                <label for="contact" class="input-label">contact</label>
+                <label for="contact" class="input-label">Contact</label>
                 <input
                   id="contact"
                   class="profile-input"
@@ -352,8 +473,26 @@
                   required
                 />
               </div>
+              <div class="form-input-divider">
+                <label for="Gender" class="input-label">Gender</label>
+                <select name="Gender" id="Gender" class="profile-input" required>
+                  <option value="Male">Male</option>
+                  <option value="Female">Female</option>
+                </select>
+              </div>
+              <div class="form-input-divider">
+                <label for="Marital_Status" class="input-label">Marital Status</label>
+                <select name="Marital_Status" id="Marital_Status" class="profile-input" required>
+                  <option value="Single">Single</option>
+                  <option value="Married">Married</option>
+                  <option value="Widowed">Widowed</option>
+                  <option value="Divorced">Divorced</option>
+                  <option value="Separated">Separated</option>
+                  <option value="Registered Partnership">Registered Partnership</option>
+                </select>
+              </div>
               <div class="form-input-divider input-span">
-                <label for="address" class="input-label">address</label>
+                <label for="address" class="input-label">Address</label>
                 <input
                   id="address"
                   class="profile-input"
@@ -373,63 +512,108 @@
         <!-- browse task section -->
 
         <section class="browse-task--section display-hidden" data-section="3">
-          <div class="search-task--section">
-            <div class="section-task-card">
-              <img class="search-task-img" src="img/painting.jpg" alt="" />
-              <div class="padding-div">
-                <p class="search-task-paragraph">
-                  Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                  Officiis quo doloribus odio iste?
-                </p>
-              </div>
-
-              <div class="padding-div">
-                <div class="option-button-div">
-                  <a href="#" class="btn--view-detail">view details</a>
-                  <button class="btn btn--apply">apply</button>
-                </div>
-              </div>
-            </div>
-
-            <div class="section-task-card">
-              <img class="search-task-img" src="img/painting.jpg" alt="" />
-              <div class="padding-div">
-                <p class="search-task-paragraph">
-                  Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                  Officiis quo doloribus odio iste?
-                </p>
-              </div>
-
-              <div class="padding-div">
-                <div class="option-button-div">
-                  <a href="#" class="btn--view-detail">view details</a>
-                  <button class="btn btn--apply">apply</button>
-                </div>
-              </div>
-            </div>
-            <div class="section-task-card">
-              <img class="search-task-img" src="img/painting.jpg" alt="" />
-              <div class="padding-div">
-                <p class="search-task-paragraph">
-                  Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                  Officiis quo doloribus odio iste?
-                </p>
-              </div>
-
-              <div class="padding-div">
-                <div class="option-button-div">
-                  <a href="#" class="btn--view-detail">view details</a>
-                  <button class="btn btn--apply">apply</button>
-                </div>
-              </div>
-            </div>
+          <div class="search--input--field">
+            <input list="job--category" class="job--choice" />
+            <datalist id="job--category">
+              <option>hahaha</option>              
+              <option>hahaha</option>              
+            </datalist>
+            <button class="search--task--button">Search</button>
           </div>
+          <div class="search-task--section">
+            <!-- <div class="section-task-card">
+              <img class="search-task-img" src="img/painting.jpg" alt="" />
+              <div class="padding-div">
+                <p class="search-task-paragraph">
+                  Lorem ipsum dolor sit amet consectetur adipisicing elit.
+                  Officiis quo doloribus odio iste?
+                </p>
+              </div>
+
+              <div class="padding-div">
+                <div class="option-button-div">
+                  <a href="#" class="btn--view-detail">view details</a>
+                  <button class="btn btn--apply">apply</button>
+                </div>
+              </div>
+            </div>
+
+            <div class="section-task-card">
+              <img class="search-task-img" src="img/painting.jpg" alt="" />
+              <div class="padding-div">
+                <p class="search-task-paragraph">
+                  Lorem ipsum dolor sit amet consectetur adipisicing elit.
+                  Officiis quo doloribus odio iste?
+                </p>
+              </div>
+
+              <div class="padding-div">
+                <div class="option-button-div">
+                  <a href="#" class="btn--view-detail">view details</a>
+                  <button class="btn btn--apply">apply</button>
+                </div>
+              </div>
+            </div>
+            <div class="section-task-card">
+              <img class="search-task-img" src="img/painting.jpg" alt="" />
+              <div class="padding-div">
+                <p class="search-task-paragraph">
+                  Lorem ipsum dolor sit amet consectetur adipisicing elit.
+                  Officiis quo doloribus odio iste?
+                </p>
+              </div>
+
+              <div class="padding-div">
+                <div class="option-button-div">
+                  <a href="#" class="btn--view-detail">view details</a>
+                  <button class="btn btn--apply">apply</button>
+                </div>
+              </div>
+            </div>
+
+            
+
+            <div class="section-task-card">
+              <img class="search-task-img" src="img/painting.jpg" alt="" />
+              <div class="padding-div">
+                <p class="search-task-paragraph">
+                  Lorem ipsum dolor sit amet consectetur adipisicing elit.
+                  Officiis quo doloribus odio iste?
+                </p>
+              </div>
+
+              <div class="padding-div">
+                <div class="option-button-div">
+                  <a href="#" class="btn--view-detail">view details</a>
+                  <button class="btn btn--apply">apply</button>
+                </div>
+              </div>
+            </div>
+            <div class="section-task-card">
+              <img class="search-task-img" src="img/painting.jpg" alt="" />
+              <div class="padding-div">
+                <p class="search-task-paragraph">
+                  Lorem ipsum dolor sit amet consectetur adipisicing elit.
+                  Officiis quo doloribus odio iste?
+                </p>
+              </div>
+
+              <div class="padding-div">
+                <div class="option-button-div">
+                  <a href="#" class="btn--view-detail">view details</a>
+                  <button class="btn btn--apply">apply</button>
+                </div>
+              </div>
+            </div> -->
+          </div>
+          <div class="loader loader--hidden"></div>
+          <div class="overlay"></div>
         </section>
         <!-- browse task section -->
 
         <!-- post task section -->
         <section class="post-task display-hidden" data-section="4">
-          <div class="search-task--section">
+          <div class="post-task--section">
             <div class="map-container display-hidden">
               <div id="map"></div>
               <div class="map--btn-container">
@@ -448,11 +632,19 @@
                 <label for="task-title" class="input-label">Tittle:</label>
                 <input
                   id="task-title"
-                  class="post-task-input"
+                  class="post-task-input "
                   type="text"
                   placeholder="Enter your task title..."
                   required
                 />
+              </div>
+
+              <!-- task categories  -->
+              <div class="form-input-divider input-span">
+                <label for="post-task-cat-input" class="input-label">Task Categories: </label>
+                <input list="post-task-cat" class="post-task-cat-input " required>
+                <datalist id="post-task-cat" class="post-task-cat-list ">
+                </datalist>
               </div>
 
               <!-- task description -->
@@ -507,7 +699,7 @@
               <!-- task end date and time -->
               <div class="form-input-divider">
                 <!-- date -->
-                <span class="input-label">End time</span><br />
+                <span class="input-label">End time (Optional)</span><br />
                 <div class="date-time-div">
                   <label
                     for="task-end-date"
@@ -519,7 +711,7 @@
                       id="task-end-date"
                       class="post-task-input post-date-input"
                       type="date"
-                      required
+                      
                     />
                   </span>
                 </div>
@@ -536,7 +728,6 @@
                       id="task-end-time"
                       class="post-task-input post-date-input"
                       type="time"
-                      required
                     />
                   </span>
                 </div>
@@ -545,13 +736,26 @@
               <!-- task duration -->
               <div class="form-input-divider">
                 <label for="task-duration" class="input-label">Duration:</label>
-                <input
+                <div class="input-task-duration-container">
+                  <input
                   id="task-duration"
-                  class="post-task-input"
-                  type="text"
-                  placeholder="Eg. 1 hour"
+                  class="post-task-input post-task-input-duration"
+                  type="number"
+                  placeholder="Eg. 25"
                   required
-                />
+                  />
+                  <select class="task-duration-unit-opt">
+                    <option value="seconds">seconds</option>
+                    <option value="minutes">minutes</option>
+                    <option value="hours">hours</option>
+                    <option value="days">days</option>
+                    <option value="weeks">weeks</option>
+                    <option value="months">months</option>
+                    <option value="years">years</option>
+
+                  </select>
+                </div>
+                
               </div>
 
               <!-- task location -->
@@ -587,15 +791,28 @@
               <!-- task price -->
               <div class="form-input-divider">
                 <label for="task-price" class="input-label"
-                  >Price (RM per person):</label
+                  >Price (per person):</label
                 >
-                <input
-                  id="task-price"
-                  class="post-task-input post-price-input"
-                  type="number"
-                  placeholder="Eg. RM 40"
-                  required
-                />
+                <div class="task-price-container">
+                  <select class="task-price-unit-opt">
+                    <option value="MYR">MYR</option>
+                    <option value="USD">USD</option>
+                    <option value="EUR">EUR</option>
+                    <option value="JPY">JPY</option>
+                    <option value="INR">INR</option>
+                    <option value="CNY">CNY</option>
+                    <option value="SGD">SGD</option>
+  
+                  </select>
+                  <input
+                    id="task-price"
+                    class="post-task-input post-price-input"
+                    type="number"
+                    placeholder="Eg. 40"
+                    required
+                  />
+                </div>
+                
               </div>
 
               <!-- task tasker needed -->
@@ -621,17 +838,19 @@
                   type="file"
                   multiple
                   accept="image/*"
-                  required
                 />
               </div>
 
+              <!-- image preview  -->
               <div class="form-input-image-preview-container">
                 <div class="form-input-image-preview"/>
                 </div>
               </div>
               <br />
-              <div class="form-input-divider input-span">
-                <input class="post-input-submit" type="submit" />
+              <!-- button  -->
+              <div class="form-input-divider input-span edit_post_btn_grp">
+                <input class="post-input-submit" type="submit" value="Post Task"/>
+                
               </div>
             </form>
           </div>
