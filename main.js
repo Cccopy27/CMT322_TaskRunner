@@ -377,7 +377,6 @@ onAuthStateChanged(auth, async (user) => {
       populate_data();
     });
 
-
     // ------------- Profile of current user ----------------
 
     // get user profile data from database
@@ -442,10 +441,8 @@ onAuthStateChanged(auth, async (user) => {
       // update database
       updateDoc(doc(collection(db, "user"), query_user.docs[0].id), profileObj)
         .then(() => {
-
           // if user change profile pic
           if (profile_image_input_ref.files.length !== 0) {
-
             // set path for photo upload
             const uploadPath = `user/${query_user.docs[0].id}/${profile_image_input_ref.files[0].name}`;
             const storageRef = ref(storage, uploadPath);
@@ -453,19 +450,15 @@ onAuthStateChanged(auth, async (user) => {
             // upload photo to storage firebase to get its photo URL
             uploadBytes(storageRef, profile_image_input_ref.files[0])
               .then((storageImg) => {
-
                 // get image URL from storage
                 getDownloadURL(storageRef).then((imgURL) => {
-
                   // update doc imgURL
                   updateDoc(doc(db, "user", query_user.docs[0].id), {
                     profile_pic_url: imgURL,
                     profile_pic_name: profile_image_input_ref.files[0].name,
-
                   }).then(() => {
                     // delete original image if user have previous image in database
                     if (query_user.docs[0].profile_pic_name) {
-                      
                       // Create a reference to the file to delete
                       const desertRef = ref(
                         storage,
@@ -525,7 +518,6 @@ onAuthStateChanged(auth, async (user) => {
   }
 });
 
-
 // ---------------------Post task section------------------------
 
 const post_input = document.querySelector(".post-task-form");
@@ -561,15 +553,12 @@ let globalTaskDetailsPhotoName = [];
 
 // ------------------------------------------------------
 
-
 // toggle edit mode in post page
 const outputEditData = (current_layout) => {
-
   // loading
   Swal.showLoading();
 
   if (post_input.classList.contains("edit_mode")) {
-
     // update button from post to save
     edit_post_btn_grp.firstElementChild.setAttribute("value", "Save");
     // add cancel button
@@ -592,7 +581,6 @@ const outputEditData = (current_layout) => {
         confirmButtonText: "Yes",
         denyButtonText: `No`,
       }).then((result) => {
-
         // yes
         if (result.isConfirmed) {
           // remove edit mode
@@ -612,9 +600,9 @@ const outputEditData = (current_layout) => {
           // remove last btn
           edit_post_btn_grp.removeChild(edit_post_btn_grp.lastElementChild);
 
-          // navigate to overview 
+          // navigate to overview
           post_task_ref.classList.add("display-hidden");
-          overview_ref.classList.remove("display-hidden") 
+          overview_ref.classList.remove("display-hidden");
 
           // change nav link color
           overview_nav_link.classList.add("list-section-active");
@@ -624,7 +612,7 @@ const outputEditData = (current_layout) => {
 
           isTaskDetailsOpen = false;
 
-          //reset task details 
+          //reset task details
           task_details_image_container_ref.innerHTML = "";
           task_details_tasker_no_ref.innerHTML = "";
 
@@ -674,8 +662,6 @@ const outputEditData = (current_layout) => {
 
 // ---------------------Post task edit mode end---------------------
 
-
-
 // --------------all task categories list here-----------------
 
 const task_categories_list = [
@@ -712,7 +698,6 @@ const task_categories_list = [
 task_categories_list.sort();
 
 // --------------all task categories list end -----------------
-
 
 // append each task into datalist
 const add_category = function (task_category_list) {
@@ -766,7 +751,6 @@ post_input.addEventListener("submit", (e) => {
     confirmButtonText: "Yes",
     denyButtonText: "No",
   }).then(async (result) => {
-    
     // user click yes
     if (result.isConfirmed) {
       Swal.fire({
@@ -908,7 +892,7 @@ post_input.addEventListener("submit", (e) => {
         // remove cancel button if is edit mode
         if (post_input.classList.contains("edit_mode")) {
           edit_post_btn_grp.removeChild(edit_post_btn_grp.lastElementChild);
-        } 
+        }
 
         // update edit mode
         post_input.classList.remove("edit_mode");
@@ -944,7 +928,6 @@ post_input.addEventListener("submit", (e) => {
 
 // --------------------task details section----------------------
 
-
 // use to prevent the user open multiple task details at once
 let isTaskDetailsOpen = false;
 let isProfileModalOpen = false;
@@ -960,14 +943,20 @@ const task_details_tag_ref = document.querySelector(".task-tag");
 const task_details_des_ref = document.querySelector(".task-description");
 const task_details_cus_name_ref = document.querySelector(".customer-info-name");
 const task_details_location_ref = document.querySelector(".task-location");
-const task_details_contact_ref = document.querySelector(".customer-info-contact");
+const task_details_contact_ref = document.querySelector(
+  ".customer-info-contact"
+);
 const task_details_price_ref = document.querySelector(".task-price");
 const task_details_start_time_ref = document.querySelector(".task-start-time");
 const task_details_end_time_ref = document.querySelector(".task-end-time");
 const task_details_duration_ref = document.querySelector(".task-duration");
 const task_details_tasker_no_ref = document.querySelector(".tasker-required");
-const task_details_tasker_no_span_ref = document.querySelector(".tasker-required-span");
-const task_details_image_container_ref = document.querySelector(".window-img-container");
+const task_details_tasker_no_span_ref = document.querySelector(
+  ".tasker-required-span"
+);
+const task_details_image_container_ref = document.querySelector(
+  ".window-img-container"
+);
 const cus_profile_click_ref = document.querySelector(".customer-info-name");
 // -------------------------------------------------------
 
@@ -995,7 +984,9 @@ edit_btn_ref.addEventListener("click", (e) => {
   // unhide post page and hide current page
   post_task_ref.classList.remove("display-hidden");
 
-  browse_section.classList.contains("display-hidden") ? overview_ref.classList.add("display-hidden") : browse_section.classList.add("display-hidden");
+  browse_section.classList.contains("display-hidden")
+    ? overview_ref.classList.add("display-hidden")
+    : browse_section.classList.add("display-hidden");
 
   // turn edit mode on for post page
   post_input.classList.add("edit_mode");
@@ -1006,12 +997,14 @@ edit_btn_ref.addEventListener("click", (e) => {
 
   isTaskDetailsOpen = false;
 
-  //reset task details 
+  //reset task details
   task_details_image_container_ref.innerHTML = "";
   task_details_tasker_no_ref.innerHTML = "";
 
   // toggle edit mode
-  browse_section.classList.contains("display-hidden") ? outputEditData(overview_task) : outputEditData(browse_section);
+  browse_section.classList.contains("display-hidden")
+    ? outputEditData(overview_task)
+    : outputEditData(browse_section);
 });
 
 // when user click delete
@@ -1024,9 +1017,7 @@ delete_btn_ref.addEventListener("click", (e) => {
     showDenyButton: true,
     confirmButtonText: "Yes",
     denyButtonText: `No`,
-
   }).then(async (result) => {
-
     // delete
     if (result.isConfirmed) {
       // loading
@@ -1048,7 +1039,7 @@ delete_btn_ref.addEventListener("click", (e) => {
         // Delete the file
         deleteObject(desertRef)
           .then(() => {
-          console.log("delete image");
+            console.log("delete image");
 
             // File deleted successfully
           })
@@ -1070,7 +1061,7 @@ delete_btn_ref.addEventListener("click", (e) => {
       isTaskDetailsOpen = false;
       globalTaskDetailsId = "";
 
-      //reset task details 
+      //reset task details
       task_details_image_container_ref.innerHTML = "";
       task_details_tasker_no_ref.innerHTML = "";
 
@@ -1085,11 +1076,13 @@ delete_btn_ref.addEventListener("click", (e) => {
 
 // handle details (update all details with respective task)
 const functionHandleDetails = (e) => {
-
   e.preventDefault();
   // if user click view details button for first time
-  if (e.target.className === "btn--view-detail" && !isTaskDetailsOpen && !isProfileModalOpen) {
- 
+  if (
+    e.target.className === "btn--view-detail" &&
+    !isTaskDetailsOpen &&
+    !isProfileModalOpen
+  ) {
     // set global task id so that can pass to edit page
     globalTaskDetailsId = e.target.id;
 
@@ -1100,55 +1093,72 @@ const functionHandleDetails = (e) => {
     // fetch data
     const fetchData = async () => {
       const docSnap = await getDoc(doc(db, "task", e.target.id));
-      const q = query(collection(db, "user"), where("user_id", "==", docSnap.data().created_by))
+      const q = query(
+        collection(db, "user"),
+        where("user_id", "==", docSnap.data().created_by)
+      );
       const userSnap = await getDocs(q);
       const userData = userSnap.docs[0];
-      
+
       // ------------- add the data details start -------------
       // set global variable
       globalTaskDetailsCusId = userData.data().user_id;
       globalTaskDetailsTaskerId = docSnap.data().tasker_id;
       globalTaskDetailsPhotoName = docSnap.data().post_photo_name;
 
-      // add image 
+      // add image
       if (docSnap.data().post_photo_url) {
         docSnap.data().post_photo_url.forEach((img) => {
           const image = document.createElement("img");
           image.setAttribute("src", img);
           image.classList.add("window-img");
-          task_details_image_container_ref.appendChild(image,task_details_modal_ref);
+          task_details_image_container_ref.appendChild(
+            image,
+            task_details_modal_ref
+          );
         });
       }
 
       // add the rest details
       task_details_title_ref.innerText = docSnap.data().post_title;
-      task_details_tag_ref.innerText = `Categories: ${docSnap.data().post_categories}`;
-      task_details_des_ref.innerText = `${docSnap.data().post_des} lOREn dniwnd wnwindwi wnnwi wnmos nrnrn`;
+      task_details_tag_ref.innerText = `Categories: ${
+        docSnap.data().post_categories
+      }`;
+      task_details_des_ref.innerText = `${
+        docSnap.data().post_des
+      } lOREn dniwnd wnwindwi wnnwi wnmos nrnrn`;
       if (userData.data().gender && userData.data().username) {
-        task_details_cus_name_ref.innerText = userData.data().gender === "Male" ? "Mr" : "Mrs";
+        task_details_cus_name_ref.innerText =
+          userData.data().gender === "Male" ? "Mr" : "Mrs";
         task_details_cus_name_ref.innerText += " " + userData.data().username;
-      }
-      else { 
-        task_details_cus_name_ref.innerText = "?"
+      } else {
+        task_details_cus_name_ref.innerText = "?";
       }
 
       task_details_location_ref.innerText = docSnap.data().post_location;
       if (userData.data().contact) {
         task_details_contact_ref.innerText = userData.data().contact;
+      } else {
+        task_details_contact_ref.innerText = "?";
       }
-      else {
-        task_details_contact_ref.innerText = "?"
-      }
-      task_details_price_ref.innerText = docSnap.data().post_price_unit + " "+ docSnap.data().post_price_amount;
-      task_details_start_time_ref.innerText = docSnap.data().post_start_date + docSnap.data().post_start_time
-      task_details_end_time_ref.innerText = docSnap.data().post_end_date + docSnap.data().post_end_time
-      task_details_duration_ref.innerText = docSnap.data().post_duration_amount + docSnap.data().post_duration_unit
-      task_details_tasker_no_ref.innerText = `${docSnap.data().post_tasker_no}tasker `
+      task_details_price_ref.innerText =
+        docSnap.data().post_price_unit + " " + docSnap.data().post_price_amount;
+      task_details_start_time_ref.innerText =
+        docSnap.data().post_start_date + docSnap.data().post_start_time;
+      task_details_end_time_ref.innerText =
+        docSnap.data().post_end_date + docSnap.data().post_end_time;
+      task_details_duration_ref.innerText =
+        docSnap.data().post_duration_amount + docSnap.data().post_duration_unit;
+      task_details_tasker_no_ref.innerText = `${
+        docSnap.data().post_tasker_no
+      }tasker `;
       const tasker_span = document.createElement("span");
       tasker_span.classList.add("tool-tip");
-      tasker_span.innerText = `${docSnap.data().post_tasker_no} tasker required`;
+      tasker_span.innerText = `${
+        docSnap.data().post_tasker_no
+      } tasker required`;
       task_details_tasker_no_ref.appendChild(tasker_span);
-     
+
       // ------------- add the details end -------------
 
       // show modal
@@ -1158,7 +1168,9 @@ const functionHandleDetails = (e) => {
       const authEditDelete = getAuth();
       const userEditDelete = authEditDelete.currentUser;
       // if user created it
-      docSnap.data().created_by === userEditDelete.uid ? edit_delete_ref.style.visibility = "visible" : edit_delete_ref.style.visibility = "hidden"
+      docSnap.data().created_by === userEditDelete.uid
+        ? (edit_delete_ref.style.visibility = "visible")
+        : (edit_delete_ref.style.visibility = "hidden");
     };
 
     // user can open task details
@@ -1166,12 +1178,15 @@ const functionHandleDetails = (e) => {
     fetchData();
     listContainer.style.pointerEvents = "none";
     Swal.close();
-
-  } 
+  }
   // user click outside when open task details
-  else if (e.target.className !== "btn--view-detail" && isTaskDetailsOpen &&!isProfileModalOpen) {
+  else if (
+    e.target.className !== "btn--view-detail" &&
+    isTaskDetailsOpen &&
+    !isProfileModalOpen
+  ) {
     isTaskDetailsOpen = false;
-    // hide current task detail 
+    // hide current task detail
     modal_window.classList.add("display-hidden");
     listContainer.style.pointerEvents = "";
     // reset image and span container
@@ -1179,19 +1194,23 @@ const functionHandleDetails = (e) => {
     task_details_tasker_no_ref.innerHTML = "";
   }
   // user click outside when open profile modal
-  else if (e.target.className !== "btn--view-detail" && isTaskDetailsOpen &&isProfileModalOpen) {
+  else if (
+    e.target.className !== "btn--view-detail" &&
+    isTaskDetailsOpen &&
+    isProfileModalOpen
+  ) {
     isProfileModalOpen = false;
     profile_modal_container_ref.classList.add("display-hidden");
     task_details_modal_ref.classList.remove("display-hidden");
     profile_modal_user_container_ref.innerHTML = "";
-
   }
 };
 
 // testing data for tasker id
 const tempUser = [
   {
-    address: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin varius, augue non sagittis luctus ",
+    address:
+      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin varius, augue non sagittis luctus ",
     contact: "012-3456789",
     email: "111111@gmail.com",
     gender: "Male",
@@ -1199,7 +1218,8 @@ const tempUser = [
     role: "Tasker",
     username: "sohai 11",
     user_id: 11,
-    profile_pic_url: "https://firebasestorage.googleapis.com/v0/b/cmt322taskrunner.appspot.com/o/user%2FyoZg5widYP4uR97COU0K%2F5cde6f7b021b4c16d1793ad8.jpg?alt=media&token=d3e834cb-b81d-42a9-8eb5-014ed24adef6",
+    profile_pic_url:
+      "https://firebasestorage.googleapis.com/v0/b/cmt322taskrunner.appspot.com/o/user%2FyoZg5widYP4uR97COU0K%2F5cde6f7b021b4c16d1793ad8.jpg?alt=media&token=d3e834cb-b81d-42a9-8eb5-014ed24adef6",
   },
   {
     address: "22",
@@ -1210,7 +1230,8 @@ const tempUser = [
     role: "Tasker",
     username: "22",
     user_id: 22,
-    profile_pic_url: "https://firebasestorage.googleapis.com/v0/b/cmt322taskrunner.appspot.com/o/user%2FyoZg5widYP4uR97COU0K%2F5cde6f7b021b4c16d1793ad8.jpg?alt=media&token=d3e834cb-b81d-42a9-8eb5-014ed24adef6",
+    profile_pic_url:
+      "https://firebasestorage.googleapis.com/v0/b/cmt322taskrunner.appspot.com/o/user%2FyoZg5widYP4uR97COU0K%2F5cde6f7b021b4c16d1793ad8.jpg?alt=media&token=d3e834cb-b81d-42a9-8eb5-014ed24adef6",
   },
   {
     address: "33",
@@ -1221,42 +1242,43 @@ const tempUser = [
     role: "Tasker",
     username: "33",
     user_id: 33,
-    profile_pic_url: "https://firebasestorage.googleapis.com/v0/b/cmt322taskrunner.appspot.com/o/user%2FyoZg5widYP4uR97COU0K%2F5cde6f7b021b4c16d1793ad8.jpg?alt=media&token=d3e834cb-b81d-42a9-8eb5-014ed24adef6",
+    profile_pic_url:
+      "https://firebasestorage.googleapis.com/v0/b/cmt322taskrunner.appspot.com/o/user%2FyoZg5widYP4uR97COU0K%2F5cde6f7b021b4c16d1793ad8.jpg?alt=media&token=d3e834cb-b81d-42a9-8eb5-014ed24adef6",
   },
-]
+];
 
-      
 // when user click show profile for customer
-cus_profile_click_ref.addEventListener("click", async() => {
+cus_profile_click_ref.addEventListener("click", async () => {
   isProfileModalOpen = true;
 
-  // hide task details 
+  // hide task details
   task_details_modal_ref.classList.add("display-hidden");
 
   // get cus profile data from database
-  const q = query(collection(db,"user"), where("user_id","==",globalTaskDetailsCusId)) ;
+  const q = query(
+    collection(db, "user"),
+    where("user_id", "==", globalTaskDetailsCusId)
+  );
   const querySnapshot = await getDocs(q);
   const user_id = querySnapshot.docs[0].data();
 
-  showUserProfile([user_id])
+  showUserProfile([user_id]);
   // showUserProfile(tempUser);
-  
-})
+});
 
 // when user click show profile for tasker
 task_details_tasker_no_ref.addEventListener("click", () => {
   isProfileModalOpen = true;
 
-  // hide task details 
+  // hide task details
   task_details_modal_ref.classList.add("display-hidden");
 
   // user temp data to replace tasker data
   // showUserProfile([globalTaskDetailsTaskerId])
   showUserProfile(tempUser);
-})
+});
 
-
-// when user click task details for 
+// when user click task details for
 // browse task part
 search_task_section.addEventListener("click", (e) => {
   e.preventDefault();
@@ -1271,43 +1293,62 @@ overview_task.addEventListener("click", (e) => {
 
 // ------------- task details end ----------------
 
-
 // ------------- task details profile ----------------
 
-const profile_modal_user_container_ref = document.querySelector(".profile_modal_popup_content_user_list");
-const profile_modal_close_ref = document.querySelector(".profile_modal_popup_close");
-const profile_modal_container_ref = document.querySelector(".profile_modal_popup_container");
-const profile_modal_img_ref = document.querySelector(".profile_modal_popup_picture_img");
-const profile_modal_name_ref = document.querySelector(".profile_modal_popup_content_name");
-const profile_modal_role_ref = document.querySelector(".profile_modal_popup_content_role");
-const profile_modal_email_ref = document.querySelector(".profile_modal_popup_content_email");
-const profile_modal_contact_ref = document.querySelector(".profile_modal_popup_content_contact");
-const profile_modal_gender_ref = document.querySelector(".profile_modal_popup_content_gender");
-const profile_modal_status_ref = document.querySelector('.profile_modal_popup_content_status');
-const profile_modal_address_ref = document.querySelector(".profile_modal_popup_content_address");
+const profile_modal_user_container_ref = document.querySelector(
+  ".profile_modal_popup_content_user_list"
+);
+const profile_modal_close_ref = document.querySelector(
+  ".profile_modal_popup_close"
+);
+const profile_modal_container_ref = document.querySelector(
+  ".profile_modal_popup_container"
+);
+const profile_modal_img_ref = document.querySelector(
+  ".profile_modal_popup_picture_img"
+);
+const profile_modal_name_ref = document.querySelector(
+  ".profile_modal_popup_content_name"
+);
+const profile_modal_role_ref = document.querySelector(
+  ".profile_modal_popup_content_role"
+);
+const profile_modal_email_ref = document.querySelector(
+  ".profile_modal_popup_content_email"
+);
+const profile_modal_contact_ref = document.querySelector(
+  ".profile_modal_popup_content_contact"
+);
+const profile_modal_gender_ref = document.querySelector(
+  ".profile_modal_popup_content_gender"
+);
+const profile_modal_status_ref = document.querySelector(
+  ".profile_modal_popup_content_status"
+);
+const profile_modal_address_ref = document.querySelector(
+  ".profile_modal_popup_content_address"
+);
 
 // function to show profile of user
-const showUserProfile = (user_id) =>{
-
+const showUserProfile = (user_id) => {
   profile_modal_container_ref.classList.remove("display-hidden");
   let count = 0;
 
   // create tasker list based on current tasker / customer
   user_id.forEach((user) => {
-    
     const userList = document.createElement("li");
     userList.classList.add("profile_modal_popup_content_user_li");
-    userList.setAttribute("id",user.user_id);
+    userList.setAttribute("id", user.user_id);
     userList.innerText = `Tasker ${++count}`;
     profile_modal_user_container_ref.appendChild(userList);
   });
-  
+
   // console.log(user_id);
 
   // initialize data with first tasker
   // if got user
   if (user_id.length !== 0) {
-    profile_modal_img_ref.setAttribute("src",user_id[0].profile_pic_url);
+    profile_modal_img_ref.setAttribute("src", user_id[0].profile_pic_url);
     profile_modal_name_ref.innerText = `Username: ${user_id[0].username}`;
     profile_modal_role_ref.innerText = `Role: ${user_id[0].role}`;
     profile_modal_email_ref.innerText = `Email: ${user_id[0].email}`;
@@ -1315,23 +1356,26 @@ const showUserProfile = (user_id) =>{
     profile_modal_gender_ref.innerText = `Gender: ${user_id[0].gender}`;
     profile_modal_status_ref.innerText = `Marital Status: ${user_id[0].marital_status}`;
     profile_modal_address_ref.innerText = `Address: ${user_id[0].address}`;
-    profile_modal_user_container_ref.firstElementChild.classList.add("profile_modal_user_list_active");
+    profile_modal_user_container_ref.firstElementChild.classList.add(
+      "profile_modal_user_list_active"
+    );
     // user click each user list on left side
-    const profile_modal_user_list_ref = document.querySelectorAll(".profile_modal_popup_content_user_li");
+    const profile_modal_user_list_ref = document.querySelectorAll(
+      ".profile_modal_popup_content_user_li"
+    );
 
-    profile_modal_user_container_ref.addEventListener("click", e => {
-      profile_modal_user_list_ref.forEach(user_nav=>{
-        e.target.id === user_nav.id ? 
-        user_nav.classList.add("profile_modal_user_list_active") :
-        user_nav.classList.remove("profile_modal_user_list_active");
-      })
+    profile_modal_user_container_ref.addEventListener("click", (e) => {
+      profile_modal_user_list_ref.forEach((user_nav) => {
+        e.target.id === user_nav.id
+          ? user_nav.classList.add("profile_modal_user_list_active")
+          : user_nav.classList.remove("profile_modal_user_list_active");
+      });
 
       // change right content according to the user data
-      user_id.forEach( user_data => {
-        
+      user_id.forEach((user_data) => {
         // == instead === because diff data type
         if (user_data.user_id == e.target.id) {
-          profile_modal_img_ref.setAttribute("src",user_data.profile_pic_url);
+          profile_modal_img_ref.setAttribute("src", user_data.profile_pic_url);
           profile_modal_name_ref.innerText = `Username: ${user_data.username}`;
           profile_modal_role_ref.innerText = `Role: ${user_data.role}`;
           profile_modal_email_ref.innerText = `Email: ${user_data.email}`;
@@ -1339,33 +1383,29 @@ const showUserProfile = (user_id) =>{
           profile_modal_gender_ref.innerText = `Gender: ${user_data.gender}`;
           profile_modal_status_ref.innerText = `Marital Status: ${user_data.marital_status}`;
           profile_modal_address_ref.innerText = `Address: ${user_data.address}`;
-
         }
-      })
-    })
+      });
+    });
   }
   // no user
-  else{
+  else {
     const userList = document.createElement("li");
     userList.classList.add("profile_modal_popup_content_user_li");
     userList.innerText = `No User`;
     profile_modal_user_container_ref.appendChild(userList);
   }
-  
 
   // user click close modal
   profile_modal_close_ref.addEventListener("click", () => {
-    isProfileModalOpen  = false;
+    isProfileModalOpen = false;
     // show task details modal
     task_details_modal_ref.classList.remove("display-hidden");
-    
+
     // hide profile modal
     profile_modal_container_ref.classList.add("display-hidden");
 
     profile_modal_user_container_ref.innerHTML = "";
-
-  })
-  
-}
+  });
+};
 
 // ------------- task details profile end----------------
