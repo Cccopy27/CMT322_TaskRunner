@@ -280,86 +280,143 @@
         <!-- window -->
 
         <div class="window-task-information display-hidden">
-          <!-- <div class="window-grid-container">
-            <img class="window-img" src="img/painting.jpg" alt="" />
-            <p class="task-description">
-              Lorem ipsum dolor sit amet consectetur adipisicing elit.
-              Cupiditate eveniet molestiae architecto dolores ea vel sit
-              perspiciatis
-            </p>
-            <p class="task-tag">tag</p>
+          <!-- task details modal  -->
+          <div class="window-grid-container">
+            <div class="window-img-container">
+            </div>         
+            <div class="task--info">
+              <h2 class="task-title">
+              </h2>
+              <p class="task-tag">
+              </p>
+              <div class="tag-container">
+                <button class="btn-browse-edit">Edit</button>
+                <button class="btn-browse-delete">Delete</button>
+              </div>
+              <p class="task-description">         
+              </p>           
+            </div>
             <div class="task-details-bottom">
               <div class="customer-info-container">
-                <div class="customer-info">
+                <div class="customer-info ">
                   <ion-icon
                     class="customer-info-icon"
                     name="person-outline"
                   ></ion-icon>
-                  <p class="customer-info--text">Mr. Loh</p>
+                  <p class="customer-info--text customer-info-name">?</p>
                 </div>
                 <div class="customer-info">
                   <ion-icon
                     class="customer-info-icon"
                     name="location-outline"
                   ></ion-icon>
-                  <p class="customer-info--text">Bayan Lepas,Penang</p>
+                  <p class="customer-info--text">
+                    address
+                    <span class="tool-tip task-location">
+                    </span>
+                  </p>
                 </div>
                 <div class="customer-info">
                   <ion-icon
                     class="customer-info-icon"
                     name="call-outline"
                   ></ion-icon>
-                  <p class="customer-info--text">0115261200</p>
+                  <p class="customer-info--text customer-info-contact">?</p>
                 </div>
                 <div class="customer-info">
                   <ion-icon
                     class="customer-info-icon"
                     name="wallet-outline"
                   ></ion-icon>
-                  <p class="customer-info--text">MYR 60</p>
+                  <p class="customer-info--text task-price"> 
+                  </p>
                 </div>
               </div>
               <div class="task-info-container">
                 <div class="task-info">
                   <ion-icon
                   class="task-info-icon"
-                  name="time"
+                  name="time-outline"
                   ></ion-icon>
-                  <p class="task-info-text">Starting time</p>
+                  <p class="task-info-text">
+                  Start
+                  <span class="tool-tip task-start-time">
+                  </span> 
+                  </p>
                 </div>
                 <div class="task-info">
                   <ion-icon
                   class="task-info-icon"
-                  name="time"
+                  name="time-outline"
                   ></ion-icon>
-                  <p class="task-info-text">End time</p>
+                  <p class="task-info-text">
+                  End
+                  <span class="tool-tip task-end-time">
+                  </span> 
+                  </p>
                 </div>
                 <div class="task-info">
                   <ion-icon
                   class="task-info-icon"
-                  name="information"
+                  name="timer-outline"
                   ></ion-icon>
-                  <p class="task-info-text">Duration </p>
-                  
+                  <p class="task-info-text task-duration">
+                  </p>
                 </div>
                 <div class="task-info">
                   <ion-icon
                   class="task-info-icon"
-                  name="people"
+                  name="people-outline"
                   ></ion-icon>
-                  <p class="task-info-text">Number of tasker</p>
-                  
+                  <p class="task-info-text tasker-required">
+                  </p>
+                </div>
+              </div>
+              <div class="padding-div accept--button">
+                <div class="option-button-div">
+                  <a href="#" class="btn--view-detail">Accept</a>
+                  <button class="btn btn--apply" id="close_task_details">Close</button>
                 </div>
               </div>
             </div>
-            
-            <div class="padding-div">
-              <div class="option-button-div">
-                <a href="#" class="btn--view-detail">view details</a>
-                <button class="btn btn--apply">apply</button>
-              </div>
+          </div>
+          <!-- task detail modal  -->
+
+          <!-- profile modal  -->
+          <div class="profile_modal_popup_container display-hidden">
+            <div class="profile_modal_popup_title">
+              <p>User Profile Info</p>
+              <ion-icon name="close-outline" class="profile_modal_popup_close"></ion-icon>
             </div>
-          </div> -->
+            <div class="profile_modal_popup_content">
+              <div class="profile_modal_popup_content_left">
+                <ul class="profile_modal_popup_content_user_list">
+                </ul>
+              </div>
+               <div class="profile_modal_popup_content_right">
+                <div class="profile_modal_popup_content_right_top">
+                  <div class="profile_modal_popup_content_picture">
+                    <img class="profile_modal_popup_picture_img" src="" alt="" />
+                  </div>
+                  <div class="profile_modal_popup_content_name_role">
+                    <p class="profile_modal_popup_content_name"></p>
+                    <p class="profile_modal_popup_content_role"></p>
+                  <p class="profile_modal_popup_content_contact"></p>
+                  </div>
+                </div>
+                <div class="profile_modal_popup_content_email_contact">
+                  <p class="profile_modal_popup_content_gender"></p>
+                  <p class="profile_modal_popup_content_email"></p>
+                </div>
+                <div class="profile_modal_popup_content_gender_status">
+                  <p class="profile_modal_popup_content_status"></p>
+                  <p class="profile_modal_popup_content_address"></p>
+                </div>
+              </div> 
+            </div>
+          </div>
+
+          <!-- profile modal  -->
         </div>
 
         <!-- window -->
@@ -378,7 +435,6 @@
                   <label for="task-photo" class="input-label upload-image-label">Upload image</label>
                   <input
                     class="profile-picture-input-file"
-                    id="task-photo"
                     class=""
                     type="file"
                     accept="image/*"

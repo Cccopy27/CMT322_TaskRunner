@@ -415,6 +415,8 @@ onAuthStateChanged(auth, async (user) => {
       populate_data();
     });
 
+    // ------------- Profile of current user ----------------
+
     // get user profile data from database
     // update profile field with current data
     const profile_form_ref = document.querySelector(".profile_form");
@@ -433,20 +435,32 @@ onAuthStateChanged(auth, async (user) => {
     const role_ref = document.querySelector(".profile-role-show-input");
     const profile_form_submit_ref = document.querySelector(".profile-form");
 
-    // handle profile image
+    // -------------------------------------------------------
+
+    // user click to upload profile image
     profile_image_input_ref.addEventListener("change", (e) => {
       const file = profile_image_input_ref.files;
-      console.log(file);
+
       // preview image
       profile_image_preview_ref.setAttribute(
         "src",
         `${URL.createObjectURL(file[0])}`
       );
     });
-    // user submit profile form
+
+    // user click submit profile form
     profile_form_submit_ref.addEventListener("submit", (e) => {
       e.preventDefault();
 
+      // alert user
+      Swal.fire({
+        title: "Now Loading...",
+        allowEscapeKey: false,
+        allowOutsideClick: false,
+      });
+      Swal.showLoading();
+
+      // data to update
       const profileObj = {
         username: username_ref.value,
         email: email_ref.value,
@@ -455,23 +469,23 @@ onAuthStateChanged(auth, async (user) => {
         gender: gender_ref.value,
         marital_status: marital_status_ref.value,
       };
+
       // if user change profile pic
-      console.log(query_user.docs[0].profile_pic_name);
       if (profile_image_input_ref.files.length !== 0) {
+        // add new key to the update object
         profileObj["profile_pic_name"] = profile_image_input_ref.files[0].name;
       }
-      if (!query_user.docs[0].profile_pic_name) {
-        console.log("hi");
-      }
 
+      // update database
       updateDoc(doc(collection(db, "user"), query_user.docs[0].id), profileObj)
         .then(() => {
           // if user change profile pic
           if (profile_image_input_ref.files.length !== 0) {
-            // upload photo to storage firebase to get its photo URL
+            // set path for photo upload
             const uploadPath = `user/${query_user.docs[0].id}/${profile_image_input_ref.files[0].name}`;
             const storageRef = ref(storage, uploadPath);
 
+            // upload photo to storage firebase to get its photo URL
             uploadBytes(storageRef, profile_image_input_ref.files[0])
               .then((storageImg) => {
                 // get image URL from storage
@@ -516,9 +530,11 @@ onAuthStateChanged(auth, async (user) => {
           Swal.fire("Something wrong...", "", "error");
         });
     });
+
+    // add listener to user doc to capture latest changes
+
     const profile_doc_ref = doc(collection(db, "user"), query_user.docs[0].id);
 
-    // add listener to user doc
     onSnapshot(
       profile_doc_ref,
       (snapshot) => {
@@ -540,6 +556,8 @@ onAuthStateChanged(auth, async (user) => {
   }
 });
 
+// ---------------------Post task section------------------------
+
 const post_input = document.querySelector(".post-task-form");
 const post_input_title = document.getElementById("task-title");
 const post_input_des = document.getElementById("task-des");
@@ -547,11 +565,11 @@ const post_input_start_date = document.getElementById("task-start-date");
 const post_input_start_time = document.getElementById("task-start-time");
 const post_input_end_date = document.getElementById("task-end-date");
 const post_input_end_time = document.getElementById("task-end-time");
-const post_input_location = document.getElementById("task-location");
+// const loc_text = document.getElementById("task-location");
 const post_input_price = document.getElementById("task-price");
 const post_input_price_unit = document.querySelector(".task-price-unit-opt");
 const post_input_tasker_number = document.getElementById("task-tasker-needed");
-const post_input_photo = document.getElementById("task-photo");
+// const post_input_photo = document.getElementById("task-photo");
 const post_input_cat = document.querySelector(".post-task-cat-input");
 const post_input_duration = document.querySelector(".post-task-input-duration");
 const post_input_duration_unit = document.querySelector(
@@ -566,10 +584,18 @@ const browse_nav_link = document.querySelector(".list-browse");
 const post_nav_link = document.querySelector(".list-post");
 const overview_nav_link = document.querySelector(".list-overview");
 let temp_array_image_arr = [];
+let globalTaskDetailsId = "";
+let globalTaskDetailsCusId = "";
+let globalTaskDetailsTaskerId = [];
+let globalTaskDetailsPhotoName = [];
 
-// toggle edit mode
+// ------------------------------------------------------
+
+// toggle edit mode in post page
 const outputEditData = (current_layout) => {
+  // loading
   Swal.showLoading();
+
   if (post_input.classList.contains("edit_mode")) {
     // update button from post to save
     edit_post_btn_grp.firstElementChild.setAttribute("value", "Save");
@@ -580,10 +606,12 @@ const outputEditData = (current_layout) => {
     cancelBtn.setAttribute("value", "Cancel");
     edit_post_btn_grp.appendChild(cancelBtn);
 
-    // handle cancel
+    // user click cancel
     const post_input_cancel_btn = document.querySelector(".post-input-cancel");
+
     post_input_cancel_btn.addEventListener("click", (e) => {
       e.preventDefault();
+
       // alert user
       Swal.fire({
         title: "Do you want to discard your changes?",
@@ -593,10 +621,10 @@ const outputEditData = (current_layout) => {
       }).then((result) => {
         // yes
         if (result.isConfirmed) {
-          // update edit mode
+          // remove edit mode
           post_input.classList.remove("edit_mode");
           post_input.removeAttribute("id");
-          //reset form
+          // reset form
           post_input.reset();
           listContainer.style.pointerEvents = "";
           image_preview.innerHTML = "";
@@ -608,13 +636,29 @@ const outputEditData = (current_layout) => {
             "Post Task"
           );
           // remove last btn
-          edit_post_btn_grp.removeChild(edit_post_btn_grp.lastChild);
+          edit_post_btn_grp.removeChild(edit_post_btn_grp.lastElementChild);
 
-          // navigate to browse mode
+          // navigate to overview
           post_task_ref.classList.add("display-hidden");
-          current_layout.classList.remove("display-hidden");
-          task_details_ref.innerHTML = "";
-          task_details_ref.classList.add("display-hidden");
+          overview_ref.classList.remove("display-hidden");
+
+          // change nav link color
+          overview_nav_link.classList.add("list-section-active");
+          browse_nav_link.classList.remove("list-section-active");
+
+          modal_window.classList.add("display-hidden");
+
+          isTaskDetailsOpen = false;
+
+          //reset task details
+          task_details_image_container_ref.innerHTML = "";
+          task_details_tasker_no_ref.innerHTML = "";
+
+          // reset global variable
+          globalTaskDetailsId = "";
+          globalTaskDetailsCusId = "";
+          globalTaskDetailsTaskerId = [];
+          globalTaskDetailsPhotoName = [];
         }
       });
     });
@@ -634,7 +678,7 @@ const outputEditData = (current_layout) => {
       post_input_cat.value = docSnap.data().post_categories;
       post_input_duration.value = docSnap.data().post_duration_amount;
       post_input_duration_unit.value = docSnap.data().post_duration_unit;
-      post_input_location.value = docSnap.data().post_location;
+      loc_text.value = docSnap.data().post_location;
 
       // preview image
       let count = 0;
@@ -648,12 +692,16 @@ const outputEditData = (current_layout) => {
         count++;
       });
     };
+
     fetchData();
   }
   Swal.close();
 };
 
-// all task categories list here
+// ---------------------Post task edit mode end---------------------
+
+// --------------all task categories list here-----------------
+
 const task_categories_list = [
   "Food Delivery",
   "Home Repairs",
@@ -684,9 +732,10 @@ const task_categories_list = [
   "Walk the animal",
   "Welding",
 ];
-
 // sort array
 task_categories_list.sort();
+
+// --------------all task categories list end -----------------
 
 // append each task into datalist
 const add_category = function (task_category_list) {
@@ -746,7 +795,7 @@ post_input_cat.addEventListener("change", (e) => {
   }
 });
 
-// handle submit
+// user click submit
 post_input.addEventListener("submit", (e) => {
   let error = false;
   e.preventDefault();
@@ -758,6 +807,7 @@ post_input.addEventListener("submit", (e) => {
     confirmButtonText: "Yes",
     denyButtonText: "No",
   }).then(async (result) => {
+    // user click yes
     if (result.isConfirmed) {
       Swal.fire({
         title: "Uploading...",
@@ -767,7 +817,7 @@ post_input.addEventListener("submit", (e) => {
       Swal.showLoading();
 
       // check mode (edit or post)
-      const post_photo = post_input_photo.files;
+      const post_photo = image_input.files;
 
       // convert filelist to array to user array method
       const image_arr = Array.from(post_photo);
@@ -779,7 +829,7 @@ post_input.addEventListener("submit", (e) => {
         image_name_temp.push(item.name);
       });
 
-      // task obj
+      // task obj to submit
       const postObj = {
         post_title: post_input_title.value,
         post_categories: post_input_cat.value,
@@ -788,7 +838,7 @@ post_input.addEventListener("submit", (e) => {
         post_start_time: post_input_start_time.value,
         post_end_date: post_input_end_date.value,
         post_end_time: post_input_end_time.value,
-        post_location: post_input_location.value,
+        post_location: loc_text.value,
         post_price_amount: post_input_price.value,
         post_price_unit: post_input_price_unit.value,
         post_duration_amount: post_input_duration.value,
@@ -825,19 +875,16 @@ post_input.addEventListener("submit", (e) => {
         // customer not allow to change accepted user
         delete postObj.tasker_id;
       }
-      console.log(postObj);
 
       //add or update to database
-
       const addedDoc = post_input.classList.contains("edit_mode")
         ? await updateDoc(doc(collection(db, "task"), post_input.id), postObj)
         : await addDoc(collection(db, "task"), postObj);
-      // console.log(addedDoc);
 
       // delete original image storage if required
       if (
         post_input.classList.contains("edit_mode") &&
-        temp_array_image_arr.length !== 0
+        postObj.post_photo_name !== undefined
       ) {
         // delete storage image
         // loop each image
@@ -847,6 +894,7 @@ post_input.addEventListener("submit", (e) => {
           // Delete the file
           deleteObject(desertRef)
             .then(() => {
+              console.log("delete image");
               // File deleted successfully
             })
             .catch((error) => {
@@ -864,6 +912,7 @@ post_input.addEventListener("submit", (e) => {
         const uploadPath = `task/${tempDocId}/${img.name}`;
         const storageRef = ref(storage, uploadPath);
 
+        // upload image
         uploadBytes(storageRef, img)
           .then((storageImg) => {
             // get image URL from storage
@@ -880,7 +929,7 @@ post_input.addEventListener("submit", (e) => {
             error = true;
           });
       });
-      console.log("finished");
+
       if (error) {
         //fail to upload data
         Swal.fire({
@@ -895,6 +944,12 @@ post_input.addEventListener("submit", (e) => {
           title: "Successful!",
           text: "Post task successfully",
         });
+
+        // remove cancel button if is edit mode
+        if (post_input.classList.contains("edit_mode")) {
+          edit_post_btn_grp.removeChild(edit_post_btn_grp.lastElementChild);
+        }
+
         // update edit mode
         post_input.classList.remove("edit_mode");
         post_input.removeAttribute("id");
@@ -906,251 +961,507 @@ post_input.addEventListener("submit", (e) => {
         //reset button
         // update button
         edit_post_btn_grp.firstElementChild.setAttribute("value", "Post Task");
-        // remove last btn
-        edit_post_btn_grp.removeChild(edit_post_btn_grp.lastChild);
 
         // navigate to overview
         post_task_ref.classList.add("display-hidden");
         overview_ref.classList.remove("display-hidden");
-        task_details_ref.innerHTML = "";
-        task_details_ref.classList.add("display-hidden");
+        modal_window.classList.add("display-hidden");
 
         // change nav
         overview_nav_link.classList.add("list-section-active");
         post_nav_link.classList.remove("list-section-active");
+        browse_nav_link.classList.remove("list-section-active");
+
+        // reset global variable
+        globalTaskDetailsId = "";
+        globalTaskDetailsCusId = "";
+        globalTaskDetailsTaskerId = [];
+        globalTaskDetailsPhotoName = [];
       }
     }
   });
 });
 
-// check task details
-const task_details_ref = document.querySelector(".window-task-information");
+// --------------------task details section----------------------
 
-// fetch data
+// use to prevent the user open multiple task details at once
+let isTaskDetailsOpen = false;
+let isProfileModalOpen = false;
 const post_task_ref = document.querySelector(".post-task");
-const browser_task_ref = document.querySelector(".browse-task--section");
 const overview_ref = document.querySelector(".main-section");
+const task_details_modal_ref = document.querySelector(".window-grid-container");
+const close_btn_ref = document.getElementById("close_task_details");
+const edit_btn_ref = document.querySelector(".btn-browse-edit");
+const delete_btn_ref = document.querySelector(".btn-browse-delete");
+const edit_delete_ref = document.querySelector(".tag-container");
+const task_details_title_ref = document.querySelector(".task-title");
+const task_details_tag_ref = document.querySelector(".task-tag");
+const task_details_des_ref = document.querySelector(".task-description");
+const task_details_cus_name_ref = document.querySelector(".customer-info-name");
+const task_details_location_ref = document.querySelector(".task-location");
+const task_details_contact_ref = document.querySelector(
+  ".customer-info-contact"
+);
+const task_details_price_ref = document.querySelector(".task-price");
+const task_details_start_time_ref = document.querySelector(".task-start-time");
+const task_details_end_time_ref = document.querySelector(".task-end-time");
+const task_details_duration_ref = document.querySelector(".task-duration");
+const task_details_tasker_no_ref = document.querySelector(".tasker-required");
+const task_details_tasker_no_span_ref = document.querySelector(
+  ".tasker-required-span"
+);
+const task_details_image_container_ref = document.querySelector(
+  ".window-img-container"
+);
+const cus_profile_click_ref = document.querySelector(".customer-info-name");
+// -------------------------------------------------------
 
-const functionHandleDetails = (e, current_layout) => {
-  // if user click view details button
-  if (e.target.className === "btn--view-detail") {
+// close task details
+close_btn_ref.addEventListener("click", (e) => {
+  e.preventDefault();
+  // hide task details
+  modal_window.classList.add("display-hidden");
+  listContainer.style.pointerEvents = "";
+  // set to false so the user can open another task details
+  isTaskDetailsOpen = false;
+  // reset image and span container
+  task_details_image_container_ref.innerHTML = "";
+  task_details_tasker_no_ref.innerHTML = "";
+  globalTaskDetailsId = "";
+  globalTaskDetailsCusId = "";
+  globalTaskDetailsTaskerId = [];
+  globalTaskDetailsPhotoName = [];
+});
+
+// when user click edit
+edit_btn_ref.addEventListener("click", (e) => {
+  e.preventDefault();
+
+  // unhide post page and hide current page
+  post_task_ref.classList.remove("display-hidden");
+
+  browse_section.classList.contains("display-hidden")
+    ? overview_ref.classList.add("display-hidden")
+    : browse_section.classList.add("display-hidden");
+
+  // turn edit mode on for post page
+  post_input.classList.add("edit_mode");
+  post_input.setAttribute("id", globalTaskDetailsId);
+
+  // hide task details modal
+  modal_window.classList.add("display-hidden");
+
+  isTaskDetailsOpen = false;
+
+  //reset task details
+  task_details_image_container_ref.innerHTML = "";
+  task_details_tasker_no_ref.innerHTML = "";
+
+  // toggle edit mode
+  browse_section.classList.contains("display-hidden")
+    ? outputEditData(overview_task)
+    : outputEditData(browse_section);
+});
+
+// when user click delete
+delete_btn_ref.addEventListener("click", (e) => {
+  e.preventDefault();
+
+  // alert user
+  Swal.fire({
+    title: "Do you want to delete the question?",
+    showDenyButton: true,
+    confirmButtonText: "Yes",
+    denyButtonText: `No`,
+  }).then(async (result) => {
+    // delete
+    if (result.isConfirmed) {
+      // loading
+      Swal.fire({
+        title: "Now Loading...",
+        allowEscapeKey: false,
+        allowOutsideClick: false,
+      });
+      Swal.showLoading();
+
+      // delete storage image
+      // loop each image
+      globalTaskDetailsPhotoName.forEach((image_name) => {
+        // Create a reference to the file to delete
+        const desertRef = ref(
+          storage,
+          `task/${globalTaskDetailsId}/${image_name}`
+        );
+        // Delete the file
+        deleteObject(desertRef)
+          .then(() => {
+            console.log("delete image");
+
+            // File deleted successfully
+          })
+          .catch((error) => {
+            console.log(error);
+            // Uh-oh, an error occurred!
+          });
+      });
+
+      // delete doc
+      await deleteDoc(doc(collection(db, "task"), globalTaskDetailsId));
+      Swal.close();
+      Swal.fire("Deleted!", "", "success");
+
+      // hide task details modal
+      modal_window.classList.add("display-hidden");
+      listContainer.style.pointerEvents = "";
+
+      isTaskDetailsOpen = false;
+      globalTaskDetailsId = "";
+
+      //reset task details
+      task_details_image_container_ref.innerHTML = "";
+      task_details_tasker_no_ref.innerHTML = "";
+
+      // reset global variable
+      globalTaskDetailsId = "";
+      globalTaskDetailsCusId = "";
+      globalTaskDetailsTaskerId = [];
+      globalTaskDetailsPhotoName = [];
+    }
+  });
+});
+
+// handle details (update all details with respective task)
+const functionHandleDetails = (e) => {
+  e.preventDefault();
+  // if user click view details button for first time
+  if (
+    e.target.className === "btn--view-detail" &&
+    !isTaskDetailsOpen &&
+    !isProfileModalOpen
+  ) {
+    // set global task id so that can pass to edit page
+    globalTaskDetailsId = e.target.id;
+
+    // set to true to prevent user open another task details
+    isTaskDetailsOpen = true;
+    task_details_modal_ref.classList.remove("display-hidden");
+
+    // fetch data
     const fetchData = async () => {
-      // fetch data
       const docSnap = await getDoc(doc(db, "task", e.target.id));
-      // add image html
-      let imgHtml = "";
+      const q = query(
+        collection(db, "user"),
+        where("user_id", "==", docSnap.data().created_by)
+      );
+      const userSnap = await getDocs(q);
+      const userData = userSnap.docs[0];
+
+      // ------------- add the data details start -------------
+      // set global variable
+      globalTaskDetailsCusId = userData.data().user_id;
+      globalTaskDetailsTaskerId = docSnap.data().tasker_id;
+      globalTaskDetailsPhotoName = docSnap.data().post_photo_name;
+
+      // add image
       if (docSnap.data().post_photo_url) {
         docSnap.data().post_photo_url.forEach((img) => {
-          imgHtml += `<img class="window-img" src=${img} alt="" />`;
+          const image = document.createElement("img");
+          image.setAttribute("src", img);
+          image.classList.add("window-img");
+          task_details_image_container_ref.appendChild(
+            image,
+            task_details_modal_ref
+          );
         });
       }
 
-      // add details html
-      let taskDetailsHtml = `
-      <div class="window-grid-container">
-        <div class="window-img-container">
-          ${imgHtml}
-        </div>
-        <p class="task-title">
-          ${docSnap.data().post_title}
-        </p>
-        <p class="task-description">
-          ${docSnap.data().post_des}
-        </p>
-        <div class="tag-container">
-          <p class="task-tag">
-            Categories: ${docSnap.data().post_categories}
-          </p>
-          <div class="btn-grp">
-            <button class="btn-browse-edit">edit</button>
-            <button class="btn-browse-delete">delete</button>
-          </div>
-        </div>
-        
-        <div class="task-details-bottom">
-          <div class="customer-info-container">
-            <div class="customer-info">
-              <ion-icon
-                class="customer-info-icon"
-                name="person-outline"
-              ></ion-icon>
-              <p class="customer-info--text">Mr???</p>
-            </div>
-            <div class="customer-info">
-              <ion-icon
-                class="customer-info-icon"
-                name="location-outline"
-              ></ion-icon>
-              <p class="customer-info--text">
-                ${docSnap.data().post_location}
-              </p>
-            </div>
-            <div class="customer-info">
-              <ion-icon
-                class="customer-info-icon"
-                name="call-outline"
-              ></ion-icon>
-              <p class="customer-info--text">???</p>
-            </div>
-            <div class="customer-info">
-              <ion-icon
-                class="customer-info-icon"
-                name="wallet-outline"
-              ></ion-icon>
-              <p class="customer-info--text">
-                ${docSnap.data().post_price_unit} ${
-        docSnap.data().post_price_amount
+      // add the rest details
+      task_details_title_ref.innerText = docSnap.data().post_title;
+      task_details_tag_ref.innerText = `Categories: ${
+        docSnap.data().post_categories
+      }`;
+      task_details_des_ref.innerText = `${
+        docSnap.data().post_des
+      } lOREn dniwnd wnwindwi wnnwi wnmos nrnrn`;
+      if (userData.data().gender && userData.data().username) {
+        task_details_cus_name_ref.innerText =
+          userData.data().gender === "Male" ? "Mr" : "Mrs";
+        task_details_cus_name_ref.innerText += " " + userData.data().username;
+      } else {
+        task_details_cus_name_ref.innerText = "?";
       }
-              </p>
-            </div>
-          </div>
-          <div class="task-info-container">
-            <div class="task-info">
-              <ion-icon
-              class="task-info-icon"
-              name="time-outline"
-              ></ion-icon>
-              <p class="task-info-text">
-              Start: 
-                ${docSnap.data().post_start_date} ${
-        docSnap.data().post_start_time
+
+      task_details_location_ref.innerText = docSnap.data().post_location;
+      if (userData.data().contact) {
+        task_details_contact_ref.innerText = userData.data().contact;
+      } else {
+        task_details_contact_ref.innerText = "?";
       }
-              </p>
-            </div>
-            <div class="task-info">
-              <ion-icon
-              class="task-info-icon"
-              name="time-outline"
-              ></ion-icon>
-              <p class="task-info-text">
-                End: ${docSnap.data().post_end_date} ${
-        docSnap.data().post_end_time
-      }
-              </p>
-            </div>
-            <div class="task-info">
-              <ion-icon
-              class="task-info-icon"
-              name="timer-outline"
-              ></ion-icon>
-              <p class="task-info-text">
-              ${docSnap.data().post_duration_amount} ${
-        docSnap.data().post_duration_unit
-      } 
-              </p>
-            </div>
-            <div class="task-info">
-              <ion-icon
-              class="task-info-icon"
-              name="people-outline"
-              ></ion-icon>
-              <p class="task-info-text">${
-                docSnap.data().post_tasker_no
-              } tasker required</p>
-            </div>
-          </div>
-        </div>
-        
-        <div class="padding-div">
-          <div class="option-button-div">
-            <a href="#" class="btn--view-detail">Accept</a>
-            <button class="btn btn--apply" id="close_task_details">Close</button>
-          </div>
-        </div>
-      </div>`;
-      task_details_ref.innerHTML += taskDetailsHtml;
-      task_details_ref.classList.remove("display-hidden");
+      task_details_price_ref.innerText =
+        docSnap.data().post_price_unit + " " + docSnap.data().post_price_amount;
+      task_details_start_time_ref.innerText =
+        docSnap.data().post_start_date + docSnap.data().post_start_time;
+      task_details_end_time_ref.innerText =
+        docSnap.data().post_end_date + docSnap.data().post_end_time;
+      task_details_duration_ref.innerText =
+        docSnap.data().post_duration_amount + docSnap.data().post_duration_unit;
+      task_details_tasker_no_ref.innerText = `${
+        docSnap.data().post_tasker_no
+      }tasker `;
+      const tasker_span = document.createElement("span");
+      tasker_span.classList.add("tool-tip");
+      tasker_span.innerText = `${
+        docSnap.data().post_tasker_no
+      } tasker required`;
+      task_details_tasker_no_ref.appendChild(tasker_span);
 
-      // close task details
-      const close_btn_ref = document.getElementById("close_task_details");
-      close_btn_ref.addEventListener("click", (e) => {
-        e.preventDefault();
-        task_details_ref.innerHTML = "";
-        task_details_ref.classList.add("display-hidden");
-        listContainer.style.pointerEvents = "";
-      });
+      // ------------- add the details end -------------
 
-      const edit_btn_ref = document.querySelector(".btn-browse-edit");
-      const delete_btn_ref = document.querySelector(".btn-browse-delete");
+      // show modal
+      modal_window.classList.remove("display-hidden");
 
-      // navigate to edit page
-      edit_btn_ref.addEventListener("click", (eEdit) => {
-        eEdit.preventDefault();
-        post_task_ref.classList.remove("display-hidden");
-        current_layout.classList.add("display-hidden");
-        post_input.classList.add("edit_mode");
-        post_input.setAttribute("id", e.target.id);
-        task_details_ref.innerHTML = "";
-        task_details_ref.classList.add("display-hidden");
-        // toggle edit mode
-        outputEditData(current_layout);
-      });
-
-      // handle delete
-      delete_btn_ref.addEventListener("click", (eDel) => {
-        eDel.preventDefault();
-        // alert user
-        Swal.fire({
-          title: "Do you want to delete the question?",
-          showDenyButton: true,
-          confirmButtonText: "Yes",
-          denyButtonText: `No`,
-        }).then(async (result) => {
-          // delete
-          if (result.isConfirmed) {
-            Swal.fire({
-              title: "Now Loading...",
-              allowEscapeKey: false,
-              allowOutsideClick: false,
-            });
-            Swal.showLoading();
-
-            // delete storage image
-            // loop each image
-            docSnap.data().post_photo_name.forEach((image_name) => {
-              // Create a reference to the file to delete
-              const desertRef = ref(
-                storage,
-                `task/${e.target.id}/${image_name}`
-              );
-              // Delete the file
-              deleteObject(desertRef)
-                .then(() => {
-                  // File deleted successfully
-                })
-                .catch((error) => {
-                  console.log(error);
-                  // Uh-oh, an error occurred!
-                });
-            });
-            Swal.showLoading();
-            await deleteDoc(doc(collection(db, "task"), e.target.id));
-            Swal.close();
-            Swal.fire("Deleted!", "", "success");
-            task_details_ref.innerHTML = "";
-            task_details_ref.classList.add("display-hidden");
-            listContainer.style.pointerEvents = "";
-          }
-        });
-      });
+      // only show edit delete button if user created it
+      const authEditDelete = getAuth();
+      const userEditDelete = authEditDelete.currentUser;
+      // if user created it
+      docSnap.data().created_by === userEditDelete.uid
+        ? (edit_delete_ref.style.visibility = "visible")
+        : (edit_delete_ref.style.visibility = "hidden");
     };
+
+    // user can open task details
     Swal.showLoading();
     fetchData();
     listContainer.style.pointerEvents = "none";
     Swal.close();
-  } else {
-    task_details_ref.innerHTML = "";
-    task_details_ref.classList.add("display-hidden");
+  }
+  // user click outside when open task details
+  else if (
+    e.target.className !== "btn--view-detail" &&
+    isTaskDetailsOpen &&
+    !isProfileModalOpen
+  ) {
+    isTaskDetailsOpen = false;
+    // hide current task detail
+    modal_window.classList.add("display-hidden");
     listContainer.style.pointerEvents = "";
+    // reset image and span container
+    task_details_image_container_ref.innerHTML = "";
+    task_details_tasker_no_ref.innerHTML = "";
+  }
+  // user click outside when open profile modal
+  else if (
+    e.target.className !== "btn--view-detail" &&
+    isTaskDetailsOpen &&
+    isProfileModalOpen
+  ) {
+    isProfileModalOpen = false;
+    profile_modal_container_ref.classList.add("display-hidden");
+    task_details_modal_ref.classList.remove("display-hidden");
+    profile_modal_user_container_ref.innerHTML = "";
   }
 };
-// when user click task
+
+// testing data for tasker id
+const tempUser = [
+  {
+    address:
+      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin varius, augue non sagittis luctus ",
+    contact: "012-3456789",
+    email: "111111@gmail.com",
+    gender: "Male",
+    marital_status: "Single",
+    role: "Tasker",
+    username: "sohai 11",
+    user_id: 11,
+    profile_pic_url:
+      "https://firebasestorage.googleapis.com/v0/b/cmt322taskrunner.appspot.com/o/user%2FyoZg5widYP4uR97COU0K%2F5cde6f7b021b4c16d1793ad8.jpg?alt=media&token=d3e834cb-b81d-42a9-8eb5-014ed24adef6",
+  },
+  {
+    address: "22",
+    contact: "22",
+    email: "22@gmail.com",
+    gender: "Male",
+    marital_status: "Single",
+    role: "Tasker",
+    username: "22",
+    user_id: 22,
+    profile_pic_url:
+      "https://firebasestorage.googleapis.com/v0/b/cmt322taskrunner.appspot.com/o/user%2FyoZg5widYP4uR97COU0K%2F5cde6f7b021b4c16d1793ad8.jpg?alt=media&token=d3e834cb-b81d-42a9-8eb5-014ed24adef6",
+  },
+  {
+    address: "33",
+    contact: "33",
+    email: "33@gmail.com",
+    gender: "Male",
+    marital_status: "Single",
+    role: "Tasker",
+    username: "33",
+    user_id: 33,
+    profile_pic_url:
+      "https://firebasestorage.googleapis.com/v0/b/cmt322taskrunner.appspot.com/o/user%2FyoZg5widYP4uR97COU0K%2F5cde6f7b021b4c16d1793ad8.jpg?alt=media&token=d3e834cb-b81d-42a9-8eb5-014ed24adef6",
+  },
+];
+
+// when user click show profile for customer
+cus_profile_click_ref.addEventListener("click", async () => {
+  isProfileModalOpen = true;
+
+  // hide task details
+  task_details_modal_ref.classList.add("display-hidden");
+
+  // get cus profile data from database
+  const q = query(
+    collection(db, "user"),
+    where("user_id", "==", globalTaskDetailsCusId)
+  );
+  const querySnapshot = await getDocs(q);
+  const user_id = querySnapshot.docs[0].data();
+
+  showUserProfile([user_id]);
+  // showUserProfile(tempUser);
+});
+
+// when user click show profile for tasker
+task_details_tasker_no_ref.addEventListener("click", () => {
+  isProfileModalOpen = true;
+
+  // hide task details
+  task_details_modal_ref.classList.add("display-hidden");
+
+  // user temp data to replace tasker data
+  // showUserProfile([globalTaskDetailsTaskerId])
+  showUserProfile(tempUser);
+});
+
+// when user click task details for
 // browse task part
 search_task_section.addEventListener("click", (e) => {
-  functionHandleDetails(e, browser_task_ref);
+  e.preventDefault();
+  functionHandleDetails(e, browse_section);
 });
 
 // overview part
 overview_task.addEventListener("click", (e) => {
+  e.preventDefault();
   functionHandleDetails(e, overview_ref);
 });
+
+// ------------- task details end ----------------
+
+// ------------- task details profile ----------------
+
+const profile_modal_user_container_ref = document.querySelector(
+  ".profile_modal_popup_content_user_list"
+);
+const profile_modal_close_ref = document.querySelector(
+  ".profile_modal_popup_close"
+);
+const profile_modal_container_ref = document.querySelector(
+  ".profile_modal_popup_container"
+);
+const profile_modal_img_ref = document.querySelector(
+  ".profile_modal_popup_picture_img"
+);
+const profile_modal_name_ref = document.querySelector(
+  ".profile_modal_popup_content_name"
+);
+const profile_modal_role_ref = document.querySelector(
+  ".profile_modal_popup_content_role"
+);
+const profile_modal_email_ref = document.querySelector(
+  ".profile_modal_popup_content_email"
+);
+const profile_modal_contact_ref = document.querySelector(
+  ".profile_modal_popup_content_contact"
+);
+const profile_modal_gender_ref = document.querySelector(
+  ".profile_modal_popup_content_gender"
+);
+const profile_modal_status_ref = document.querySelector(
+  ".profile_modal_popup_content_status"
+);
+const profile_modal_address_ref = document.querySelector(
+  ".profile_modal_popup_content_address"
+);
+
+// function to show profile of user
+const showUserProfile = (user_id) => {
+  profile_modal_container_ref.classList.remove("display-hidden");
+  let count = 0;
+
+  // create tasker list based on current tasker / customer
+  user_id.forEach((user) => {
+    const userList = document.createElement("li");
+    userList.classList.add("profile_modal_popup_content_user_li");
+    userList.setAttribute("id", user.user_id);
+    userList.innerText = `Tasker ${++count}`;
+    profile_modal_user_container_ref.appendChild(userList);
+  });
+
+  // console.log(user_id);
+
+  // initialize data with first tasker
+  // if got user
+  if (user_id.length !== 0) {
+    profile_modal_img_ref.setAttribute("src", user_id[0].profile_pic_url);
+    profile_modal_name_ref.innerText = `Username: ${user_id[0].username}`;
+    profile_modal_role_ref.innerText = `Role: ${user_id[0].role}`;
+    profile_modal_email_ref.innerText = `Email: ${user_id[0].email}`;
+    profile_modal_contact_ref.innerText = `Contact: ${user_id[0].contact}`;
+    profile_modal_gender_ref.innerText = `Gender: ${user_id[0].gender}`;
+    profile_modal_status_ref.innerText = `Marital Status: ${user_id[0].marital_status}`;
+    profile_modal_address_ref.innerText = `Address: ${user_id[0].address}`;
+    profile_modal_user_container_ref.firstElementChild.classList.add(
+      "profile_modal_user_list_active"
+    );
+    // user click each user list on left side
+    const profile_modal_user_list_ref = document.querySelectorAll(
+      ".profile_modal_popup_content_user_li"
+    );
+
+    profile_modal_user_container_ref.addEventListener("click", (e) => {
+      profile_modal_user_list_ref.forEach((user_nav) => {
+        e.target.id === user_nav.id
+          ? user_nav.classList.add("profile_modal_user_list_active")
+          : user_nav.classList.remove("profile_modal_user_list_active");
+      });
+
+      // change right content according to the user data
+      user_id.forEach((user_data) => {
+        // == instead === because diff data type
+        if (user_data.user_id == e.target.id) {
+          profile_modal_img_ref.setAttribute("src", user_data.profile_pic_url);
+          profile_modal_name_ref.innerText = `Username: ${user_data.username}`;
+          profile_modal_role_ref.innerText = `Role: ${user_data.role}`;
+          profile_modal_email_ref.innerText = `Email: ${user_data.email}`;
+          profile_modal_contact_ref.innerText = `Contact: ${user_data.contact}`;
+          profile_modal_gender_ref.innerText = `Gender: ${user_data.gender}`;
+          profile_modal_status_ref.innerText = `Marital Status: ${user_data.marital_status}`;
+          profile_modal_address_ref.innerText = `Address: ${user_data.address}`;
+        }
+      });
+    });
+  }
+  // no user
+  else {
+    const userList = document.createElement("li");
+    userList.classList.add("profile_modal_popup_content_user_li");
+    userList.innerText = `No User`;
+    profile_modal_user_container_ref.appendChild(userList);
+  }
+
+  // user click close modal
+  profile_modal_close_ref.addEventListener("click", () => {
+    isProfileModalOpen = false;
+    // show task details modal
+    task_details_modal_ref.classList.remove("display-hidden");
+
+    // hide profile modal
+    profile_modal_container_ref.classList.add("display-hidden");
+
+    profile_modal_user_container_ref.innerHTML = "";
+  });
+};
+
+// ------------- task details profile end----------------
