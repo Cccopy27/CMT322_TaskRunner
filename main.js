@@ -327,7 +327,6 @@ const sort_task = function (order) {
         second_task.data().added_at.nanoseconds / 1000000
     );
     if (order === "latest") {
-      console.log("hello");
       return second_date - first_date;
     } else {
       return first_date - second_date;
