@@ -36,6 +36,49 @@
   </head>
   <body>
     <div class="overlay"></div>
+    <div class="checkout display-hidden">
+      <div class="checkout__info">
+        <h2 class="checkout__task--heading">Lorem ipsum dolor sit amet, consectetur adipisicing elit.</h2>
+        
+
+          <span class="checkout__currency">$ </span>
+          <span class="checkout__amount">30.00</span>
+        
+        <p class="checkout__description">Pay to : <span class="checkout__payee">chia</span></p> 
+
+        <img class="checkout__task--img" src="img/cameraman.jpg" alt="" />
+
+      </div>
+      <form class="payment__form">
+        <div class="payment__form--top">
+          <button class="close__payment"><ion-icon class="close__payment--icon" name="close"></ion-icon></button>
+        </div>
+        <div class="payment__form--top">
+
+          <h2 class="payment__form--heading">Pay by card</h2>
+          
+        </div>
+        <div class="payment__input">
+
+          <input class="payment__input-common payment__input--card" type="text" maxlength="20" required placeholder="4242 4242 4242 4242" />
+          <input class="payment__input-common payment__input--date" type="text" maxlength="7" required placeholder="MM / YY" />
+          <input class="payment__input-common payment__input--cvc" type="text" maxlength="3" required placeholder="CVC" />
+        </div>
+
+        <div class="payment__input payment__input--margin">
+          <label class="payment__input--label">Name on card</label>
+          <input class="payment__input-common payment__input--name" type="text" required/>
+
+        </div>
+
+
+        <input class="payment__input--submit" type="submit" />
+
+        
+
+        
+      </form>
+    </div>
     <div class="dashboard-grid">
       <nav class="dashboard-sidebar">
         <div class="dashboard-title-container">
@@ -276,6 +319,13 @@
         </section>
 
         <!-- main section -->
+
+        <!-- payment -->
+
+        
+
+
+        <!--  -->
 
         <!-- window -->
 

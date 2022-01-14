@@ -284,6 +284,7 @@ let latest_oldest_option = document.querySelector("#date-list");
 const search_task_button = document.querySelector(".search--task--button");
 let input_field = document.querySelector(".job--choice");
 const loader = document.querySelector(".loader");
+const checkout = document.querySelector(".checkout");
 
 const auth = getAuth();
 let uid;
@@ -980,6 +981,122 @@ post_input.addEventListener("submit", (e) => {
     }
   });
 });
+
+// Payment
+const payment_description = document.querySelector(".checkout__task--heading");
+const checkout__currency = document.querySelector(".checkout__currency");
+const checkout__amount = document.querySelector(".checkout__amount");
+const checkout_payee = document.querySelector(".checkout__payee");
+const checkout__task_img = document.querySelector(".checkout__task--img");
+
+const control_animation = function (remove_properties, add_properties) {
+  this.classList.remove(remove_properties);
+  this.classList.add(add_properties);
+};
+
+const getUser = function (update = false) {
+  let user_data = [];
+  return new Promise((resolve, reject) => {
+    this.forEach(async (user_id, i) => {
+      let user = await getDocs(
+        query(collection(db, "user"), where("user_id", "==", user_id))
+      );
+
+      user_data.push({ ...user.docs[0].data() });
+
+      if (update) {
+        await updateDoc(doc(db, "user", user.docs[0].id), {
+          ...user.docs[0].data(),
+          total_earn: 50,
+        });
+      }
+
+      if (i === this.length - 1) resolve(user_data);
+    });
+  });
+};
+
+const prepare_form = function (...user) {
+  console.log("hello");
+  let payee = user.map(
+    (user_obj) =>
+      user_obj.username ?? user_obj.user_id.slice(0, 3).padEnd(10, ".")
+  );
+  console.log(payee);
+
+  payment_description.innerText = this.data().post_des;
+  checkout__currency.innerText = this.data().post_price_unit;
+  checkout__amount.innerText = this.data().post_price_amount.concat(".00");
+  checkout_payee.innerText = payee.join(" , ");
+  checkout__task_img.src = this.data().post_photo_url;
+  checkout__task_img.alt = this.data().post_photo_name;
+};
+
+const complete_payment = async function () {
+  this.classList.add("animation__checkout--complete");
+
+  await new Promise((resolve, reject) => {
+    setTimeout(resolve, 1000);
+  });
+
+  control_animation.call(
+    this,
+    "animation__checkout--complete",
+    "display-hidden"
+  );
+  overlay.style.display = "none";
+};
+
+const updateUserAndDeleteTask = async function (task, e) {
+  e.preventDefault();
+
+  if (!e.target.classList.contains("payment__input--submit")) return;
+
+  this.classList.remove("animation__checkout");
+
+  await getUser.call(task.data().tasker_id, true);
+  await deleteDoc(doc(db, "task", task.id));
+
+  await complete_payment.call(this);
+};
+
+const handle_payment = async function (e) {
+  e.preventDefault();
+  if (!e.target.classList.contains("btn--apply")) return;
+
+  checkout.removeEventListener("click", updateUserAndDeleteTask);
+
+  let btn_holder = e.target.closest(".option-button-div");
+  let task_id = btn_holder.querySelector(".btn--view-detail").id;
+  let task = await getDoc(doc(db, "task", task_id));
+
+  let user_data = await getUser.call(task.data().tasker_id);
+  prepare_form.call(task, ...user_data);
+
+  overlay.style.display = "block";
+  control_animation.call(checkout, "display-hidden", "animation__checkout");
+  checkout.addEventListener(
+    "click",
+    updateUserAndDeleteTask.bind(checkout, task)
+  );
+};
+
+const close_payment = async function (e) {
+  console.log(e.target);
+  if (
+    !(
+      e.target.classList.contains("close__payment") ||
+      e.target.classList.contains("close__payment--icon")
+    )
+  )
+    return;
+
+  await complete_payment.call(this);
+};
+
+overview_task.addEventListener("click", handle_payment);
+checkout.addEventListener("click", close_payment);
+search_task_section.addEventListener("click", handle_payment);
 
 // --------------------task details section----------------------
 
