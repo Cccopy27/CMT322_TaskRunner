@@ -66,6 +66,8 @@ listContainer.addEventListener("click", function (e) {
   controlNav.call(links, "link", section_active, "list-section-active");
 });
 
+controlNav.call(links, "link", "1", "list-section-active");
+
 //
 
 const btn_apply = document.querySelector(".btn--apply");
@@ -285,13 +287,36 @@ const search_task_button = document.querySelector(".search--task--button");
 let input_field = document.querySelector(".job--choice");
 const loader = document.querySelector(".loader");
 const checkout = document.querySelector(".checkout");
+let window_task = document.querySelector(".window-task-information");
+let reject_button = document.querySelector(".btn--reject");
 
 const auth = getAuth();
 let uid;
+let current_user;
 
-const render_search_result = function (section) {
+const render_search_result = async function (section) {
   section.innerHTML = "";
+  let current_id;
+  let template;
+  if (current_user.role === "customer") {
+    let current_customer_task = await getDocs(
+      query(
+        collection(db, "task"),
+        where("created_by", "==", current_user.user_id)
+      )
+    );
+    current_id = [...current_customer_task.docs].map((document) => document.id);
+  }
+
   this.forEach((doc) => {
+    if (current_user.role === "customer") {
+      template = current_id.includes(doc.id)
+        ? `<button class="btn btn--task btn--${current_user.role}">Complete</button>`
+        : ``;
+    } else {
+      template = `<button class="btn btn--task btn--${current_user.role}">Apply</button>`;
+    }
+
     let html = `<div class="section-task-card">
                   <img class="search-task-img" src=${
                     doc.data().post_photo_url
@@ -307,7 +332,7 @@ const render_search_result = function (section) {
                       <a href="#" class="btn--view-detail" id=${doc.id}>
                       view details
                       </a>
-                      <button class="btn btn--apply">Complete</button>
+                      ${template} 
                     </div>
                   </div>
                 </div>`;
@@ -339,20 +364,38 @@ const sort_task = function (order) {
   return this;
 };
 
+const filter_task = function () {
+  return this.filter(
+    (doc) =>
+      !(
+        doc.data().tasker_id.includes(current_user.user_id) ||
+        doc.data().tasker_id.length >= doc.data().post_tasker_no
+      )
+  );
+};
+
 const populate_data = async function () {
   input_field.removeEventListener("keyup", handle_empty_input);
+
   loader.classList.remove("loader--hidden");
+  let filtered_task;
   let search_section_data = await getDocs(collection(db, "task"));
+
+  filtered_task =
+    current_user.role === "tasker"
+      ? filter_task.call(search_section_data.docs)
+      : search_section_data.docs;
+
   loader.classList.add("loader--hidden");
 
-  latest_oldest_option.onchange = function (e) {
+  latest_oldest_option.onchange = async function (e) {
     let order = this.value.toLowerCase().replace(" ", "");
 
-    let task_sorted = sort_task.call(search_section_data.docs, order);
+    let task_sorted = sort_task.call(filtered_task, order);
 
-    render_search_result.call(task_sorted, search_task_section);
+    await render_search_result.call(task_sorted, search_task_section);
   };
-  render_search_result.call(search_section_data.docs, search_task_section);
+  await render_search_result.call(filtered_task, search_task_section);
 };
 
 onAuthStateChanged(auth, async (user) => {
@@ -361,16 +404,19 @@ onAuthStateChanged(auth, async (user) => {
       query(collection(db, "user"), where("user_id", "==", user.uid))
     );
     uid = user.uid;
-    let current_user = query_user.docs[0].data();
-    console.log(current_user);
+    current_user = query_user.docs[0].data();
+    if (current_user.role === "customer")
+      reject_button.classList.add("display-hidden");
 
-    let query_task = query(
-      collection(db, "task"),
-      where("created_by", "==", user.uid)
-      // orderBy("added_at", "desc")
-    );
+    let query_task =
+      current_user.role === "customer"
+        ? query(collection(db, "task"), where("created_by", "==", user.uid))
+        : query(
+            collection(db, "task"),
+            where("tasker_id", "array-contains", current_user.user_id)
+          );
 
-    onSnapshot(query_task, (snapshot) => {
+    onSnapshot(query_task, async (snapshot) => {
       overview_task.innerHTML = "";
       search_task_section.innerHTML = "";
       let count = 0;
@@ -402,7 +448,9 @@ onAuthStateChanged(auth, async (user) => {
                             <a href="#" class="btn--view-detail" id=${doc.id}>
                               view details
                             </a>
-                            <button class="btn btn--apply">Complete</button>
+                            <button class="btn btn--task btn--${
+                              current_user.role
+                            }">Complete</button>
                           </div>
                         </div>
                       </div>`;
@@ -412,7 +460,7 @@ onAuthStateChanged(auth, async (user) => {
       });
       slide = all_holder;
       slide_to(0);
-      populate_data();
+      await populate_data();
     });
 
     // ------------- Profile of current user ----------------
@@ -755,29 +803,57 @@ const handle_empty_input = function (e) {
   }
 };
 
+// search task by customer and tasker
+
 search_task_button.addEventListener("click", async (e) => {
   latest_oldest_option.value = "Please select an option";
-  let search_section = e.target.closest(".search--input--field");
-  let input_field = search_section.querySelector(".job--choice");
   let input = input_field.value;
+  let filtered_task;
+  input_field.removeEventListener("keyup", handle_empty_input);
 
   loader.classList.remove("loader--hidden");
 
   let tasks = await getDocs(
     query(collection(db, "task"), where("post_categories", "==", input))
   );
+  filtered_task =
+    current_user.role === "tasker" ? filter_task.call(tasks.docs) : tasks.docs;
 
   input_field.addEventListener("keyup", handle_empty_input);
 
-  render_search_result.call(tasks.docs, search_task_section);
-  latest_oldest_option.onchange = function (e) {
+  await render_search_result.call(filtered_task, search_task_section);
+  latest_oldest_option.onchange = async function (e) {
     let order = this.value.toLowerCase().replace(" ", "");
-    let task = sort_task.call(tasks.docs, order);
-    render_search_result.call(task, search_task_section);
+    let task = sort_task.call(filtered_task, order);
+    await render_search_result.call(task, search_task_section);
   };
 
   loader.classList.add("loader--hidden");
 });
+
+// Accept task
+const accept_task = async function (e) {
+  if (!e.target.classList.contains("btn--tasker")) return;
+  let parent_divider = e.target.closest(".option-button-div");
+  let task_detail = parent_divider.querySelector(".btn--view-detail").id;
+  Swal.fire({
+    title: "Do you want to apply this task/job?",
+    showDenyButton: true,
+    confirmButtonText: "Yes",
+    denyButtonText: `No`,
+  }).then(async (result) => {
+    if (result.isConfirmed) {
+      let current_task = await getDoc(doc(db, "task", task_detail));
+
+      let data = current_task.data();
+      data.tasker_id.push(current_user.user_id);
+
+      await updateDoc(doc(db, "task", current_task.id), data);
+    }
+  });
+};
+
+search_task_section.addEventListener("click", accept_task);
 
 // keep checking user selected correct categories
 post_input_cat.addEventListener("change", (e) => {
@@ -982,7 +1058,7 @@ post_input.addEventListener("submit", (e) => {
   });
 });
 
-// Payment
+// Payment for customer
 const payment_description = document.querySelector(".checkout__task--heading");
 const checkout__currency = document.querySelector(".checkout__currency");
 const checkout__amount = document.querySelector(".checkout__amount");
@@ -997,6 +1073,7 @@ const control_animation = function (remove_properties, add_properties) {
 const getUser = function (update = false) {
   let user_data = [];
   return new Promise((resolve, reject) => {
+    if (!this.length) resolve(this.length);
     this.forEach(async (user_id, i) => {
       let user = await getDocs(
         query(collection(db, "user"), where("user_id", "==", user_id))
@@ -1062,7 +1139,7 @@ const updateUserAndDeleteTask = async function (task, e) {
 
 const handle_payment = async function (e) {
   e.preventDefault();
-  if (!e.target.classList.contains("btn--apply")) return;
+  if (!e.target.classList.contains("btn--customer")) return;
 
   checkout.removeEventListener("click", updateUserAndDeleteTask);
 
@@ -1071,6 +1148,15 @@ const handle_payment = async function (e) {
   let task = await getDoc(doc(db, "task", task_id));
 
   let user_data = await getUser.call(task.data().tasker_id);
+  if (!user_data) {
+    Swal.fire({
+      icon: "error",
+      title: "Oops...",
+      text: "No one pick up this job yet!",
+    });
+    return;
+  }
+
   prepare_form.call(task, ...user_data);
 
   overlay.style.display = "block";
@@ -1082,7 +1168,6 @@ const handle_payment = async function (e) {
 };
 
 const close_payment = async function (e) {
-  console.log(e.target);
   if (
     !(
       e.target.classList.contains("close__payment") ||
@@ -1094,9 +1179,14 @@ const close_payment = async function (e) {
   await complete_payment.call(this);
 };
 
+const tasker_complete = function () {};
+
+// Complete task by tasker
+
 overview_task.addEventListener("click", handle_payment);
-checkout.addEventListener("click", close_payment);
 search_task_section.addEventListener("click", handle_payment);
+checkout.addEventListener("click", close_payment);
+overview_task.addEventListener("click", tasker_complete);
 
 // --------------------task details section----------------------
 
@@ -1130,11 +1220,12 @@ const task_details_image_container_ref = document.querySelector(
   ".window-img-container"
 );
 const cus_profile_click_ref = document.querySelector(".customer-info-name");
+const tasker_field = document.querySelector(".current__tasker");
 // -------------------------------------------------------
 
 // close task details
-close_btn_ref.addEventListener("click", (e) => {
-  e.preventDefault();
+
+const close_task = function () {
   // hide task details
   modal_window.classList.add("display-hidden");
   listContainer.style.pointerEvents = "";
@@ -1147,6 +1238,55 @@ close_btn_ref.addEventListener("click", (e) => {
   globalTaskDetailsCusId = "";
   globalTaskDetailsTaskerId = [];
   globalTaskDetailsPhotoName = [];
+};
+
+const reject_task = async function (e) {
+  if (!e.target.classList.contains("btn--reject")) return;
+  let target_task = await getDoc(doc(db, "task", globalTaskDetailsId));
+  let reject_task = target_task.data();
+
+  Swal.fire({
+    title: "Do you want to reject this task/job?",
+    showDenyButton: true,
+    confirmButtonText: "Yes",
+    denyButtonText: `No`,
+  }).then(async (result) => {
+    if (result.isConfirmed) {
+      close_task();
+      reject_task.tasker_id = reject_task.tasker_id.filter(
+        (data) => !data === current_user.user_id
+      );
+      await updateDoc(doc(db, "task", target_task.id), reject_task);
+    }
+  });
+};
+
+const reject_by_client = async (e) => {
+  if (!e.target.classList.contains("btn__reject--tasker")) return;
+  let tasker_id = e.target.id;
+  let target_task = await getDoc(doc(db, "task", globalTaskDetailsId));
+  let task_to_update = target_task.data();
+  let updated_task = target_task
+    .data()
+    .tasker_id.filter((user_id) => !user_id === tasker_id);
+  task_to_update.tasker_id = updated_task;
+  Swal.fire({
+    title: "Do you want to reject this tasker/jobseeker?",
+    showDenyButton: true,
+    confirmButtonText: "Yes",
+    denyButtonText: `No`,
+  }).then(async (result) => {
+    await updateDoc(doc(db, "task", target_task.id), task_to_update);
+    e.target.closest(".tasker__list").remove();
+  });
+};
+
+window_task.addEventListener("click", reject_task);
+window_task.addEventListener("click", reject_by_client);
+
+close_btn_ref.addEventListener("click", (e) => {
+  e.preventDefault();
+  close_task();
 });
 
 // when user click edit
@@ -1249,6 +1389,7 @@ delete_btn_ref.addEventListener("click", (e) => {
 // handle details (update all details with respective task)
 const functionHandleDetails = (e) => {
   e.preventDefault();
+  tasker_field.innerHTML = "";
   // if user click view details button for first time
   if (
     e.target.className === "btn--view-detail" &&
@@ -1330,6 +1471,23 @@ const functionHandleDetails = (e) => {
         docSnap.data().post_tasker_no
       } tasker required`;
       task_details_tasker_no_ref.appendChild(tasker_span);
+
+      if (current_user.role === "customer") {
+        let html = "";
+
+        docSnap.data().tasker_id.forEach((user_id, i) => {
+          html = html.concat(
+            `<li class="tasker__list">tasker${i + 1}: ${user_id
+              .slice(0, 5)
+              .padEnd(
+                10,
+                "."
+              )} <a href="#" class="btn__reject--tasker" id=${user_id}>Reject</a></li>`
+          );
+        });
+
+        tasker_field.insertAdjacentHTML("beforeend", html);
+      }
 
       // ------------- add the details end -------------
 
