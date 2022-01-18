@@ -1235,7 +1235,7 @@ const getUser = function (
 
       if (update) {
         let total = user.earning ?? 0;
-        let task = user.task_completed ?? 0;
+        let task = user.completed_task ?? 0;
         total = parseInt(total) + parseInt(price);
         task = parseInt(task) + 1;
         await updateDoc(doc(db, "user", user.docs[0].id), {
@@ -1298,8 +1298,8 @@ const updateUserAndTask = async function (task, e) {
   let customer_doc = await getDocs(
     query(collection(db, "user"), where("user_id", "==", current_user.user_id))
   );
-  let total_spend = customer_doc.docs[0].data().spend ?? 0;
-  let total_task = customer_doc.docs[0].data().total_task ?? 0;
+  let total_spend = customer_doc.docs[0].data().total_spending ?? 0;
+  let total_task = customer_doc.docs[0].data().total_task_completed ?? 0;
   total_spend = parseInt(total_spend) + parseInt(task.data().post_price_amount);
   total_task = parseInt(total_task) + 1;
   await updateDoc(doc(db, "user", customer_doc.docs[0].id), {
