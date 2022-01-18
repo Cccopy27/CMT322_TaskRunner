@@ -289,10 +289,32 @@ const loader = document.querySelector(".loader");
 const checkout = document.querySelector(".checkout");
 let window_task = document.querySelector(".window-task-information");
 let reject_button = document.querySelector(".btn--reject");
+const total_earn_description = document.querySelector(
+  ".total_earn_description"
+);
+const total_earn = document.querySelector(".total_earn");
+const total_task_description = document.querySelector(
+  ".total_task_description"
+);
+const total_task = document.querySelector(".total_task");
+const history_checkpoint = document.querySelector(".history-checkpoint");
 
 const auth = getAuth();
 let uid;
 let current_user;
+
+const handle_state = function (class_name, message = undefined, add_class) {
+  let parent_button = this.closest(".option-button-div");
+  let target_button = parent_button.querySelector(class_name);
+  if (!message) {
+    target_button.remove();
+    return;
+  }
+  target_button.style.backgroundColor = "#51ec82";
+  target_button.style.color = "#fff";
+  target_button.innerText = message;
+  target_button.classList.add(add_class);
+};
 
 const render_search_result = async function (section) {
   section.innerHTML = "";
@@ -337,6 +359,25 @@ const render_search_result = async function (section) {
                   </div>
                 </div>`;
     section.insertAdjacentHTML("beforeend", html);
+    if (
+      current_user.role === "customer" &&
+      doc.data().status === "complete" &&
+      current_id.includes(doc.id)
+    ) {
+      let complete_task = search_task_section.querySelector(`#${doc.id}`);
+      handle_state.call(
+        complete_task,
+        ".btn--customer",
+        "Pay now",
+        "btn__to_pay"
+      );
+    } else if (
+      current_user.role === "customer" &&
+      doc.data().status === "paid"
+    ) {
+      let complete_task = search_task_section.querySelector(`#${doc.id}`);
+      handle_state.call(complete_task, ".btn--customer");
+    }
   });
 };
 
@@ -358,9 +399,7 @@ const sort_task = function (order) {
       return first_date - second_date;
     }
   });
-  this.forEach((task) => {
-    console.log(task.data());
-  });
+
   return this;
 };
 
@@ -405,8 +444,15 @@ onAuthStateChanged(auth, async (user) => {
     );
     uid = user.uid;
     current_user = query_user.docs[0].data();
-    if (current_user.role === "customer")
+    total_earn.innerText = "0";
+    total_task.innerText = "0";
+    total_task_description.innerText = "Total task";
+    if (current_user.role === "customer") {
       reject_button.classList.add("display-hidden");
+      total_earn_description.innerText = "Total spend";
+    } else {
+      total_earn_description.innerText = "Total earn";
+    }
 
     let query_task =
       current_user.role === "customer"
@@ -456,12 +502,148 @@ onAuthStateChanged(auth, async (user) => {
                       </div>`;
 
         all_holder[index].insertAdjacentHTML("beforeend", html);
+        if (
+          current_user.role === "customer" &&
+          doc.data().status === "complete"
+        ) {
+          let complete_task = overview_task.querySelector(`#${doc.id}`);
+          handle_state.call(
+            complete_task,
+            ".btn--customer",
+            "Pay now",
+            "btn__to_pay"
+          );
+        } else if (
+          current_user.role === "customer" &&
+          doc.data().status === "paid"
+        ) {
+          let complete_task = overview_task.querySelector(`#${doc.id}`);
+          handle_state.call(complete_task, ".btn--customer");
+        } else if (
+          current_user.role === "tasker" &&
+          doc.data().status === "paid"
+        ) {
+          let complete_task = overview_task.querySelector(`#${doc.id}`);
+          handle_state.call(complete_task, ".btn--tasker");
+        } else if (
+          current_user.role === "tasker" &&
+          doc.data().status === "complete"
+        ) {
+          let complete_task = overview_task.querySelector(`#${doc.id}`);
+          handle_state.call(
+            complete_task,
+            ".btn--tasker",
+            "Pending",
+            "btn__pending"
+          );
+        }
         count++;
       });
       slide = all_holder;
       slide_to(0);
       await populate_data();
     });
+
+    let query_transaction =
+      current_user.role === "customer"
+        ? query(
+            collection(db, "transaction_history"),
+            where("customer_id", "==", current_user.user_id)
+          )
+        : query(
+            collection(db, "transaction_history"),
+            where("user_id", "==", current_user.user_id)
+          );
+
+    onSnapshot(query_transaction, async (snapshot) => {
+      if (snapshot.docs.length !== 0) {
+        if (current_user.role === "customer") {
+          let user = await getDocs(
+            query(
+              collection(db, "user"),
+              where("user_id", "==", current_user.user_id)
+            )
+          );
+          total_earn.innerText = user.docs[0].data().total_spending;
+          total_task.innerText = user.docs[0].data().total_task_completed;
+        } else {
+          let user = await getDocs(
+            query(
+              collection(db, "user"),
+              where("user_id", "==", current_user.user_id)
+            )
+          );
+
+          total_earn.innerText = user.docs[0].data().earning;
+          total_task.innerText = user.docs[0].data().completed_task;
+        }
+      }
+      snapshot.docs.forEach(async (doc) => {
+        let transaction_doc = doc.data();
+
+        let user_data =
+          current_user.role === "customer"
+            ? await getDocs(
+                query(
+                  collection(db, "user"),
+                  where("user_id", "==", transaction_doc.customer_id)
+                )
+              )
+            : await getDocs(
+                query(
+                  collection(db, "user"),
+                  where("user_id", "==", transaction_doc.user_id)
+                )
+              );
+
+        let html = `<div class="transaction-detail">
+                      <img class="customer-img" src="${
+                        user_data.docs[0].data().profile_pic_url
+                      }" alt="${user_data.docs[0].data().username}" />
+                      <p class="transaction-date">${new Date(
+                        transaction_doc.transaction_date.seconds * 1000 +
+                          transaction_doc.transaction_date.nanoseconds / 1000000
+                      )}</p>
+                      <p class="transaction-fee">MYR<span> ${transaction_doc.amount.padEnd(
+                        5,
+                        ".00"
+                      )}</span></p>
+                    </div>`;
+        history_checkpoint.insertAdjacentHTML("beforeend", html);
+      });
+    });
+
+    // let query_progress =
+    //   current_user.role === "customer"
+    //     ? query(
+    //         collection(db, "task"),
+    //         where("created_by", "==", user.uid),
+    //         where("status", "==", "complete")
+    //       )
+    //     : query(
+    //         collection(db, "task"),
+    //         where("tasker_id", "array-contains", user.uid),
+    //         where("status", "==", "paid")
+    //       );
+    // onSnapshot(query_progress, async (snapshot) => {
+    //   if (snapshot.docs.length !== 0) {
+    //     if (current_user.role === "customer") {
+    //       Swal.fire({
+    //         title: "Do you want to discard your changes?",
+    //         showDenyButton: true,
+    //         confirmButtonText: "Yes",
+    //         denyButtonText: `No`,
+    //       });
+    //     } else {
+    //       Swal.fire({
+    //         title: "Do you want to discard your changes?",
+    //         showDenyButton: true,
+    //         confirmButtonText: "Yes",
+    //         denyButtonText: `No`,
+    //       });
+    //     }
+    //   }
+    // });
 
     // ------------- Profile of current user ----------------
 
@@ -1070,7 +1252,12 @@ const control_animation = function (remove_properties, add_properties) {
   this.classList.add(add_properties);
 };
 
-const getUser = function (update = false) {
+const getUser = function (
+  update = false,
+  price = 0,
+  customer_Id = undefined,
+  taskId = undefined
+) {
   let user_data = [];
   return new Promise((resolve, reject) => {
     if (!this.length) resolve(this.length);
@@ -1082,10 +1269,23 @@ const getUser = function (update = false) {
       user_data.push({ ...user.docs[0].data() });
 
       if (update) {
+        let total = user.earning ?? 0;
+        let task = user.task_completed ?? 0;
+        total = parseInt(total) + parseInt(price);
+        task = parseInt(task) + 1;
         await updateDoc(doc(db, "user", user.docs[0].id), {
           ...user.docs[0].data(),
-          total_earn: 50,
+          earning: total,
+          completed_task: task,
         });
+        let transaction_obj = {
+          user_id,
+          amount: price,
+          transaction_date: new Date(),
+          customer_id: customer_Id,
+          taskId,
+        };
+        await addDoc(collection(db, "transaction_history"), transaction_obj);
       }
 
       if (i === this.length - 1) resolve(user_data);
@@ -1094,12 +1294,11 @@ const getUser = function (update = false) {
 };
 
 const prepare_form = function (...user) {
-  console.log("hello");
-  let payee = user.map(
-    (user_obj) =>
-      user_obj.username ?? user_obj.user_id.slice(0, 3).padEnd(10, ".")
+  let payee = user.map((user_obj) =>
+    user_obj.username
+      ? user_obj.username
+      : user_obj.user_id.slice(0, 3).padEnd(10, ".")
   );
-  console.log(payee);
 
   payment_description.innerText = this.data().post_des;
   checkout__currency.innerText = this.data().post_price_unit;
@@ -1124,47 +1323,77 @@ const complete_payment = async function () {
   overlay.style.display = "none";
 };
 
-const updateUserAndDeleteTask = async function (task, e) {
+const updateUserAndTask = async function (task, e) {
   e.preventDefault();
 
   if (!e.target.classList.contains("payment__input--submit")) return;
 
   this.classList.remove("animation__checkout");
 
-  await getUser.call(task.data().tasker_id, true);
-  await deleteDoc(doc(db, "task", task.id));
+  await getUser.call(
+    task.data().tasker_id,
+    true,
+    task.data().post_price_amount,
+    task.data().created_by,
+    task.id
+  );
+  let update_task = task.data();
+  update_task.status = "paid";
+  await updateDoc(doc(db, "task", task.id), update_task);
+  let customer_doc = await getDocs(
+    query(collection(db, "user"), where("user_id", "==", current_user.user_id))
+  );
+  let total_spend = customer_doc.docs[0].data().spend ?? 0;
+  let total_task = customer_doc.docs[0].data().total_task ?? 0;
+  total_spend = parseInt(total_spend) + parseInt(task.data().post_price_amount);
+  total_task = parseInt(total_task) + 1;
+  await updateDoc(doc(db, "user", customer_doc.docs[0].id), {
+    ...customer_doc.docs[0].data(),
+    total_spending: total_spend,
+    total_task_completed: total_task,
+  });
 
   await complete_payment.call(this);
 };
 
 const handle_payment = async function (e) {
   e.preventDefault();
-  if (!e.target.classList.contains("btn--customer")) return;
+  if (current_user.role !== "customer") return;
+  if (!e.target.classList.contains("btn__to_pay")) {
+    if (e.target.classList.contains("btn--view-detail")) return;
+    let task_Id = e.target
+      .closest(".option-button-div")
+      .querySelector(".btn--view-detail").id;
+    let task_detail_handle = await getDoc(doc(db, "task", task_Id));
+    if (!task_detail_handle.data().tasker_id.length) {
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: "No one pick up this job yet!",
+      });
+    } else {
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: "The tasker havent completed this job/task yet",
+      });
+    }
 
-  checkout.removeEventListener("click", updateUserAndDeleteTask);
+    return;
+  }
+  checkout.removeEventListener("click", updateUserAndTask);
 
   let btn_holder = e.target.closest(".option-button-div");
   let task_id = btn_holder.querySelector(".btn--view-detail").id;
   let task = await getDoc(doc(db, "task", task_id));
 
   let user_data = await getUser.call(task.data().tasker_id);
-  if (!user_data) {
-    Swal.fire({
-      icon: "error",
-      title: "Oops...",
-      text: "No one pick up this job yet!",
-    });
-    return;
-  }
 
   prepare_form.call(task, ...user_data);
 
   overlay.style.display = "block";
   control_animation.call(checkout, "display-hidden", "animation__checkout");
-  checkout.addEventListener(
-    "click",
-    updateUserAndDeleteTask.bind(checkout, task)
-  );
+  checkout.addEventListener("click", updateUserAndTask.bind(checkout, task));
 };
 
 const close_payment = async function (e) {
@@ -1175,11 +1404,27 @@ const close_payment = async function (e) {
     )
   )
     return;
-
   await complete_payment.call(this);
 };
 
-const tasker_complete = function () {};
+const tasker_complete = async function (e) {
+  if (!e.target.classList.contains("btn--tasker")) return;
+  Swal.fire({
+    title: "Do you want to complete this task?",
+    showDenyButton: true,
+    confirmButtonText: "Yes",
+    denyButtonText: "No",
+  }).then(async (result) => {
+    if (result.isConfirmed) {
+      let parent_btn_task = e.target.closest(".option-button-div");
+      let task_id = parent_btn_task.querySelector(".btn--view-detail").id;
+      let task = await getDoc(doc(db, "task", task_id));
+      let task_complete = task.data();
+      task_complete.status = "complete";
+      await updateDoc(doc(db, "task", task.id), task_complete);
+    }
+  });
+};
 
 // Complete task by tasker
 
