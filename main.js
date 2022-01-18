@@ -1515,6 +1515,7 @@ const reject_by_client = async (e) => {
     .data()
     .tasker_id.filter((user_id) => !user_id === tasker_id);
   task_to_update.tasker_id = updated_task;
+  globalTaskDetailsTaskerId = updated_task; //update this oso
   Swal.fire({
     title: "Do you want to reject this tasker/jobseeker?",
     showDenyButton: true,
@@ -1706,10 +1707,10 @@ const functionHandleDetails = (e) => {
       task_details_end_time_ref.innerText =
         docSnap.data().post_end_date + docSnap.data().post_end_time;
       task_details_duration_ref.innerText =
-        docSnap.data().post_duration_amount + docSnap.data().post_duration_unit;
+        docSnap.data().post_duration_amount + " " + docSnap.data().post_duration_unit;
       task_details_tasker_no_ref.innerText = `${
         docSnap.data().post_tasker_no
-      }tasker `;
+      } tasker `;
       const tasker_span = document.createElement("span");
       tasker_span.classList.add("tool-tip");
       tasker_span.innerText = `${
@@ -1781,47 +1782,6 @@ const functionHandleDetails = (e) => {
   }
 };
 
-// testing data for tasker id
-const tempUser = [
-  {
-    address:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin varius, augue non sagittis luctus ",
-    contact: "012-3456789",
-    email: "111111@gmail.com",
-    gender: "Male",
-    marital_status: "Single",
-    role: "Tasker",
-    username: "sohai 11",
-    user_id: 11,
-    profile_pic_url:
-      "https://firebasestorage.googleapis.com/v0/b/cmt322taskrunner.appspot.com/o/user%2FyoZg5widYP4uR97COU0K%2F5cde6f7b021b4c16d1793ad8.jpg?alt=media&token=d3e834cb-b81d-42a9-8eb5-014ed24adef6",
-  },
-  {
-    address: "22",
-    contact: "22",
-    email: "22@gmail.com",
-    gender: "Male",
-    marital_status: "Single",
-    role: "Tasker",
-    username: "22",
-    user_id: 22,
-    profile_pic_url:
-      "https://firebasestorage.googleapis.com/v0/b/cmt322taskrunner.appspot.com/o/user%2FyoZg5widYP4uR97COU0K%2F5cde6f7b021b4c16d1793ad8.jpg?alt=media&token=d3e834cb-b81d-42a9-8eb5-014ed24adef6",
-  },
-  {
-    address: "33",
-    contact: "33",
-    email: "33@gmail.com",
-    gender: "Male",
-    marital_status: "Single",
-    role: "Tasker",
-    username: "33",
-    user_id: 33,
-    profile_pic_url:
-      "https://firebasestorage.googleapis.com/v0/b/cmt322taskrunner.appspot.com/o/user%2FyoZg5widYP4uR97COU0K%2F5cde6f7b021b4c16d1793ad8.jpg?alt=media&token=d3e834cb-b81d-42a9-8eb5-014ed24adef6",
-  },
-];
-
 // when user click show profile for customer
 cus_profile_click_ref.addEventListener("click", async () => {
   isProfileModalOpen = true;
@@ -1842,15 +1802,38 @@ cus_profile_click_ref.addEventListener("click", async () => {
 });
 
 // when user click show profile for tasker
-task_details_tasker_no_ref.addEventListener("click", () => {
+task_details_tasker_no_ref.addEventListener("click", async() => {
   isProfileModalOpen = true;
 
   // hide task details
   task_details_modal_ref.classList.add("display-hidden");
+  
+  // get cus profile data from database
+  // only query if there are tasker accepted
+  const tempArr = [];
 
-  // user temp data to replace tasker data
-  // showUserProfile([globalTaskDetailsTaskerId])
-  showUserProfile(tempUser);
+  if (globalTaskDetailsTaskerId.length !== 0) {
+    const q = query(
+      collection(db, "user"),
+      where("user_id", "in", globalTaskDetailsTaskerId)
+    );
+    const querySnapshot = await getDocs(q);
+
+    const pushData = new Promise((resolve, reject) => {
+      querySnapshot.forEach((item) => {
+        tempArr.push(item.data());
+        if (tempArr.length === querySnapshot.docs.length) resolve();
+        // if (index === array.length -1) resolve();
+      })
+    })
+
+    pushData.then(() => {
+      showUserProfile(tempArr);
+    });
+  }
+  else {
+    showUserProfile(tempArr);
+  }
 });
 
 // when user click task details for
@@ -1914,7 +1897,7 @@ const showUserProfile = (user_id) => {
     const userList = document.createElement("li");
     userList.classList.add("profile_modal_popup_content_user_li");
     userList.setAttribute("id", user.user_id);
-    userList.innerText = `Tasker ${++count}`;
+    userList.innerText = `Tasker ${++count} : ${user.user_id}`;
     profile_modal_user_container_ref.appendChild(userList);
   });
 
@@ -1980,6 +1963,16 @@ const showUserProfile = (user_id) => {
     profile_modal_container_ref.classList.add("display-hidden");
 
     profile_modal_user_container_ref.innerHTML = "";
+
+    // reset field
+    profile_modal_img_ref.setAttribute("src", "");
+    profile_modal_name_ref.innerText = "";
+    profile_modal_role_ref.innerText = "";
+    profile_modal_email_ref.innerText = "";
+    profile_modal_contact_ref.innerText = "";
+    profile_modal_gender_ref.innerText = "";
+    profile_modal_status_ref.innerText = "";
+    profile_modal_address_ref.innerText = "";
   });
 };
 
