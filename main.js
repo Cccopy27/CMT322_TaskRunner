@@ -557,27 +557,23 @@ onAuthStateChanged(auth, async (user) => {
 
     onSnapshot(query_transaction, async (snapshot) => {
       if (snapshot.docs.length !== 0) {
+        let user = await getDocs(
+          query(
+            collection(db, "user"),
+            where("user_id", "==", current_user.user_id)
+          )
+        );
+        console.log(user.docs[0].data());
+        console.log("hi");
         if (current_user.role === "customer") {
-          let user = await getDocs(
-            query(
-              collection(db, "user"),
-              where("user_id", "==", current_user.user_id)
-            )
-          );
           total_earn.innerText = user.docs[0].data().total_spending;
           total_task.innerText = user.docs[0].data().total_task_completed;
         } else {
-          let user = await getDocs(
-            query(
-              collection(db, "user"),
-              where("user_id", "==", current_user.user_id)
-            )
-          );
-
           total_earn.innerText = user.docs[0].data().earning;
           total_task.innerText = user.docs[0].data().completed_task;
         }
       }
+
       snapshot.docs.forEach(async (doc) => {
         let transaction_doc = doc.data();
 
@@ -1330,16 +1326,6 @@ const updateUserAndTask = async function (task, e) {
 
   this.classList.remove("animation__checkout");
 
-  await getUser.call(
-    task.data().tasker_id,
-    true,
-    task.data().post_price_amount,
-    task.data().created_by,
-    task.id
-  );
-  let update_task = task.data();
-  update_task.status = "paid";
-  await updateDoc(doc(db, "task", task.id), update_task);
   let customer_doc = await getDocs(
     query(collection(db, "user"), where("user_id", "==", current_user.user_id))
   );
@@ -1352,6 +1338,17 @@ const updateUserAndTask = async function (task, e) {
     total_spending: total_spend,
     total_task_completed: total_task,
   });
+
+  await getUser.call(
+    task.data().tasker_id,
+    true,
+    task.data().post_price_amount,
+    task.data().created_by,
+    task.id
+  );
+  let update_task = task.data();
+  update_task.status = "paid";
+  await updateDoc(doc(db, "task", task.id), update_task);
 
   await complete_payment.call(this);
 };
@@ -1707,7 +1704,9 @@ const functionHandleDetails = (e) => {
       task_details_end_time_ref.innerText =
         docSnap.data().post_end_date + docSnap.data().post_end_time;
       task_details_duration_ref.innerText =
-        docSnap.data().post_duration_amount + " " + docSnap.data().post_duration_unit;
+        docSnap.data().post_duration_amount +
+        " " +
+        docSnap.data().post_duration_unit;
       task_details_tasker_no_ref.innerText = `${
         docSnap.data().post_tasker_no
       } tasker `;
@@ -1802,12 +1801,12 @@ cus_profile_click_ref.addEventListener("click", async () => {
 });
 
 // when user click show profile for tasker
-task_details_tasker_no_ref.addEventListener("click", async() => {
+task_details_tasker_no_ref.addEventListener("click", async () => {
   isProfileModalOpen = true;
 
   // hide task details
   task_details_modal_ref.classList.add("display-hidden");
-  
+
   // get cus profile data from database
   // only query if there are tasker accepted
   const tempArr = [];
@@ -1824,14 +1823,13 @@ task_details_tasker_no_ref.addEventListener("click", async() => {
         tempArr.push(item.data());
         if (tempArr.length === querySnapshot.docs.length) resolve();
         // if (index === array.length -1) resolve();
-      })
-    })
+      });
+    });
 
     pushData.then(() => {
       showUserProfile(tempArr);
     });
-  }
-  else {
+  } else {
     showUserProfile(tempArr);
   }
 });
