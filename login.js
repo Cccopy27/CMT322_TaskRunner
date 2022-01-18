@@ -6,7 +6,7 @@ import {
   onAuthStateChanged,
 } from "firebase/auth";
 
-import { addDoc, collection} from "firebase/firestore";
+import { addDoc, collection } from "firebase/firestore";
 
 const section_all = document.querySelectorAll(".section");
 const create_account = document.querySelector(".create-account");
