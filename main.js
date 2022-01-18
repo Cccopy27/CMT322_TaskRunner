@@ -557,14 +557,15 @@ onAuthStateChanged(auth, async (user) => {
 
     onSnapshot(query_transaction, async (snapshot) => {
       if (snapshot.docs.length !== 0) {
+        history_checkpoint.innerHTML = "";
+
         let user = await getDocs(
           query(
             collection(db, "user"),
             where("user_id", "==", current_user.user_id)
           )
         );
-        console.log(user.docs[0].data());
-        console.log("hi");
+
         if (current_user.role === "customer") {
           total_earn.innerText = user.docs[0].data().total_spending;
           total_task.innerText = user.docs[0].data().total_task_completed;
@@ -608,38 +609,6 @@ onAuthStateChanged(auth, async (user) => {
         history_checkpoint.insertAdjacentHTML("beforeend", html);
       });
     });
-
-    // let query_progress =
-    //   current_user.role === "customer"
-    //     ? query(
-    //         collection(db, "task"),
-    //         where("created_by", "==", user.uid),
-    //         where("status", "==", "complete")
-    //       )
-    //     : query(
-    //         collection(db, "task"),
-    //         where("tasker_id", "array-contains", user.uid),
-    //         where("status", "==", "paid")
-    //       );
-    // onSnapshot(query_progress, async (snapshot) => {
-    //   if (snapshot.docs.length !== 0) {
-    //     if (current_user.role === "customer") {
-    //       Swal.fire({
-    //         title: "Do you want to discard your changes?",
-    //         showDenyButton: true,
-    //         confirmButtonText: "Yes",
-    //         denyButtonText: `No`,
-    //       });
-    //     } else {
-    //       Swal.fire({
-    //         title: "Do you want to discard your changes?",
-    //         showDenyButton: true,
-    //         confirmButtonText: "Yes",
-    //         denyButtonText: `No`,
-    //       });
-    //     }
-    //   }
-    // });
 
     // ------------- Profile of current user ----------------
 
