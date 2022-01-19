@@ -403,6 +403,47 @@ const sort_task = function (order) {
   return this;
 };
 
+const calculate_distance = function (distance_lat, distance_long, coords) {
+  let degree_between_lat = (distance_lat - coords.latitude) * (Math.PI / 180);
+  let degree_between_long =
+    (distance_long - coords.longitude) * (Math.PI / 180);
+  let distance =
+    Math.pow(Math.sin(degree_between_lat), 2) +
+    Math.cos((distance_lat * Math.PI) / 180) *
+      Math.cos((coords.latitude * Math.PI) / 180) *
+      Math.sin(degree_between_long / 2) *
+      Math.sin(degree_between_long / 2);
+  let distance_in_miles =
+    2 * Math.atan2(Math.sqrt(distance), Math.sqrt(1 - distance));
+  let distance_in_kilometer = distance_in_miles * 6371;
+  return distance_in_kilometer;
+};
+
+const sort_distance = async function (order) {
+  if (!(this.length - 1) || order === "pleaseselectanoption") return;
+
+  let { coords } = await getLocation();
+  this.sort((task_prev, task_next) => {
+    let distance_previous_lat = task_prev.data().post_location_lat;
+    let distance_previous_long = task_prev.data().post_location_long;
+    let distance_next_lat = task_next.data().post_location_lat;
+    let distance_next_long = task_next.data().post_location_long;
+    let distance_prev = calculate_distance(
+      distance_previous_lat,
+      distance_previous_long,
+      coords
+    );
+    let distance_next = calculate_distance(
+      distance_next_lat,
+      distance_next_long,
+      coords
+    );
+    return distance_next - distance_prev;
+  });
+
+  return this;
+};
+
 const filter_task = function () {
   return this.filter(
     (doc) =>
@@ -430,7 +471,10 @@ const populate_data = async function () {
   latest_oldest_option.onchange = async function (e) {
     let order = this.value.toLowerCase().replace(" ", "");
 
-    let task_sorted = sort_task.call(filtered_task, order);
+    let task_sorted =
+      order !== "nearbyme"
+        ? sort_task.call(filtered_task, order)
+        : await sort_distance.call(filtered_task, order);
 
     await render_search_result.call(task_sorted, search_task_section);
   };
@@ -971,7 +1015,10 @@ search_task_button.addEventListener("click", async (e) => {
   await render_search_result.call(filtered_task, search_task_section);
   latest_oldest_option.onchange = async function (e) {
     let order = this.value.toLowerCase().replace(" ", "");
-    let task = sort_task.call(filtered_task, order);
+    let task =
+      order !== "nearbyme"
+        ? sort_task.call(filtered_task, order)
+        : await sort_distance.call(filtered_task, order);
     await render_search_result.call(task, search_task_section);
   };
 
