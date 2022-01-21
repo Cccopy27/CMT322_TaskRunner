@@ -297,28 +297,23 @@ body {
 }
 
 .chat-bar {
-  display: grid;
   padding: 1.2rem 1.4rem;
-  grid-template-columns: 1fr;
-  grid-template-rows: 2fr 3fr;
-  border-radius: 15rem;
-  box-shadow: 0 0 1.4rem rgb(228, 222, 252);
   grid-column: 3/4;
+  position: relative;
 }
 
-.chat-user {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
+.signout__icon {
+  width: 3.2rem;
+  height: 3.2rem;
   cursor: pointer;
+  position: absolute;
+  bottom: 0;
+  left: 25%;
+  transform: translate(0, -50%);
 }
 
-.chat-icon {
-  filter: brightness(90%);
-}
-
-.chat-icon:hover {
-  filter: brightness(100%);
+.signout__icon:hover {
+  color: #51ec82;
 }
 
 .statistic {
@@ -1437,11 +1432,12 @@ body {
 
 .profile_modal_popup_content_user_li {
   font-size: 15px;
-  word-wrap:break-word;
+  word-wrap: break-word;
 }
 
 .profile_modal_popup_content_right {
-  box-shadow: rgba(60, 64, 67, 0.3) 0px 1px 2px 0px, rgba(60, 64, 67, 0.15) 0px 1px 3px 1px;
+  box-shadow: rgba(60, 64, 67, 0.3) 0px 1px 2px 0px,
+    rgba(60, 64, 67, 0.15) 0px 1px 3px 1px;
   margin: 0.5rem 0.5rem;
   padding: 2rem;
   display: flex;
@@ -1459,7 +1455,6 @@ body {
 .profile_modal_popup_content_right p {
   font-size: 13px;
 }
-
 
 .profile_modal_popup_content_picture {
   flex: 1;
@@ -1507,11 +1502,11 @@ body {
   flex: 1;
 }
 
-.customer-info-name,.tasker-required{
+.customer-info-name,
+.tasker-required {
   /* background-color: #19d7f0; */
   padding: 0.1rem;
   background-color: rgba(228, 251, 255, 0.897);
-
 }
 
 .customer-info-name:hover,
