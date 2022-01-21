@@ -480,6 +480,21 @@ const populate_data = async function () {
   };
   await render_search_result.call(filtered_task, search_task_section);
 };
+/**------------------Logout function--------------------- */
+const sign_out = document.querySelector(".signout__icon");
+sign_out.addEventListener("click", (e)=>{
+  e.preventDefault();
+  auth
+    .signOut()
+    .then(() => {
+      
+      location.replace("login.html");
+      console.log("successfully log out");
+    })
+    .catch((err) => {
+      console.log(err.message);
+    });
+});
 
 onAuthStateChanged(auth, async (user) => {
   if (user) {
