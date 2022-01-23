@@ -305,7 +305,9 @@ let current_user;
 
 const handle_state = function (class_name, message = undefined, add_class) {
   let parent_button = this.closest(".option-button-div");
+
   let target_button = parent_button.querySelector(class_name);
+
   if (!message) {
     target_button.remove();
     return;
@@ -373,7 +375,8 @@ const render_search_result = async function (section) {
       );
     } else if (
       current_user.role === "customer" &&
-      doc.data().status === "paid"
+      doc.data().status === "paid" &&
+      current_id.includes(doc.id)
     ) {
       let complete_task = search_task_section.querySelector(`#${doc.id}`);
       handle_state.call(complete_task, ".btn--customer");
@@ -460,6 +463,7 @@ const populate_data = async function () {
   loader.classList.remove("loader--hidden");
   let filtered_task;
   let search_section_data = await getDocs(collection(db, "task"));
+  console.log(search_section_data.docs.length);
 
   filtered_task =
     current_user.role === "tasker"
@@ -482,12 +486,11 @@ const populate_data = async function () {
 };
 /**------------------Logout function--------------------- */
 const sign_out = document.querySelector(".signout__icon");
-sign_out.addEventListener("click", (e)=>{
+sign_out.addEventListener("click", (e) => {
   e.preventDefault();
   auth
     .signOut()
     .then(() => {
-      
       location.replace("login.html");
       console.log("successfully log out");
     })
@@ -1752,13 +1755,15 @@ const functionHandleDetails = (e) => {
         let html = "";
 
         docSnap.data().tasker_id.forEach((user_id, i) => {
+          let str = "";
+          if (docSnap.data().status !== "paid") {
+            str = `<a href="#" class="btn__reject--tasker" id=${user_id}>Reject</a></li>`;
+          }
+
           html = html.concat(
             `<li class="tasker__list">tasker${i + 1}: ${user_id
               .slice(0, 5)
-              .padEnd(
-                10,
-                "."
-              )} <a href="#" class="btn__reject--tasker" id=${user_id}>Reject</a></li>`
+              .padEnd(10, ".")} ${str}`
           );
         });
 
