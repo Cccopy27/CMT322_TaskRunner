@@ -35,7 +35,7 @@ sign_in.addEventListener("click", toggle_section);
 
 sign_in_form.addEventListener("submit", function (e) {
   e.preventDefault();
-
+  Swal.showLoading();
   const email = sign_in_form.email.value;
   const password = sign_in_form.password.value;
 
@@ -64,8 +64,10 @@ sign_in_form.addEventListener("submit", function (e) {
       });
       document.getElementById("error").innerHTML = "";
       this.reset();
+      Swal.fire("Acount Created", "", "success");
     })
     .catch((err) => {
+      Swal.fire("Something Wrong", "", "error");
       console.log(err.message);
       // Changing HTML to draw attention
       document.getElementById("error").innerHTML =
@@ -75,6 +77,7 @@ sign_in_form.addEventListener("submit", function (e) {
 });
 
 login.addEventListener("submit", (e) => {
+  Swal.showLoading();
   e.preventDefault();
 
   const email = login.email.value;
@@ -83,10 +86,18 @@ login.addEventListener("submit", (e) => {
   signInWithEmailAndPassword(auth, email, password)
     .then((cred) => {
       console.log("user login: ", cred.user);
+      Swal.close();
       location.replace("dashboard.html");
     })
     .catch((err) => {
+
       console.log(err.message);
+      if (err.message === "Firebase: Error (auth/user-not-found).") {
+        Swal.fire("User not found", "", "error");
+      }
+      else if (err.message === "Firebase: Error (auth/wrong-password).") {
+        Swal.fire("Wrong Password", "", "error");
+      }
     });
 });
 
