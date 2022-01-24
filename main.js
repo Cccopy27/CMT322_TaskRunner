@@ -1299,10 +1299,12 @@ const getUser = function (
       user_data.push({ ...user.docs[0].data() });
 
       if (update) {
-        let total = user.earning ?? 0;
-        let task = user.completed_task ?? 0;
+        let total = user.docs[0].data().earning ?? 0;
+        let task = user.docs[0].data().completed_task ?? 0;
         total = parseInt(total) + parseInt(price);
         task = parseInt(task) + 1;
+        console.log(total);
+        console.log(task);
         await updateDoc(doc(db, "user", user.docs[0].id), {
           ...user.docs[0].data(),
           earning: total,
