@@ -1718,7 +1718,7 @@ const functionHandleDetails = (e) => {
       }`;
       task_details_des_ref.innerText = `${
         docSnap.data().post_des
-      } lOREn dniwnd wnwindwi wnnwi wnmos nrnrn`;
+      } `;
       if (userData.data().gender && userData.data().username) {
         task_details_cus_name_ref.innerText =
           userData.data().gender === "Male" ? "Mr" : "Mrs";
