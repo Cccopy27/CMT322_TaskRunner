@@ -366,7 +366,7 @@ const render_search_result = async function (section) {
       doc.data().status === "complete" &&
       current_id.includes(doc.id)
     ) {
-      let complete_task = search_task_section.querySelector(`#${doc.id}`);
+      let complete_task = document.getElementById(`${doc.id}`);
       handle_state.call(
         complete_task,
         ".btn--customer",
@@ -378,7 +378,7 @@ const render_search_result = async function (section) {
       doc.data().status === "paid" &&
       current_id.includes(doc.id)
     ) {
-      let complete_task = search_task_section.querySelector(`#${doc.id}`);
+      let complete_task = document.getElementById(`${doc.id}`);
       handle_state.call(complete_task, ".btn--customer");
     }
   });
@@ -568,7 +568,7 @@ onAuthStateChanged(auth, async (user) => {
           current_user.role === "customer" &&
           doc.data().status === "complete"
         ) {
-          let complete_task = overview_task.querySelector(`#${doc.id}`);
+          let complete_task = document.getElementById(`${doc.id}`);
           handle_state.call(
             complete_task,
             ".btn--customer",
@@ -579,19 +579,19 @@ onAuthStateChanged(auth, async (user) => {
           current_user.role === "customer" &&
           doc.data().status === "paid"
         ) {
-          let complete_task = overview_task.querySelector(`#${doc.id}`);
+          let complete_task = document.getElementById(`${doc.id}`);
           handle_state.call(complete_task, ".btn--customer");
         } else if (
           current_user.role === "tasker" &&
           doc.data().status === "paid"
         ) {
-          let complete_task = overview_task.querySelector(`#${doc.id}`);
+          let complete_task = document.getElementById(`${doc.id}`);
           handle_state.call(complete_task, ".btn--tasker");
         } else if (
           current_user.role === "tasker" &&
           doc.data().status === "complete"
         ) {
-          let complete_task = overview_task.querySelector(`#${doc.id}`);
+          let complete_task = document.getElementById(`${doc.id}`);
           handle_state.call(
             complete_task,
             ".btn--tasker",
