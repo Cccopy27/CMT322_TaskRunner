@@ -57,7 +57,8 @@ const auth = getAuth();
 
 const handle_sign_out = function (e) {
   e.preventDefault();
-  auth.signOut
+  auth
+    .signOut()
     .then(() => {
       location.replace("login.html");
     })

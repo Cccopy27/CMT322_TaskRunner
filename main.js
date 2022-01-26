@@ -1543,21 +1543,29 @@ const reject_by_client = async (e) => {
   if (!e.target.classList.contains("btn__reject--tasker")) return;
   let tasker_id = e.target.id;
   let target_task = await getDoc(doc(db, "task", globalTaskDetailsId));
-  let task_to_update = target_task.data();
-  let updated_task = target_task
-    .data()
-    .tasker_id.filter((user_id) => !user_id === tasker_id);
-  task_to_update.tasker_id = updated_task;
-  globalTaskDetailsTaskerId = updated_task; //update this oso
-  Swal.fire({
-    title: "Do you want to reject this tasker/jobseeker?",
-    showDenyButton: true,
-    confirmButtonText: "Yes",
-    denyButtonText: `No`,
-  }).then(async (result) => {
-    await updateDoc(doc(db, "task", target_task.id), task_to_update);
-    e.target.closest(".tasker__list").remove();
-  });
+  if (target_task.data().status !== "complete") {
+    let task_to_update = target_task.data();
+    let updated_task = target_task
+      .data()
+      .tasker_id.filter((user_id) => !user_id === tasker_id);
+    task_to_update.tasker_id = updated_task;
+    globalTaskDetailsTaskerId = updated_task; //update this oso
+    Swal.fire({
+      title: "Do you want to reject this tasker/jobseeker?",
+      showDenyButton: true,
+      confirmButtonText: "Yes",
+      denyButtonText: `No`,
+    }).then(async (result) => {
+      await updateDoc(doc(db, "task", target_task.id), task_to_update);
+      e.target.closest(".tasker__list").remove();
+    });
+  } else {
+    Swal.fire({
+      title: "This task has been completed,cannot reject the tasker",
+
+      confirmButtonText: "ok",
+    });
+  }
 };
 
 window_task.addEventListener("click", reject_task);
@@ -1758,7 +1766,10 @@ const functionHandleDetails = (e) => {
 
         docSnap.data().tasker_id.forEach((user_id, i) => {
           let str = "";
-          if (docSnap.data().status !== "paid") {
+          if (
+            docSnap.data().status !== "paid" &&
+            docSnap.data().created_by === current_user.user_id
+          ) {
             str = `<a href="#" class="btn__reject--tasker" id=${user_id}>Reject</a></li>`;
           }
 
