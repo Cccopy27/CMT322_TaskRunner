@@ -1088,9 +1088,8 @@ post_input.addEventListener("submit", (e) => {
   let error = false;
   e.preventDefault();
   if (current_user.role !== "customer") {
-    Swal.fire("You are not allow to post task as a tasker", "","info")
-  }
-  else{
+    Swal.fire("You are not allow to post task as a tasker", "", "info");
+  } else {
     // alert user
     Swal.fire({
       title: "Do you want to upload this task?",
@@ -1181,7 +1180,10 @@ post_input.addEventListener("submit", (e) => {
           // loop each image
           temp_array_image_arr.forEach((image_name) => {
             // Create a reference to the file to delete
-            const desertRef = ref(storage, `task/${post_input.id}/${image_name}`);
+            const desertRef = ref(
+              storage,
+              `task/${post_input.id}/${image_name}`
+            );
             // Delete the file
             deleteObject(desertRef)
               .then(() => {
@@ -1199,7 +1201,8 @@ post_input.addEventListener("submit", (e) => {
         image_arr.forEach((img) => {
           // the image will store in question/question.id/image.name
           // update doc will giv undefined
-          const tempDocId = addedDoc === undefined ? post_input.id : addedDoc.id;
+          const tempDocId =
+            addedDoc === undefined ? post_input.id : addedDoc.id;
           const uploadPath = `task/${tempDocId}/${img.name}`;
           const storageRef = ref(storage, uploadPath);
 
@@ -1251,7 +1254,10 @@ post_input.addEventListener("submit", (e) => {
 
           //reset button
           // update button
-          edit_post_btn_grp.firstElementChild.setAttribute("value", "Post Task");
+          edit_post_btn_grp.firstElementChild.setAttribute(
+            "value",
+            "Post Task"
+          );
 
           // navigate to overview
           post_task_ref.classList.add("display-hidden");
@@ -1272,7 +1278,6 @@ post_input.addEventListener("submit", (e) => {
       }
     });
   }
-  
 });
 
 // Payment for customer
@@ -1729,9 +1734,7 @@ const functionHandleDetails = (e) => {
       task_details_tag_ref.innerText = `Categories: ${
         docSnap.data().post_categories
       }`;
-      task_details_des_ref.innerText = `${
-        docSnap.data().post_des
-      } `;
+      task_details_des_ref.innerText = `${docSnap.data().post_des} `;
       if (userData.data().gender && userData.data().username) {
         task_details_cus_name_ref.innerText =
           userData.data().gender === "Male" ? "Mr" : "Mrs";
@@ -1786,6 +1789,17 @@ const functionHandleDetails = (e) => {
         });
 
         tasker_field.insertAdjacentHTML("beforeend", html);
+      }
+
+      if (current_user.role === "tasker") {
+        if (
+          docSnap.data().status !== "paid" &&
+          docSnap.data().tasker_id.includes(current_user.user_id)
+        ) {
+          reject_button.classList.remove("display-hidden");
+        } else {
+          reject_button.classList.add("display-hidden");
+        }
       }
 
       // ------------- add the details end -------------
