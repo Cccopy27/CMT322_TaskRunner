@@ -1087,187 +1087,192 @@ post_input_cat.addEventListener("change", (e) => {
 post_input.addEventListener("submit", (e) => {
   let error = false;
   e.preventDefault();
-
-  // alert user
-  Swal.fire({
-    title: "Do you want to upload this task?",
-    showDenyButton: true,
-    confirmButtonText: "Yes",
-    denyButtonText: "No",
-  }).then(async (result) => {
-    // user click yes
-    if (result.isConfirmed) {
-      Swal.fire({
-        title: "Uploading...",
-        allowEscapeKey: false,
-        allowOutsideClick: false,
-      });
-      Swal.showLoading();
-
-      // check mode (edit or post)
-      const post_photo = image_input.files;
-
-      // convert filelist to array to user array method
-      const image_arr = Array.from(post_photo);
-      console.log(image_arr, "-----------------");
-
-      // store image name
-      const image_name_temp = [];
-      image_arr.forEach((item) => {
-        image_name_temp.push(item.name);
-      });
-
-      // task obj to submit
-      const postObj = {
-        post_title: post_input_title.value,
-        post_categories: post_input_cat.value,
-        post_des: post_input_des.value,
-        post_start_date: post_input_start_date.value,
-        post_start_time: post_input_start_time.value,
-        post_end_date: post_input_end_date.value,
-        post_end_time: post_input_end_time.value,
-        post_location: loc_text.value,
-        post_price_amount: post_input_price.value,
-        post_price_unit: post_input_price_unit.value,
-        post_duration_amount: post_input_duration.value,
-        post_duration_unit: post_input_duration_unit.value,
-        post_tasker_no: post_input_tasker_number.value,
-        post_photo_url: "",
-        post_photo_name: image_name_temp,
-        post_location_long: location_long,
-        post_location_lat: location_lat,
-        post_location_regionCode: location_regionCode,
-        post_location_locality: location_locality,
-        added_at: Timestamp.now(),
-        created_by: uid,
-        status: "incomplete",
-        tasker_id: [],
-      };
-
-      // change taskobj according to mode
-      if (post_input.classList.contains("edit_mode")) {
-        // check user got upload image or not
-        // use back old image
-        if (postObj.post_photo_name.length === 0) {
-          delete postObj.post_photo_name;
-          delete postObj.post_photo_url;
-        }
-        // check location
-        // use back old data
-        if (postObj.post_location_long === undefined) {
-          delete postObj.post_location_long;
-          delete postObj.post_location_lat;
-          delete postObj.post_location_regionCode;
-          delete postObj.post_location_locality;
-        }
-        // customer not allow to change accepted user
-        delete postObj.tasker_id;
-      }
-
-      //add or update to database
-      const addedDoc = post_input.classList.contains("edit_mode")
-        ? await updateDoc(doc(collection(db, "task"), post_input.id), postObj)
-        : await addDoc(collection(db, "task"), postObj);
-
-      // delete original image storage if required
-      if (
-        post_input.classList.contains("edit_mode") &&
-        postObj.post_photo_name !== undefined
-      ) {
-        // delete storage image
-        // loop each image
-        temp_array_image_arr.forEach((image_name) => {
-          // Create a reference to the file to delete
-          const desertRef = ref(storage, `task/${post_input.id}/${image_name}`);
-          // Delete the file
-          deleteObject(desertRef)
-            .then(() => {
-              console.log("delete image");
-              // File deleted successfully
-            })
-            .catch((error) => {
-              console.log(error);
-              // Uh-oh, an error occurred!
-            });
-        });
-      }
-
-      // upload photo to storage firebase to get its photo URL
-      image_arr.forEach((img) => {
-        // the image will store in question/question.id/image.name
-        // update doc will giv undefined
-        const tempDocId = addedDoc === undefined ? post_input.id : addedDoc.id;
-        const uploadPath = `task/${tempDocId}/${img.name}`;
-        const storageRef = ref(storage, uploadPath);
-
-        // upload image
-        uploadBytes(storageRef, img)
-          .then((storageImg) => {
-            // get image URL from storage
-            getDownloadURL(storageRef).then((imgURL) => {
-              // update doc imgURL
-              updateDoc(doc(db, "task", tempDocId), {
-                post_photo_url: arrayUnion(imgURL),
-              });
-            });
-            console.log("added image successful");
-          })
-          .catch((err) => {
-            console.log(err);
-            error = true;
-          });
-      });
-
-      if (error) {
-        //fail to upload data
+  if (current_user.role !== "customer") {
+    Swal.fire("You are not allow to post task as a tasker", "","info")
+  }
+  else{
+    // alert user
+    Swal.fire({
+      title: "Do you want to upload this task?",
+      showDenyButton: true,
+      confirmButtonText: "Yes",
+      denyButtonText: "No",
+    }).then(async (result) => {
+      // user click yes
+      if (result.isConfirmed) {
         Swal.fire({
-          icon: "error",
-          title: "Oops...",
-          text: "Something went wrong!",
+          title: "Uploading...",
+          allowEscapeKey: false,
+          allowOutsideClick: false,
         });
-      } else {
-        //success upload data
-        Swal.fire({
-          icon: "success",
-          title: "Successful!",
-          text: "Post task successfully",
+        Swal.showLoading();
+
+        // check mode (edit or post)
+        const post_photo = image_input.files;
+
+        // convert filelist to array to user array method
+        const image_arr = Array.from(post_photo);
+        console.log(image_arr, "-----------------");
+
+        // store image name
+        const image_name_temp = [];
+        image_arr.forEach((item) => {
+          image_name_temp.push(item.name);
         });
 
-        // remove cancel button if is edit mode
+        // task obj to submit
+        const postObj = {
+          post_title: post_input_title.value,
+          post_categories: post_input_cat.value,
+          post_des: post_input_des.value,
+          post_start_date: post_input_start_date.value,
+          post_start_time: post_input_start_time.value,
+          post_end_date: post_input_end_date.value,
+          post_end_time: post_input_end_time.value,
+          post_location: loc_text.value,
+          post_price_amount: post_input_price.value,
+          post_price_unit: post_input_price_unit.value,
+          post_duration_amount: post_input_duration.value,
+          post_duration_unit: post_input_duration_unit.value,
+          post_tasker_no: post_input_tasker_number.value,
+          post_photo_url: "",
+          post_photo_name: image_name_temp,
+          post_location_long: location_long,
+          post_location_lat: location_lat,
+          post_location_regionCode: location_regionCode,
+          post_location_locality: location_locality,
+          added_at: Timestamp.now(),
+          created_by: uid,
+          status: "incomplete",
+          tasker_id: [],
+        };
+
+        // change taskobj according to mode
         if (post_input.classList.contains("edit_mode")) {
-          edit_post_btn_grp.removeChild(edit_post_btn_grp.lastElementChild);
+          // check user got upload image or not
+          // use back old image
+          if (postObj.post_photo_name.length === 0) {
+            delete postObj.post_photo_name;
+            delete postObj.post_photo_url;
+          }
+          // check location
+          // use back old data
+          if (postObj.post_location_long === undefined) {
+            delete postObj.post_location_long;
+            delete postObj.post_location_lat;
+            delete postObj.post_location_regionCode;
+            delete postObj.post_location_locality;
+          }
+          // customer not allow to change accepted user
+          delete postObj.tasker_id;
         }
 
-        // update edit mode
-        post_input.classList.remove("edit_mode");
-        post_input.removeAttribute("id");
-        //reset form
-        post_input.reset();
-        listContainer.style.pointerEvents = "";
-        image_preview.innerHTML = "";
+        //add or update to database
+        const addedDoc = post_input.classList.contains("edit_mode")
+          ? await updateDoc(doc(collection(db, "task"), post_input.id), postObj)
+          : await addDoc(collection(db, "task"), postObj);
 
-        //reset button
-        // update button
-        edit_post_btn_grp.firstElementChild.setAttribute("value", "Post Task");
+        // delete original image storage if required
+        if (
+          post_input.classList.contains("edit_mode") &&
+          postObj.post_photo_name !== undefined
+        ) {
+          // delete storage image
+          // loop each image
+          temp_array_image_arr.forEach((image_name) => {
+            // Create a reference to the file to delete
+            const desertRef = ref(storage, `task/${post_input.id}/${image_name}`);
+            // Delete the file
+            deleteObject(desertRef)
+              .then(() => {
+                console.log("delete image");
+                // File deleted successfully
+              })
+              .catch((error) => {
+                console.log(error);
+                // Uh-oh, an error occurred!
+              });
+          });
+        }
 
-        // navigate to overview
-        post_task_ref.classList.add("display-hidden");
-        overview_ref.classList.remove("display-hidden");
-        modal_window.classList.add("display-hidden");
+        // upload photo to storage firebase to get its photo URL
+        image_arr.forEach((img) => {
+          // the image will store in question/question.id/image.name
+          // update doc will giv undefined
+          const tempDocId = addedDoc === undefined ? post_input.id : addedDoc.id;
+          const uploadPath = `task/${tempDocId}/${img.name}`;
+          const storageRef = ref(storage, uploadPath);
 
-        // change nav
-        overview_nav_link.classList.add("list-section-active");
-        post_nav_link.classList.remove("list-section-active");
-        browse_nav_link.classList.remove("list-section-active");
+          // upload image
+          uploadBytes(storageRef, img)
+            .then((storageImg) => {
+              // get image URL from storage
+              getDownloadURL(storageRef).then((imgURL) => {
+                // update doc imgURL
+                updateDoc(doc(db, "task", tempDocId), {
+                  post_photo_url: arrayUnion(imgURL),
+                });
+              });
+              console.log("added image successful");
+            })
+            .catch((err) => {
+              console.log(err);
+              error = true;
+            });
+        });
 
-        // reset global variable
-        globalTaskDetailsId = "";
-        globalTaskDetailsCusId = "";
-        globalTaskDetailsTaskerId = [];
-        globalTaskDetailsPhotoName = [];
+        if (error) {
+          //fail to upload data
+          Swal.fire({
+            icon: "error",
+            title: "Oops...",
+            text: "Something went wrong!",
+          });
+        } else {
+          //success upload data
+          Swal.fire({
+            icon: "success",
+            title: "Successful!",
+            text: "Post task successfully",
+          });
+
+          // remove cancel button if is edit mode
+          if (post_input.classList.contains("edit_mode")) {
+            edit_post_btn_grp.removeChild(edit_post_btn_grp.lastElementChild);
+          }
+
+          // update edit mode
+          post_input.classList.remove("edit_mode");
+          post_input.removeAttribute("id");
+          //reset form
+          post_input.reset();
+          listContainer.style.pointerEvents = "";
+          image_preview.innerHTML = "";
+
+          //reset button
+          // update button
+          edit_post_btn_grp.firstElementChild.setAttribute("value", "Post Task");
+
+          // navigate to overview
+          post_task_ref.classList.add("display-hidden");
+          overview_ref.classList.remove("display-hidden");
+          modal_window.classList.add("display-hidden");
+
+          // change nav
+          overview_nav_link.classList.add("list-section-active");
+          post_nav_link.classList.remove("list-section-active");
+          browse_nav_link.classList.remove("list-section-active");
+
+          // reset global variable
+          globalTaskDetailsId = "";
+          globalTaskDetailsCusId = "";
+          globalTaskDetailsTaskerId = [];
+          globalTaskDetailsPhotoName = [];
+        }
       }
-    }
-  });
+    });
+  }
+  
 });
 
 // Payment for customer
