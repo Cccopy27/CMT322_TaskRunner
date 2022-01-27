@@ -451,6 +451,7 @@ body {
   align-items: center;
   padding: 0 2.8rem;
   column-gap: 4.8rem;
+  row-gap: 3.2rem;
 }
 
 .section-task-card {
@@ -1537,4 +1538,20 @@ body {
 
 .profile_modal_user_list_inactive {
   background-color: transparent;
+}
+
+.current__tasker {
+  margin-bottom: 3.2rem;
+}
+
+.task_status {
+  font-size: 1.6rem;
+  font-weight: 600;
+  color: #333;
+}
+
+.task_status_span {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #333;
 }
