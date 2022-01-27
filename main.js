@@ -1452,21 +1452,30 @@ const close_payment = async function (e) {
 
 const tasker_complete = async function (e) {
   if (!e.target.classList.contains("btn--tasker")) return;
-  Swal.fire({
-    title: "Do you want to complete this task?",
-    showDenyButton: true,
-    confirmButtonText: "Yes",
-    denyButtonText: "No",
-  }).then(async (result) => {
-    if (result.isConfirmed) {
-      let parent_btn_task = e.target.closest(".option-button-div");
-      let task_id = parent_btn_task.querySelector(".btn--view-detail").id;
-      let task = await getDoc(doc(db, "task", task_id));
-      let task_complete = task.data();
-      task_complete.status = "complete";
-      await updateDoc(doc(db, "task", task.id), task_complete);
-    }
-  });
+  if (!e.target.classList.contains("btn__pending")) {
+    Swal.fire({
+      title: "Do you want to complete this task?",
+      showDenyButton: true,
+      confirmButtonText: "Yes",
+      denyButtonText: "No",
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        let parent_btn_task = e.target.closest(".option-button-div");
+        let task_id = parent_btn_task.querySelector(".btn--view-detail").id;
+        let task = await getDoc(doc(db, "task", task_id));
+        let task_complete = task.data();
+        task_complete.status = "complete";
+        await updateDoc(doc(db, "task", task.id), task_complete);
+      }
+    });
+  } else {
+    Swal.fire({
+      title:
+        "We have informed the customer to complete the payment,Please wait patiently for your reward",
+
+      confirmButtonText: "ok",
+    });
+  }
 };
 
 // Complete task by tasker
@@ -1509,6 +1518,7 @@ const task_details_image_container_ref = document.querySelector(
 );
 const cus_profile_click_ref = document.querySelector(".customer-info-name");
 const tasker_field = document.querySelector(".current__tasker");
+const tasker_container = document.querySelector(".current__tasker--container");
 // -------------------------------------------------------
 
 // close task details
@@ -1566,13 +1576,14 @@ const reject_by_client = async (e) => {
       confirmButtonText: "Yes",
       denyButtonText: `No`,
     }).then(async (result) => {
-      await updateDoc(doc(db, "task", target_task.id), task_to_update);
-      e.target.closest(".tasker__list").remove();
+      if (result.isConfirmed) {
+        await updateDoc(doc(db, "task", target_task.id), task_to_update);
+        e.target.closest(".tasker__list").remove();
+      }
     });
   } else {
     Swal.fire({
       title: "This task has been completed,cannot reject the tasker",
-
       confirmButtonText: "ok",
     });
   }
@@ -1687,6 +1698,7 @@ delete_btn_ref.addEventListener("click", (e) => {
 const functionHandleDetails = (e) => {
   e.preventDefault();
   tasker_field.innerHTML = "";
+  tasker_container.querySelector(".task_status")?.remove();
   // if user click view details button for first time
   if (
     e.target.className === "btn--view-detail" &&
@@ -1771,6 +1783,7 @@ const functionHandleDetails = (e) => {
 
       if (current_user.role === "customer") {
         let html = "";
+        let completed = false;
 
         docSnap.data().tasker_id.forEach((user_id, i) => {
           let str = "";
@@ -1779,6 +1792,12 @@ const functionHandleDetails = (e) => {
             docSnap.data().created_by === current_user.user_id
           ) {
             str = `<a href="#" class="btn__reject--tasker" id=${user_id}>Reject</a></li>`;
+          } else if (
+            docSnap.data().status === "paid" &&
+            docSnap.data().created_by === current_user.user_id
+          ) {
+            str = "</li>";
+            completed = true;
           }
 
           html = html.concat(
@@ -1788,13 +1807,21 @@ const functionHandleDetails = (e) => {
           );
         });
 
+        if (completed) {
+          tasker_field.insertAdjacentHTML(
+            "afterend",
+            `<h3 class="task_status">status : <span class="task_status_span">completed</span>`
+          );
+        }
+
         tasker_field.insertAdjacentHTML("beforeend", html);
       }
 
       if (current_user.role === "tasker") {
         if (
           docSnap.data().status !== "paid" &&
-          docSnap.data().tasker_id.includes(current_user.user_id)
+          docSnap.data().tasker_id.includes(current_user.user_id) &&
+          docSnap.data().status !== "complete"
         ) {
           reject_button.classList.remove("display-hidden");
         } else {
