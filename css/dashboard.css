@@ -302,17 +302,30 @@ body {
   position: relative;
 }
 
-.signout__icon {
+.navigation__icon {
+  display: flex;
+  flex-direction: column;
+  gap: 2.6rem;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.link_home:link,
+.link_home:visited {
+  color: #000;
+}
+
+.signout__icon,
+.home__icon {
   width: 3.2rem;
   height: 3.2rem;
   cursor: pointer;
-  position: absolute;
-  bottom: 0;
-  left: 25%;
-  transform: translate(0, -50%);
 }
 
-.signout__icon:hover {
+.signout__icon:hover,
+.home__icon:hover {
   color: #51ec82;
 }
 
